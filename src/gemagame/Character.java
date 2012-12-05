@@ -1,9 +1,9 @@
-package dabogame;
+package gemagame;
 
 import java.util.ArrayList;
 
-import dabogame.framework.PlatformHandler;
-import dabogame.framework.Collision;
+import gemagame.framework.Collision;
+import gemagame.framework.PlatformHandler;
 
 @SuppressWarnings({ "rawtypes", "unused" })
 public class Character {
@@ -17,6 +17,7 @@ public class Character {
 	private double leftEdge, topEdge = 0;
 	private double sideEdgeOffSet = 150;
 	private double bottomEdgeOffSet = 10;
+	private double topEdgeOffSet=10;
 	private double bottomEdge;
 	private int shootTimer = 0;
 	private int shootTimerReset = 20;
@@ -25,6 +26,7 @@ public class Character {
 	private int projSpeed = 10;
 	private double rotation = 0;
 	private boolean isGrounded = false;
+	private boolean isOnCeiling = false;
 	private boolean isOnPlatform = false;
 	private double platformGround = 0;
 	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
@@ -59,12 +61,15 @@ public class Character {
 		}
 
 		// Y
-		isGrounded = isOnGroundCheck(bottomEdgeSet);
-		if (!isGrounded) {
-			isOnCeilingCheck();
+
+		if (sPressed) {
+			gravity = cGravity;
 		} else {
-			topEdge = 0;
+			gravity = 0.5;
 		}
+		
+		isOnGroundCheck(bottomEdgeSet);
+		isOnCeilingCheck();
 		if (isGrounded) {
 			if (speedY > 0) {
 				speedY = 0;
@@ -75,10 +80,7 @@ public class Character {
 				speedY *= 0.8;
 			}
 		} else {
-			if (speedY + centerY < topEdge) {
-				speedY = 0;
-				centerY = topEdge;
-			} else {
+			if (!isOnCeiling) {
 				centerY += speedY;
 				speedY += gravity;
 				if (speedY < 0) {
@@ -87,14 +89,7 @@ public class Character {
 			}
 		}
 
-		if (sPressed) {
-			gravity = cGravity;
-		} else {
-			gravity = 0.5;
-		}
-
-		if (wPressed && isGrounded) {
-			// System.out.println("Jump");
+		if (wPressed && isGrounded&&!isOnCeiling) {
 			speedY = -25;
 		}
 		// Shooting
@@ -148,14 +143,17 @@ public class Character {
 				isOnPlatform = true;
 				platformGround = platformHandler.yPosList()[i];
 				bottomEdge = platformGround - bottomEdgeOffSet;
+				isGrounded=true;
 				return true;
 			}
 		}
 		if (centerY + speedY >= bottomEdgeSet - bottomEdgeOffSet) {
 			isOnPlatform = false;
 			bottomEdge = bottomEdgeSet - bottomEdgeOffSet;
+			isGrounded=true;
 			return true;
 		}
+		isGrounded=false;
 		return false;
 	}
 
@@ -164,20 +162,26 @@ public class Character {
 		PlatformHandler platformHandler = StartingClass.getPlatformHandler();
 		StartingClass.bg1().getDifX();
 		for (int i = 1; i <= platformHandler.listLength(); i++) {
-			if (Collision.isCollided1Above2(centerX, centerY,
-					platformHandler.xPosList()[i] + xDif,
-					platformHandler.yPosList()[i], lengthX, lengthY,
+			if (Collision.isCollided1Above2(platformHandler.xPosList()[i]
+					+ xDif, platformHandler.yPosList()[i], centerX, centerY,
 					platformHandler.xLengthList()[i],
-					platformHandler.yLengthList()[i])) {
-				platformGround = platformHandler.yPosList()[i];
-				topEdge = platformGround - bottomEdgeOffSet;
+					platformHandler.yLengthList()[i], lengthX, lengthY)) {
+				topEdge = platformHandler.yPosList()[i]+platformHandler.yLengthList()[i]+topEdgeOffSet;
+				speedY = gravity;
+				centerY = topEdge;
+				isOnCeiling = true;
 				return true;
 			}
 		}
 		if (centerY + speedY <= 0) {
-			topEdge = 0 - bottomEdgeOffSet;
+			topEdge = topEdgeOffSet;
+			speedY = gravity;
+			centerY = topEdge;
+			isOnCeiling = true;
 			return true;
 		}
+		topEdge = 0;
+		isOnCeiling = false;
 		return false;
 	}
 }

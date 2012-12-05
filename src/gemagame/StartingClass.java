@@ -1,4 +1,4 @@
-package dabogame;
+package gemagame;
 
 import java.applet.Applet;
 import java.awt.Color;
@@ -12,8 +12,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 
-import dabogame.framework.Animation;
-import dabogame.framework.PlatformHandler;
+import gemagame.framework.Animation;
+import gemagame.framework.PlatformHandler;
 
 @SuppressWarnings({ "serial", "unused", "rawtypes" })
 public class StartingClass extends Applet implements Runnable, KeyListener {
@@ -48,7 +48,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		setBackground(Color.BLACK);
 		setFocusable(true);
 		Frame frame = (Frame) this.getParent().getParent();
-		frame.setTitle("DaboGame");
+		frame.setTitle("GemaGame");
 		addKeyListener(this);
 		try {
 			base = getDocumentBase();
@@ -155,10 +155,12 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		enemy10 = new Enemy1(340, 360);
 		enemy11 = new Enemy1(700, 360);
 		character = new Character();
-		platformHandler = new dabogame.framework.PlatformHandler();
+		platformHandler = new gemagame.framework.PlatformHandler();
 		Random r = new Random();
-		for(int i=-100;i<100;i++){
-			platformHandler.addPlatForm(i*100, r.nextDouble()*this.getHeight(), 100+r.nextDouble()*100, 10+r.nextDouble()*10);
+		for (int i = -100; i < 100; i++) {
+			platformHandler.addPlatForm(i * 100,
+					r.nextDouble() * this.getHeight(),
+					100 + r.nextDouble() * 100, 15 + r.nextDouble() * 10);
 		}
 		Thread Thread = new Thread(this);
 		Thread.start();
@@ -206,8 +208,8 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 	}
 
 	private void animate() {
-		characterAnimation.update(25);
-		characterJumpAnimation.update(25);
+		//characterAnimation.update(25);
+		//characterJumpAnimation.update(25);
 	}
 
 	@Override
@@ -241,11 +243,14 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 					(int) platformHandler.yPosList()[i],
 					(int) platformHandler.xLengthList()[i],
 					(int) platformHandler.yLengthList()[i], this);
-			//System.out.println("X: "+(int) (platformHandler.xPosList()[i] + bg1.getDifX()));
-			//System.out.println("Y: "+(int) platformHandler.yPosList()[i]);
-			//System.out.println("XL: "+(int) platformHandler.xLengthList()[i]);
-			//System.out.println("YL: "+(int) platformHandler.yLengthList()[i]);
-			//System.out.println("I: "+i);
+			// System.out.println("X: "+(int) (platformHandler.xPosList()[i] +
+			// bg1.getDifX()));
+			// System.out.println("Y: "+(int) platformHandler.yPosList()[i]);
+			// System.out.println("XL: "+(int)
+			// platformHandler.xLengthList()[i]);
+			// System.out.println("YL: "+(int)
+			// platformHandler.yLengthList()[i]);
+			// System.out.println("I: "+i);
 		}
 		g.drawImage(enemy1Image, (int) enemy10.getCenterX() - 20,
 				(int) enemy10.getCenterY() - 5, this);

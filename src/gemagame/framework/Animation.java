@@ -1,7 +1,8 @@
-package dabogame.framework;
+package gemagame.framework;
 
 import java.awt.Image;
 import java.util.ArrayList;
+
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class Animation {
 

@@ -1,4 +1,4 @@
-package dabogame.framework;
+package gemagame.framework;
 
 public class PlatformHandler {
 

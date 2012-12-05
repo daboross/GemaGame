@@ -1,4 +1,4 @@
-package dabogame;
+package gemagame;
 
 public class Background {
 	private double bgX, bgY, difX, totalDifX = 0;

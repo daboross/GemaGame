@@ -1,4 +1,4 @@
-package dabogame;
+package gemagame;
 
 public class Enemy {
 	private int health, maxHealth = 3;

@@ -1,4 +1,4 @@
-package dabogame;
+package gemagame;
 
 public class Enemy1 extends Enemy {
 

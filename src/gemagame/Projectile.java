@@ -1,4 +1,4 @@
-package dabogame;
+package gemagame;
 
 public class Projectile {
 	private double centerY, speedX, speedY, comX, comY, centerX = 0;
