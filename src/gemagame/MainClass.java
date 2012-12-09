@@ -2,7 +2,6 @@ package gemagame;
 
 import java.applet.Applet;
 import java.awt.Color;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -15,12 +14,13 @@ import java.util.Random;
 import gemagame.framework.Animation;
 import gemagame.framework.PlatformHandler;
 
-@SuppressWarnings({ "serial", "unused", "rawtypes" })
-public class StartingClass extends Applet implements Runnable, KeyListener {
+@SuppressWarnings({ "serial", "rawtypes" })
+public class MainClass extends Applet implements Runnable, KeyListener {
 	private Character character;
 	private Graphics second;
 	private Image image, background, currentCharacterSprite, enemy1Image,
 			proj0, proj1, proj2, proj3;
+	@SuppressWarnings("unused")
 	private Image character0, character1, character2, character3, character4,
 			character5, character6, character7, character8, character9,
 			character10, character11, character12, character13, character14,
@@ -35,15 +35,14 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 	private boolean wPressed, sPressed, aPressed, dPressed, upPressed,
 			downPressed, leftPressed, rightPressed = false;
 	private int thisWidth, thisHeight = 0;
-	private boolean unused;
 	private static Background bg1, bg2;
 	private static Enemy1 enemy10, enemy11;
-	private Animation characterAnimation, characterJumpAnimation;
+	private Animation characterAnimation;
 	private static PlatformHandler platformHandler;
 
 	@Override
 	public void init() {
-		setSize(1366, 768);
+		setSize(800, 480);
 		setBackground(Color.BLACK);
 		setFocusable(true);
 		addKeyListener(this);
@@ -122,28 +121,30 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		characterAnimation.addFrame(character17, 50);
 		characterAnimation.addFrame(character18, 50);
 		characterAnimation.addFrame(character19, 50);
-		characterJumpAnimation = new Animation();
-		characterJumpAnimation.addFrame(characterJump0, 50);
-		characterJumpAnimation.addFrame(characterJump1, 50);
-		characterJumpAnimation.addFrame(characterJump2, 50);
-		characterJumpAnimation.addFrame(characterJump3, 50);
-		characterJumpAnimation.addFrame(characterJump4, 50);
-		characterJumpAnimation.addFrame(characterJump5, 50);
-		characterJumpAnimation.addFrame(characterJump6, 50);
-		characterJumpAnimation.addFrame(characterJump7, 50);
-		characterJumpAnimation.addFrame(characterJump8, 50);
-		characterJumpAnimation.addFrame(characterJump9, 50);
-		characterJumpAnimation.addFrame(characterJump10, 50);
-		characterJumpAnimation.addFrame(characterJump11, 50);
-		characterJumpAnimation.addFrame(characterJump12, 50);
-		characterJumpAnimation.addFrame(characterJump13, 50);
-		characterJumpAnimation.addFrame(characterJump14, 50);
-		characterJumpAnimation.addFrame(characterJump15, 50);
-		characterJumpAnimation.addFrame(characterJump16, 50);
-		characterJumpAnimation.addFrame(characterJump17, 50);
-		characterJumpAnimation.addFrame(characterJump18, 50);
-		characterJumpAnimation.addFrame(characterJump19, 50);
-		currentCharacterSprite = character0;
+		/*
+		 * characterJumpAnimation = new Animation();
+		 * characterJumpAnimation.addFrame(characterJump0, 50);
+		 * characterJumpAnimation.addFrame(characterJump1, 50);
+		 * characterJumpAnimation.addFrame(characterJump2, 50);
+		 * characterJumpAnimation.addFrame(characterJump3, 50);
+		 * characterJumpAnimation.addFrame(characterJump4, 50);
+		 * characterJumpAnimation.addFrame(characterJump5, 50);
+		 * characterJumpAnimation.addFrame(characterJump6, 50);
+		 * characterJumpAnimation.addFrame(characterJump7, 50);
+		 * characterJumpAnimation.addFrame(characterJump8, 50);
+		 * characterJumpAnimation.addFrame(characterJump9, 50);
+		 * characterJumpAnimation.addFrame(characterJump10, 50);
+		 * characterJumpAnimation.addFrame(characterJump11, 50);
+		 * characterJumpAnimation.addFrame(characterJump12, 50);
+		 * characterJumpAnimation.addFrame(characterJump13, 50);
+		 * characterJumpAnimation.addFrame(characterJump14, 50);
+		 * characterJumpAnimation.addFrame(characterJump15, 50);
+		 * characterJumpAnimation.addFrame(characterJump16, 50);
+		 * characterJumpAnimation.addFrame(characterJump17, 50);
+		 * characterJumpAnimation.addFrame(characterJump18, 50);
+		 * characterJumpAnimation.addFrame(characterJump19, 50);
+		 * setCurrentCharacterSprite(character0);
+		 */
 		System.out.println("Loaded Images");
 	}
 
@@ -191,11 +192,6 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 			bg2.update();
 			enemy10.update();
 			enemy11.update();
-			if (character.getGrounded()) {
-				currentCharacterSprite = characterAnimation.getImage();
-			} else {
-				currentCharacterSprite = characterJumpAnimation.getImage();
-			}
 			repaint();
 			animate();
 			try {
@@ -242,14 +238,6 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 					(int) platformHandler.yPosList()[i],
 					(int) platformHandler.xLengthList()[i],
 					(int) platformHandler.yLengthList()[i], this);
-			// System.out.println("X: "+(int) (platformHandler.xPosList()[i] +
-			// bg1.getDifX()));
-			// System.out.println("Y: "+(int) platformHandler.yPosList()[i]);
-			// System.out.println("XL: "+(int)
-			// platformHandler.xLengthList()[i]);
-			// System.out.println("YL: "+(int)
-			// platformHandler.yLengthList()[i]);
-			// System.out.println("I: "+i);
 		}
 		g.drawImage(enemy1Image, (int) enemy10.getCenterX() - 20,
 				(int) enemy10.getCenterY() - 5, this);
@@ -266,8 +254,6 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		ArrayList projectiles = character.getProjectiles();
 		for (int i = 0; i < projectiles.size(); i++) {
 			Projectile p = (Projectile) projectiles.get(i);
-			g.setColor(Color.YELLOW);
-			// g.fillRect((int) p.getCenterX(), (int) p.getCenterY(), 4, 4);
 			switch (p.getDirection()) {
 			case 0:
 				g.drawImage(proj0, (int) p.getCenterX() - 1,
@@ -430,5 +416,13 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 	public void addPlatform(double xPos, double yPos, double xLength,
 			double yLength) {
 		platformHandler.addPlatForm(xPos, yPos, xLength, yLength);
+	}
+
+	public Image getCurrentCharacterSprite() {
+		return currentCharacterSprite;
+	}
+
+	public void setCurrentCharacterSprite(Image currentCharacterSprite) {
+		this.currentCharacterSprite = currentCharacterSprite;
 	}
 }
