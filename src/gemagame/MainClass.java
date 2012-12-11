@@ -10,8 +10,8 @@ import java.awt.event.KeyListener;
 import java.net.URL;
 import java.util.ArrayList;
 
-import gemagame.framework.Animation;
-import gemagame.framework.PlatformHandler;
+import gemagame.engine.Animation;
+import gemagame.engine.PlatformHandler;
 
 @SuppressWarnings({ "serial", "rawtypes", "unused" })
 public class MainClass extends Applet implements Runnable, KeyListener {
@@ -156,7 +156,7 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 		enemy10 = new Enemy1(340, 360);
 		enemy11 = new Enemy1(700, 360);
 		character = new Character();
-		platformHandler = new gemagame.framework.PlatformHandler();
+		platformHandler = new gemagame.engine.PlatformHandler();
 		for (int i = -150; i < 150; i++) {
 			platformHandler.addPlatForm(i * 30,
 					(int) (Math.random() * height), 100, 50);

@@ -1,4 +1,4 @@
-package gemagame.framework;
+package gemagame.engine;
 
 import java.util.ArrayList;
 

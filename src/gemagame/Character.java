@@ -1,7 +1,7 @@
 package gemagame;
 
-import gemagame.framework.Collision;
-import gemagame.framework.PlatformHandler;
+import gemagame.engine.Collision;
+import gemagame.engine.PlatformHandler;
 
 import java.util.ArrayList;
 
