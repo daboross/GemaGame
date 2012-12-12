@@ -1,15 +1,15 @@
-package gemagame;
+package code;
 
 public class Projectile {
 	private double centerY, speedX, speedY, comX, comY, centerX = 0;
 	private int animationDirection;
-	private Background bg1 = MainClass.bg1();
+	private BackgroundHandler bg = MainClass.background();
 	private boolean alive = true;
 
 	public void movUpdate(int rightEdge) {
 		comX += speedX;
 		comY += speedY;
-		centerX = comX + bg1.getDifX();
+		centerX = comX + bg.getDifX();
 		centerY = comY;
 		if (centerX > -6 && centerX < rightEdge + 6) {
 		} else {
@@ -34,7 +34,7 @@ public class Projectile {
 	}
 
 	public Projectile(double comX, double comY, double speedX, double speedY) {
-		this.comX = comX - bg1.getDifX();
+		this.comX = comX - bg.getDifX();
 		this.comY = comY;
 		this.speedX = speedX;
 		this.speedY = speedY;

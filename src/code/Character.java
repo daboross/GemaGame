@@ -1,11 +1,8 @@
-package gemagame;
-
-import gemagame.engine.Collision;
-import gemagame.engine.PlatformHandler;
+package code;
 
 import java.util.ArrayList;
 
-@SuppressWarnings({ "rawtypes", "unused" })
+@SuppressWarnings({ "unused" })
 public class Character {
 	final int lengthX = 10;
 	final int lengthY = 10;
@@ -88,11 +85,11 @@ public class Character {
 
 		// X
 		if (centerX + speedX < leftScrollEdgeOffSet) {
-			MainClass.changeBg(leftScrollEdgeOffSet - (centerX + speedX));
+			MainClass.changeBg(leftScrollEdgeOffSet - (centerX + speedX), 0);
 			centerX = leftScrollEdgeOffSet;
 		} else if (centerX + speedX > screenWidth - rightScrollEdgeOffSet) {
 			MainClass.changeBg((screenWidth - rightScrollEdgeOffSet)
-					- (centerX + speedX));
+					- (centerX + speedX), 0);
 			centerX = screenWidth - rightScrollEdgeOffSet;
 		} else {
 			centerX += speedX;
@@ -125,7 +122,7 @@ public class Character {
 		return (int) centerY;
 	}
 
-	public ArrayList getProjectiles() {
+	public ArrayList<Projectile> getProjectiles() {
 		return projectiles;
 	}
 
@@ -159,11 +156,12 @@ public class Character {
 		for (int i = 1; (i <= platformHandler.listLength())
 				&& (!isDoneChecking); i++) {
 
-			if (Collision.isCollided1LeftOf2(checkX, checkY,
-					platformHandler.xPosList().get(i) + xDif,
-					platformHandler.yPosList().get(i), checkLengthX, checkLengthY,
-					platformHandler.xLengthList().get(i),
-					platformHandler.yLengthList().get(i))) {
+			if (Collision
+					.isCollided1LeftOf2(checkX, checkY, platformHandler
+							.xPosList().get(i) + xDif, platformHandler
+							.yPosList().get(i), checkLengthX, checkLengthY,
+							platformHandler.xLengthList().get(i),
+							platformHandler.yLengthList().get(i))) {
 				leftLimit = platformHandler.xPosList().get(i)
 						+ platformHandler.xLengthList().get(i) + xDif;
 				isLimitedLeft = true;
@@ -183,9 +181,8 @@ public class Character {
 
 			if (Collision.isCollided1LeftOf2(platformHandler.xPosList().get(i)
 					+ xDif, platformHandler.yPosList().get(i), checkX, checkY,
-					platformHandler.xLengthList().get(i),
-					platformHandler.yLengthList().get(i), checkLengthX,
-					checkLengthY)) {
+					platformHandler.xLengthList().get(i), platformHandler
+							.yLengthList().get(i), checkLengthX, checkLengthY)) {
 				rightLimit = platformHandler.xPosList().get(i) + xDif;
 				isLimitedRight = true;
 				isDoneChecking = true;
@@ -218,14 +215,14 @@ public class Character {
 
 		isDoneChecking = false;
 
-		MainClass.bg1().getDifX();
 		for (int i = 1; (i <= platformHandler.listLength())
 				&& (isDoneChecking == false); i++) {
-			if (Collision.isCollided1Above2(checkX, checkY,
-					platformHandler.xPosList().get(i) + xDif,
-					platformHandler.yPosList().get(i), checkLengthX, checkLengthY,
-					platformHandler.xLengthList().get(i),
-					platformHandler.yLengthList().get(i))) {
+			if (Collision
+					.isCollided1Above2(checkX, checkY, platformHandler
+							.xPosList().get(i) + xDif, platformHandler
+							.yPosList().get(i), checkLengthX, checkLengthY,
+							platformHandler.xLengthList().get(i),
+							platformHandler.yLengthList().get(i))) {
 				bottomLimit = platformHandler.yPosList().get(i);
 				isLimitedBottom = true;
 				isDoneChecking = true;
@@ -251,9 +248,8 @@ public class Character {
 				&& (isDoneChecking == false); i++) {
 			if (Collision.isCollided1Above2(platformHandler.xPosList().get(i)
 					+ xDif, platformHandler.yPosList().get(i), checkX, checkY,
-					platformHandler.xLengthList().get(i),
-					platformHandler.yLengthList().get(i), checkLengthX,
-					checkLengthY)) {
+					platformHandler.xLengthList().get(i), platformHandler
+							.yLengthList().get(i), checkLengthX, checkLengthY)) {
 				topLimit = platformHandler.yPosList().get(i)
 						+ platformHandler.yLengthList().get(i);
 				isLimitedTop = true;
@@ -309,11 +305,12 @@ public class Character {
 		for (int i = 1; (i <= platformHandler.listLength())
 				&& (!isDoneChecking); i++) {
 
-			if (Collision.isCollided1LeftOf2(checkX, checkY,
-					platformHandler.xPosList().get(i) + xDif,
-					platformHandler.yPosList().get(i), checkLengthX, checkLengthY,
-					platformHandler.xLengthList().get(i),
-					platformHandler.yLengthList().get(i))) {
+			if (Collision
+					.isCollided1LeftOf2(checkX, checkY, platformHandler
+							.xPosList().get(i) + xDif, platformHandler
+							.yPosList().get(i), checkLengthX, checkLengthY,
+							platformHandler.xLengthList().get(i),
+							platformHandler.yLengthList().get(i))) {
 				leftLimit = platformHandler.xPosList().get(i)
 						+ platformHandler.xLengthList().get(i) + xDif;
 				isLimitedLeft = true;
@@ -333,9 +330,8 @@ public class Character {
 
 			if (Collision.isCollided1LeftOf2(platformHandler.xPosList().get(i)
 					+ xDif, platformHandler.yPosList().get(i), checkX, checkY,
-					platformHandler.xLengthList().get(i),
-					platformHandler.yLengthList().get(i), checkLengthX,
-					checkLengthY)) {
+					platformHandler.xLengthList().get(i), platformHandler
+							.yLengthList().get(i), checkLengthX, checkLengthY)) {
 				rightLimit = platformHandler.xPosList().get(i) + xDif;
 				isLimitedRight = true;
 				isDoneChecking = true;
@@ -349,14 +345,14 @@ public class Character {
 
 		isDoneChecking = false;
 
-		MainClass.bg1().getDifX();
 		for (int i = 1; (i <= platformHandler.listLength())
 				&& (isDoneChecking == false); i++) {
-			if (Collision.isCollided1Above2(checkX, checkY,
-					platformHandler.xPosList().get(i) + xDif,
-					platformHandler.yPosList().get(i), checkLengthX, checkLengthY,
-					platformHandler.xLengthList().get(i),
-					platformHandler.yLengthList().get(i))) {
+			if (Collision
+					.isCollided1Above2(checkX, checkY, platformHandler
+							.xPosList().get(i) + xDif, platformHandler
+							.yPosList().get(i), checkLengthX, checkLengthY,
+							platformHandler.xLengthList().get(i),
+							platformHandler.yLengthList().get(i))) {
 				bottomLimit = platformHandler.yPosList().get(i);
 				isLimitedBottom = true;
 				isDoneChecking = true;
@@ -382,9 +378,8 @@ public class Character {
 				&& (isDoneChecking == false); i++) {
 			if (Collision.isCollided1Above2(platformHandler.xPosList().get(i)
 					+ xDif, platformHandler.yPosList().get(i), checkX, checkY,
-					platformHandler.xLengthList().get(i),
-					platformHandler.yLengthList().get(i), checkLengthX,
-					checkLengthY)) {
+					platformHandler.xLengthList().get(i), platformHandler
+							.yLengthList().get(i), checkLengthX, checkLengthY)) {
 				topLimit = platformHandler.yPosList().get(i)
 						+ platformHandler.yLengthList().get(i);
 				isLimitedTop = true;

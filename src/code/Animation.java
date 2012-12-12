@@ -1,18 +1,17 @@
-package gemagame.engine;
+package code;
 
 import java.awt.Image;
 import java.util.ArrayList;
 
-@SuppressWarnings({ "rawtypes", "unchecked" })
 public class Animation {
 
-	private ArrayList frames;
+	private ArrayList<AnimFrame> frames;
 	private int currentFrame;
 	private long animTime;
 	private long totalDuration;
 
 	public Animation() {
-		frames = new ArrayList();
+		frames = new ArrayList<AnimFrame>();
 		totalDuration = 0;
 
 		synchronized (this) {
@@ -55,7 +54,6 @@ public class Animation {
 	}
 
 	private class AnimFrame {
-
 		Image image;
 		long endTime;
 

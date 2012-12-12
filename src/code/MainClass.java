@@ -1,4 +1,4 @@
-package gemagame;
+package code;
 
 import java.applet.Applet;
 import java.awt.Color;
@@ -10,27 +10,20 @@ import java.awt.event.KeyListener;
 import java.net.URL;
 import java.util.ArrayList;
 
-import gemagame.engine.Animation;
-import gemagame.engine.PlatformHandler;
-
-@SuppressWarnings({ "serial", "rawtypes", "unused" })
+@SuppressWarnings({ "serial" })
 public class MainClass extends Applet implements Runnable, KeyListener {
 	final int height = 480;
 	final int width = 640;
 	private Character character;
 	private Graphics second;
-	private Image image, background, currentCharacterSprite, proj0, proj1,
-			proj2, proj3, characterImage, platform;
-	private URL base;
+	private Image image, currentCharacterSprite, proj0, proj1, proj2, proj3,
+			characterImage, platform;
+	private static URL base;
 	private boolean wPressed, sPressed, aPressed, dPressed, upPressed,
 			downPressed, leftPressed, rightPressed = false;
-	private int thisWidth, thisHeight = 0;
-	private static Background bg1, bg2;
-	private Animation characterAnimation;
+	private static BackgroundHandler backgroundH;
 	private static PlatformHandler platformHandler;
-
-	private int graphicsWidthScale, graphicsHieghtScale = 1;
-	private int graphicsTranslationX, graphicsTranslationY;
+	private Image[] backgroundImages;
 
 	@Override
 	public void init() {
@@ -43,23 +36,23 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		platform = getImage(base, "gemagame/data/images/platform.png");
-		characterImage = getImage(base, "gemagame/data/images/Character.png");
-		background = getImage(base, "gemagame/data/images/background.png");
-		proj0 = getImage(base, "gemagame/data/images/projectileLeft.png");
-		proj1 = getImage(base, "gemagame/data/images/projectileUp.png");
-		proj2 = getImage(base, "gemagame/data/images/projectileRight.png");
-		proj3 = getImage(base, "gemagame/data/images/projectileDown.png");
+		backgroundImages = new Image[1];
+		backgroundImages[0] = getImage(base, "images/contrastBackground.png");
+		platform = getImage(base, "images/platform.png");
+		characterImage = getImage(base, "images/Character.png");
+		proj0 = getImage(base, "images/projectileLeft.png");
+		proj1 = getImage(base, "images/projectileUp.png");
+		proj2 = getImage(base, "images/projectileRight.png");
+		proj3 = getImage(base, "images/projectileDown.png");
 	}
 
 	@Override
 	public void start() {
-		bg1 = new Background(0, 0);
-		bg2 = new Background(2160, 0);
+		backgroundH = new BackgroundHandler();
 		character = new Character();
-		platformHandler = new gemagame.engine.PlatformHandler();
-		for (int i = -150; i < 150; i++) {
-			platformHandler.addPlatForm(i * 30, (int) (Math.random() * height),
+		platformHandler = new code.PlatformHandler();
+		for (int i = 0; i < 1; i++) {
+			platformHandler.addPlatForm(i * 30, (int) ((Math.random() * height)),
 					100, 50);
 		}
 		Thread Thread = new Thread(this);
@@ -78,9 +71,9 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 	@Override
 	public void run() {
 		while (true) {
-			ArrayList projectiles = character.getProjectiles();
+			ArrayList<Projectile> projectiles = character.getProjectiles();
 			for (int i = 0; i < projectiles.size(); i++) {
-				Projectile p = (Projectile) projectiles.get(i);
+				Projectile p = projectiles.get(i);
 				if (p.isAlive()) {
 					p.update(this.getWidth() + 5);
 				} else {
@@ -89,8 +82,7 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 			}
 			character.update(wPressed, sPressed, aPressed, dPressed,
 					this.getWidth(), this.getHeight());
-			bg1.update();
-			bg2.update();
+			backgroundH.update();
 			repaint();
 			animate();
 			try {
@@ -111,14 +103,8 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 		if (image == null) {
 			image = createImage(this.getWidth(), this.getHeight());
 			second = image.getGraphics();
-			thisWidth = this.getWidth();
-			thisHeight = this.getHeight();
-		}
-		if (!(thisWidth == this.getWidth() && thisHeight == this.getHeight())) {
-			image = createImage(this.getWidth(), this.getHeight());
-			second = image.getGraphics();
-			thisWidth = this.getWidth();
-			thisHeight = this.getHeight();
+			this.getWidth();
+			this.getHeight();
 		}
 		second.setColor(getBackground());
 		second.fillRect(0, 0, this.getWidth(), this.getHeight());
@@ -129,11 +115,19 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 
 	@Override
 	public void paint(Graphics g) {
-		g.drawImage(background, (int) bg1.getBgX(), (int) bg1.getBgY(), this);
-		g.drawImage(background, (int) bg2.getBgX(), (int) bg2.getBgY(), this);
+		for (int k = 0; k < 2; k++) {
+			for (int i = 0; i < backgroundH.getNumberLayers(); i++) {
+				int xPos = (int) backgroundH.getBgX(k, i);
+				int yPos = (int) backgroundH.getBgY(k, i);
+				g.drawImage(backgroundImages[0], xPos, yPos, this);
+				System.out.println("Drawing: xPos: "+xPos+" yPos: "+yPos);
+			}
+		}
+
 		for (int i = 0; i <= platformHandler.listLength(); i++) {
 			g.drawImage(platform,
-					(int) (platformHandler.xPosList().get(i) + bg1.getDifX()),
+					(int) (platformHandler.xPosList().get(i) + backgroundH
+							.getDifX()),
 					(int) (platformHandler.yPosList().get(i) + 0),
 					(int) (platformHandler.xLengthList().get(i) + 0),
 					(int) (platformHandler.yLengthList().get(i) + 0), this);
@@ -146,7 +140,7 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 				this);
 		g2d.rotate(-rotate);
 		g2d.translate(-character.getCenterX(), -character.getCenterY());
-		ArrayList projectiles = character.getProjectiles();
+		ArrayList<Projectile> projectiles = character.getProjectiles();
 		for (int i = 0; i < projectiles.size(); i++) {
 			Projectile p = (Projectile) projectiles.get(i);
 			switch (p.getDirection()) {
@@ -261,21 +255,16 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 
 	}
 
-	public static void changeBg(double change) {
-		bg1.changeDifX(change);
-		bg2.changeDifX(change);
+	public static void changeBg(double changeX, double changeY) {
+		backgroundH.changeDifX(changeX, changeY);
 	}
 
-	public static Background bg1() {
-		return bg1;
-	}
-
-	public static Background bg2() {
-		return bg2;
+	public static BackgroundHandler background() {
+		return backgroundH;
 	}
 
 	public static double xDif() {
-		return bg1.getDifX();
+		return backgroundH.getDifX();
 	}
 
 	public static PlatformHandler getPlatformHandler() {
@@ -293,5 +282,9 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 
 	public void setCurrentCharacterSprite(Image currentCharacterSprite) {
 		this.currentCharacterSprite = currentCharacterSprite;
+	}
+
+	public static URL getBase() {
+		return base;
 	}
 }
