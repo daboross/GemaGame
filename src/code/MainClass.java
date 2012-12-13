@@ -99,15 +99,6 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 	public void run() {
 		// Removes any non-alive projectiles from the projectile list
 		while (true) {
-			ArrayList<Projectile> projectiles = character.getProjectiles();
-			for (int i = 0; i < projectiles.size(); i++) {
-				Projectile p = projectiles.get(i);
-				if (p.isAlive()) {
-					p.update(width + 5);
-				} else {
-					projectiles.remove(i);
-				}
-			}
 			// Calls Character update Function for Movement Updates
 			character.update(wPressed, sPressed, aPressed, dPressed, width,
 					height);

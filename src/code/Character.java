@@ -2,55 +2,102 @@ package code;
 
 import java.util.ArrayList;
 
-@SuppressWarnings({ "unused" })
 public class Character {
-	final int lengthX = 10;
-	final int lengthY = 10;
-	final int jumpHeight = 20;
-	final int maxJumpsLeft = 3;
-	private int unused = 0;
-	private double centerX, centerY = 100;
-	private double speedX, speedY = 0;
-	private double velocityX = 0;
-	private double gravity = 1;
+	final int lengthX = 10;// Half the total Width of the Character
+	final int lengthY = 10;// Half the total Height of the Character
+	final int jumpHeight = 20;// How much the speedY increases when the
+								// character jumps
+	final int maxJumpsLeft = 3;// How many jumps should the character have after
+								// he leaves the ground? (1 is no extra jumps)
+	private double centerX, centerY = 100;// the center of the character's x
+											// position and y position. These
+											// define the center, not the upper
+											// left hand corner
+	private double speedX, speedY = 0;// The amount of distance that the
+										// character travels each update. Each
+										// update these are multiplied by a
+										// Decimal
+	private double velocityX = 0;// the amount that speedX will increase by
+									// each update
+	private double gravity = 1;// the amount that is subtracted from speedY each
+								// update
 	private double leftLimit, topLimit, bottomLimit, rightLimit = 0;
+	// These are changed to represent the nearest wall or floor or ceiling in
+	// each direction
 
 	private double leftScrollEdgeOffSet = 150;
 	private double rightScrollEdgeOffSet = 150;
+	// How close the character gets to the edge of the screen before he starts
+	// scrolling the view.
 
 	private double screenWidth, screenHeight;
+	// These are updated each update to represent the width and height of the
+	// screen
 
 	private int shootTimer = 0;
+	// A timer used in counting how long until the character can shoot again
 	private int shootTimerReset = 20;
+	// The amount the shootTimer is reset to when the character shoots
+	private boolean shootWhenReady = false;
+	// When an arrow key is pressed and the timer isn't reset yet, this variable
+	// is set to true.
 	private int shootWhenReadyX, shootWhenReadyY = 0;
+	// When the character can shoot again, if shootWhenReady, then it will shoot
+	// with the speeds shootWhenReadyX and shootWhenReadyY.
 	private int projSpeed = 10;
+	// How fast projectiles the character shoots go.
 	private double rotation = 0;
+	// This variable is updated when the character moves, and represents how
+	// much the character has turned or rotated. Used when the character is
+	// drawn
 
 	private boolean isLimitedLeft, isLimitedRight = false;
 	private boolean isLimitedTop, isLimitedBottom = false;
-	private boolean shootWhenReady, jumpVar = false;
+	// These variables are updated to hold whether the Character is limited in
+	// moving to the Left, Right, Top or Bottom
+	private boolean jumpVar = false;
+	// This is a variable that represents if the jump button has been released
+	// sense it was last pressed, making it so that you have to release and
+	// repress the jump key every time you want to jump
 
 	private int jumpsLeft = 0;
+	// This variable represents how many more times the character can jump
+	// before he has to touch the ground again
 	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
+	// This is an ArrayList of all the projectiles that are in the air made by
+	// the character.
 	public void update(boolean wPressed, boolean sPressed, boolean aPressed,
 			boolean dPressed, int rightEdge, int bottomEdge) {
 		screenWidth = rightEdge;
 		screenHeight = bottomEdge;
+		// This updates the screen width and height variables with ones passed
+		// when the update function is called
+
 		edgeVarCheck();
-		// This sets check variables for the following to use.
-		// Changes in speed X
-		if (dPressed && !isLimitedRight) {
-			if (aPressed && !isLimitedLeft) {
+		// This runs a function that checks if the Character is Limited in any
+		// direction, and it sets isLimitedRight, isLimitedLeft, isLimitedTop,
+		// isLimitedBottom, leftLimit, rightLimit,topLimit,bottomLimit
+
+		if (dPressed) {
+			if (aPressed) {
 				velocityX = 0;
 			} else {
 				velocityX = 1;
 			}
-		} else if (aPressed && !isLimitedLeft) {
+		} else if (aPressed) {
 			velocityX = -1;
 		} else {
 			velocityX = 0;
 		}
+		// Those if checks resolve conflicts with move left key and move right
+
+		if ((velocityX > 1 && isLimitedRight)
+				|| (velocityX < 1 && isLimitedLeft)) {
+			velocityX = 0;
+		}
+		// If the character would move right or left, and it is limited in that
+		// direction, stop it.
 		speedX += velocityX;
 		speedX *= 0.9;
 		rotation += 0.1 * speedX;
@@ -62,12 +109,19 @@ public class Character {
 			speedY *= .9;
 			speedY += gravity;
 		}
+
 		if (isLimitedBottom) {
 			jumpsLeft = maxJumpsLeft;
 		}
+		// If the Character is on the ground, reset its number of jumps it can
+		// do.
+
 		if (isLimitedTop) {
 			jumpsLeft = 0;
 		}
+		// If the character is touch the ceiling, set its number of jumps left
+		// to 0.
+
 		if (wPressed) {
 			if (jumpVar) {
 				if (jumpsLeft > 0) {
@@ -79,6 +133,8 @@ public class Character {
 		} else {
 			jumpVar = true;
 		}
+		// If jump key is pressed, and it has been released since it was last
+		// pressed, then jump.
 
 		// Edge Check
 		edgeCheck();
@@ -112,32 +168,15 @@ public class Character {
 			shootTimer = shootTimerReset;
 			shootWhenReady = false;
 		}
-	}
-
-	public int getCenterX() {
-		return (int) centerX;
-	}
-
-	public int getCenterY() {
-		return (int) centerY;
-	}
-
-	public ArrayList<Projectile> getProjectiles() {
-		return projectiles;
-	}
-
-	public boolean getGrounded() {
-		return isLimitedBottom;
-	}
-
-	public void shoot(int xRate, int yRate) {
-		shootWhenReady = true;
-		shootWhenReadyX = xRate;
-		shootWhenReadyY = yRate;
-	}
-
-	public double rotation() {
-		return rotation;
+		// Prunes projectile list
+		for (int i = 0; i < projectiles.size(); i++) {
+			Projectile p = projectiles.get(i);
+			if (p.isAlive()) {
+				p.update((int) screenWidth + 5);
+			} else {
+				projectiles.remove(i);
+			}
+		}
 	}
 
 	public void edgeCheck() {
@@ -153,7 +192,8 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 0; (i <= platformHandler.listLength()) && (!isDoneChecking); i++) {
+		for (int i = 0; (i <= platformHandler.listLength())
+				&& (!isDoneChecking); i++) {
 
 			if (Collision
 					.isCollided1LeftOf2(checkX, checkY, platformHandler
@@ -395,5 +435,37 @@ public class Character {
 			isLimitedTop = false;
 			isDoneChecking = true;
 		}
+	}
+
+	public void shoot(int xRate, int yRate) {
+		// Tells the Character to shoot at next opportunity
+		shootWhenReady = true;
+		shootWhenReadyX = xRate;
+		shootWhenReadyY = yRate;
+	}
+
+	public int getCenterX() {
+		// The X for the center position of the Character, not the upper-left
+		// hand corner
+		return (int) centerX;
+	}
+
+	public int getCenterY() {
+		// The Y for the center position of the Character, not the upper-left
+		// hand corner
+		return (int) centerY;
+	}
+
+	public ArrayList<Projectile> getProjectiles() {
+		// The projectiles that are in the air
+		return projectiles;
+	}
+
+	public boolean getGrounded() {
+		return isLimitedBottom;
+	}
+
+	public double rotation() {
+		return rotation;
 	}
 }
