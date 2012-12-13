@@ -138,26 +138,43 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 			second = image.getGraphics();
 			rememberWidth = this.getWidth();
 			rememberHeight = this.getHeight();
-			if (height > this.getHeight()) {
+			// Remembers The current Height and width, so that it can check if
+			// the height has changed before running this again
+			contractedImageX = width;
+			contractedImageY = height;
+			// redefines contractedImage width and height so that they are not
+			// the ones we defined last time
+			if (contractedImageY > this.getHeight()) {
+				// If the graphics Y is bigger then the screen Y, resize it to
+				// fit
 				contractedImageY = this.getHeight();
-				contractedImageX = this.getHeight() / height * width;
+				// Resize graphics X so that it matches graphics Y
+				contractedImageX = (int) ((double) contractedImageY
+						/ (double) height * (double) width);
 			}
-			if (width > contractedImageX) {
+			if (contractedImageX > this.getWidth()) {
+				// If the graphics Y is bigger then the screen Y after
+				// resizing(or not resizing) y, then resize it to be even
+				// smaller
 				contractedImageX = this.getWidth();
-				contractedImageY = contractedImageX / width * height;
+				// resize Y so they match
+				contractedImageY = (int) ((double) contractedImageX
+						/ (double) width * (double) height);
 			}
-			System.out.println("ContImSubX: " + contractedImageX
-					+ " ContImSubY: " + contractedImageY);
-
+			// Calculate how far the image should be moved in order to be in the
+			// center of the screen
 			imageTranslationX = (this.getWidth() - contractedImageX) / 2;
 			imageTranslationY = (this.getHeight() - contractedImageY) / 2;
+			// Creates a new drawRect Variable. This v2D array remembers the
+			// Coordinates that the system should draw the outside rectangles
+			// The rectangles that make black edges around the center
 			drawRect = new int[4][4];
 			setDrawRect(0, 0, 0, imageTranslationX, this.getHeight());
 			setDrawRect(1, 0, 0, this.getWidth(), imageTranslationY);
 			setDrawRect(2, this.getWidth() - imageTranslationX - 1, 0,
-					imageTranslationX + 1, this.getHeight());
+					imageTranslationX + 2, this.getHeight());
 			setDrawRect(3, 0, this.getHeight() - imageTranslationY - 1,
-					this.getWidth(), imageTranslationY + 1);
+					this.getWidth(), imageTranslationY + 2);
 		}
 
 		// If the screen is not the same size at remembered, then re-run the
@@ -166,25 +183,43 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 				.getHeight())) {
 			rememberWidth = this.getWidth();
 			rememberHeight = this.getHeight();
-			if (height > this.getHeight()) {
+			// Remembers The current Height and width, so that it can check if
+			// the height has changed before running this again
+			contractedImageX = width;
+			contractedImageY = height;
+			// redefines contractedImage width and height so that they are not
+			// the ones we defined last time
+			if (contractedImageY > this.getHeight()) {
+				// If the graphics Y is bigger then the screen Y, resize it to
+				// fit
 				contractedImageY = this.getHeight();
-				contractedImageX = this.getHeight() / height * width;
+				// Resize graphics X so that it matches graphics Y
+				contractedImageX = (int) ((double) contractedImageY
+						/ (double) height * (double) width);
 			}
-			if (width > contractedImageX) {
+			if (contractedImageX > this.getWidth()) {
+				// If the graphics Y is bigger then the screen Y after
+				// resizing(or not resizing) y, then resize it to be even
+				// smaller
 				contractedImageX = this.getWidth();
-				contractedImageY = contractedImageX / width * height;
+				// resize Y so they match
+				contractedImageY = (int) ((double) contractedImageX
+						/ (double) width * (double) height);
 			}
-			System.out.println("ContImSubX: " + contractedImageX
-					+ " ContImSubY: " + contractedImageY);
+			// Calculate how far the image should be moved in order to be in the
+			// center of the screen
 			imageTranslationX = (this.getWidth() - contractedImageX) / 2;
 			imageTranslationY = (this.getHeight() - contractedImageY) / 2;
+			// Creates a new drawRect Variable. This v2D array remembers the
+			// Coordinates that the system should draw the outside rectangles
+			// The rectangles that make black edges around the center
 			drawRect = new int[4][4];
 			setDrawRect(0, 0, 0, imageTranslationX, this.getHeight());
 			setDrawRect(1, 0, 0, this.getWidth(), imageTranslationY);
 			setDrawRect(2, this.getWidth() - imageTranslationX - 1, 0,
-					imageTranslationX + 1, this.getHeight());
-			setDrawRect(3, 0, this.getHeight() - imageTranslationY,
-					this.getWidth(), imageTranslationY);
+					imageTranslationX + 2, this.getHeight());
+			setDrawRect(3, 0, this.getHeight() - imageTranslationY - 1,
+					this.getWidth(), imageTranslationY + 2);
 
 		}
 		// clears the screen
@@ -197,7 +232,7 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 		// draws the Image with the translations that were already defined, to
 		// make it in the center of the screen
 		g.drawImage(image, imageTranslationX, imageTranslationY,
-				contractedImageX, contractedImageY, this); // TODO
+				contractedImageX, contractedImageY, this);
 		for (int k = 0; k < 4; k++) {
 			g.fillRect(drawRect[0][k], drawRect[1][k], drawRect[2][k],
 					drawRect[3][k]);
@@ -235,9 +270,9 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 		// Draws the image with the characterImage, lengthX, and lengthY
 		g2d.drawImage(characterImage, -character.lengthX, -character.lengthY,
 				this);
-		// Unrotates the graphics so that the other objects aren't rotated.
+		// UnRotates the graphics so that the other objects aren't rotated.
 		g2d.rotate(-rotate);
-		// Untranslates the graphics so that the other objects aren't
+		// UnTranslates the graphics so that the other objects aren't
 		// Translated
 		g2d.translate(-character.getCenterX(), -character.getCenterY());
 		// Goes through and draws every Character projectile on the screen
