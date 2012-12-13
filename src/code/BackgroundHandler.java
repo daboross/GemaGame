@@ -19,9 +19,9 @@ public class BackgroundHandler {
 			xPositions[1][i] = lengthX;
 			yPositions[1][i] = 0;
 		}
-		increaseRates[0] = 1 / 3;
-		increaseRates[1] = 2 / 3;
-		increaseRates[2] = 4 / 3;
+		increaseRates[0] = 0.4;
+		increaseRates[1] = 0.7;
+		increaseRates[2] = 1.0;
 	}
 
 	public void update() {
@@ -42,7 +42,6 @@ public class BackgroundHandler {
 	}
 
 	public double getBgX(int backgroundNumber, int layerNumber) {
-		System.out.println("Layer: "+layerNumber+" Background: "+backgroundNumber);
 		if ((layerNumber == 0 || layerNumber == 1 || layerNumber == 2)
 				&& (backgroundNumber == 0 || backgroundNumber == 1)) {
 			return xPositions[backgroundNumber][layerNumber];

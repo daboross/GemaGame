@@ -153,8 +153,7 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 1; (i <= platformHandler.listLength())
-				&& (!isDoneChecking); i++) {
+		for (int i = 0; (i <= platformHandler.listLength()) && (!isDoneChecking); i++) {
 
 			if (Collision
 					.isCollided1LeftOf2(checkX, checkY, platformHandler
@@ -176,7 +175,7 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 1; (i <= platformHandler.listLength())
+		for (int i = 0; (i <= platformHandler.listLength())
 				&& (!isDoneChecking); i++) {
 
 			if (Collision.isCollided1LeftOf2(platformHandler.xPosList().get(i)
@@ -215,7 +214,7 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 1; (i <= platformHandler.listLength())
+		for (int i = 0; (i <= platformHandler.listLength())
 				&& (isDoneChecking == false); i++) {
 			if (Collision
 					.isCollided1Above2(checkX, checkY, platformHandler
@@ -244,7 +243,7 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 1; (i <= platformHandler.listLength())
+		for (int i = 0; (i <= platformHandler.listLength())
 				&& (isDoneChecking == false); i++) {
 			if (Collision.isCollided1Above2(platformHandler.xPosList().get(i)
 					+ xDif, platformHandler.yPosList().get(i), checkX, checkY,
@@ -302,7 +301,7 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 1; (i <= platformHandler.listLength())
+		for (int i = 0; (i <= platformHandler.listLength())
 				&& (!isDoneChecking); i++) {
 
 			if (Collision
@@ -325,7 +324,7 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 1; (i <= platformHandler.listLength())
+		for (int i = 0; (i <= platformHandler.listLength())
 				&& (!isDoneChecking); i++) {
 
 			if (Collision.isCollided1LeftOf2(platformHandler.xPosList().get(i)
@@ -345,7 +344,7 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 1; (i <= platformHandler.listLength())
+		for (int i = 0; (i <= platformHandler.listLength())
 				&& (isDoneChecking == false); i++) {
 			if (Collision
 					.isCollided1Above2(checkX, checkY, platformHandler
@@ -374,7 +373,7 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 1; (i <= platformHandler.listLength())
+		for (int i = 0; (i <= platformHandler.listLength())
 				&& (isDoneChecking == false); i++) {
 			if (Collision.isCollided1Above2(platformHandler.xPosList().get(i)
 					+ xDif, platformHandler.yPosList().get(i), checkX, checkY,
