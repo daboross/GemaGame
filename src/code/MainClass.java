@@ -138,8 +138,6 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 			second = image.getGraphics();
 			rememberWidth = this.getWidth();
 			rememberHeight = this.getHeight();
-			int contractedImageSubtractionX = 0;
-			int contractedImageSubtractionY = 0;
 			if (height > this.getHeight()) {
 				contractedImageY = this.getHeight();
 				contractedImageX = this.getHeight() / height * width;

@@ -22,6 +22,9 @@ public class BackgroundHandler {
 		increaseRates[0] = 0.4;
 		increaseRates[1] = 0.7;
 		increaseRates[2] = 1.0;
+		increaseRates[0] = 1 / 3;
+		increaseRates[1] = 2 / 3;
+		increaseRates[2] = 4 / 3;
 	}
 
 	public void update() {

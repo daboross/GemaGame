@@ -213,7 +213,6 @@ public class Character {
 		// Bottom Edge Check
 
 		isDoneChecking = false;
-
 		for (int i = 0; (i <= platformHandler.listLength())
 				&& (isDoneChecking == false); i++) {
 			if (Collision
