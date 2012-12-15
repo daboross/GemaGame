@@ -81,7 +81,7 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 		// Currently I have a fun little pattern going.
 		int platHeight = height - 100;
 		int increaseDirection = -50;
-		for (int i = -1000; i <= 1000; i++) {
+		for (int i = -100; i <= 100; i++) {
 			if (platHeight < 50 || platHeight > height - 100) {
 				increaseDirection *= -1;
 			}
