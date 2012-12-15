@@ -25,9 +25,8 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 	private Image image, proj0, proj1, proj2, proj3, characterImage, platform;
 	// Various image variables that are defined in initial function
 	private URL base; // The base of this applet's .jar
-	private boolean wPressed, sPressed, aPressed, dPressed, upPressed,
-			downPressed, leftPressed, rightPressed = false;
-	// These are variables that keep track of whether or not keys are pressed
+	private boolean wPressed, sPressed, aPressed, dPressed = false;
+	// These are variables that keep track of whether or not keys are pressed.
 
 	private Image[] backgroundImages;// This is an array that holds all the
 										// different background images
@@ -61,7 +60,7 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 		// Gets the images for paint() to use and assigns them to already
 		// created variables
 		backgroundImages = new Image[1];
-		backgroundImages[0] = getImage(base, "images/contrastBackground.png");
+		backgroundImages[0] = getImage(base, "images/Background.png");
 		platform = getImage(base, "images/platform.png");
 		characterImage = getImage(base, "images/Character.png");
 		proj0 = getImage(base, "images/projectileLeft.png");
@@ -77,10 +76,19 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 		backgroundH = new BackgroundHandler();
 		character = new Character();
 		platformHandler = new code.PlatformHandler();
-		for (int i = -10; i < 11; i++) {
-			platformHandler.addPlatForm(i * 30,
-					(int) ((Math.random() * height)), 100, 50);
+
+		// THIS IS WHERE THE PLATFORMS ARE GENERATED!
+		// Currently I have a fun little pattern going.
+		int platHeight = height - 100;
+		int increaseDirection = -50;
+		for (int i = -1000; i <= 1000; i++) {
+			if (platHeight < 50 || platHeight > height - 100) {
+				increaseDirection *= -1;
+			}
+			platHeight += increaseDirection;
+			platformHandler.addPlatForm(i * 95, platHeight, 100, 50);
 		}
+
 		// Starts this thread/applet
 		Thread Thread = new Thread(this);
 		Thread.start();
@@ -234,8 +242,8 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 	// draws images for all the objects
 	public void paint(Graphics g) {
 		// This loop goes through and draws each layer of background
-		for (int k = 0; k < 2; k++) {
-			for (int i = 0; i < backgroundH.getNumberLayers(); i++) {
+		for (int i = 0; i < backgroundH.getNumberLayers(); i++) {
+			for (int k = 0; k < 2; k++) {
 				int xPos = (int) backgroundH.getBgX(k, i);
 				int yPos = (int) backgroundH.getBgY(k, i);
 				g.drawImage(backgroundImages[0], xPos, yPos, this);
@@ -243,7 +251,7 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 		}
 
 		// This loop goes through and draws each platform in PlatformHandler
-		for (int i = 0; i <= platformHandler.listLength(); i++) {
+		for (int i = 0; i < platformHandler.listLength(); i++) {
 			g.drawImage(platform,
 					(int) (platformHandler.xPosList().get(i) + backgroundH
 							.getDifX()),
@@ -271,7 +279,10 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 		for (int i = 0; i < projectiles.size(); i++) {
 			Projectile p = (Projectile) projectiles.get(i);
 			// Checks what direction the projectile is facing, so that the
-			// correct image is used
+			// correct image is used. proj0-3 images represent the four
+			// directions(up,right,down,left(not necessarily in that order)
+			// The projectile class keeps track of what direction it is facing
+			// with an integer.
 			switch (p.getDirection()) {
 			case 0:
 				g.drawImage(proj0, (int) p.getCenterX() - 1,
@@ -294,90 +305,81 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 	}
 
 	@Override
-	public void keyPressed(KeyEvent arg0) {
+	public void keyPressed(KeyEvent keyEvent) {
 		// Records all key presses into variables
-		switch (arg0.getKeyCode()) {
-		case KeyEvent.VK_W:
-			if (!wPressed) {
-				wPressed = true;
-			}
-			break;
-		case KeyEvent.VK_A:
-			if (!aPressed) {
-				aPressed = true;
-			}
-			break;
-		case KeyEvent.VK_D:
-			if (!dPressed) {
-				dPressed = true;
-			}
-			break;
-		case KeyEvent.VK_UP:
-			if (!upPressed) {
-				upPressed = true;
-			}
+		int eventChar = keyEvent.getKeyCode();
+		if (eventChar == KeyEvent.VK_W && !wPressed) {
+			// If w is pressed, and the variable that keeps track of whether w
+			// is pressed (wPressed) is not true, then set wPressed to true
+			wPressed = true;
+		}
+		if (eventChar == KeyEvent.VK_A && !aPressed) {
+			// If a is pressed, and the variable that keeps track of whether a
+			// is pressed (aPressed) is not true, then set aPressed to true
+			aPressed = true;
+		}
+		if (eventChar == KeyEvent.VK_D && !dPressed) {
+			// If d is pressed, and the variable that keeps track of whether d
+			// is pressed (dPressed) is not true, then set dPressed to true
+			dPressed = true;
+		}
+		if (eventChar == KeyEvent.VK_UP) {
+			// every refresh that up key is pressed, launch the character shoot
+			// function with a x velocity of 0 and a y velocity of -1, meaning
+			// going up. Note that this function (character.shoot) tells the
+			// character to shoot after the timer has counted down from that
+			// last shoot, so this part does not need to keep track of that.
 			character.shoot(0, -1);
-			break;
-		case KeyEvent.VK_DOWN:
-			if (!downPressed) {
-				downPressed = true;
-			}
+		}
+		if (eventChar == KeyEvent.VK_DOWN) {
+			// every refresh that up key is pressed, launch the character shoot
+			// function with a x velocity of 0 and a y velocity of 1, meaning
+			// going down. Note that this function (character.shoot) tells the
+			// character to shoot after the timer has counted down from that
+			// last shoot, so this part does not need to keep track of that.
 			character.shoot(0, 1);
-			break;
-		case KeyEvent.VK_LEFT:
-			if (!leftPressed) {
-				leftPressed = true;
-			}
+		}
+		if (eventChar == KeyEvent.VK_LEFT) {
+			// every refresh that up key is pressed, launch the character shoot
+			// function with a x velocity of -1 and a y velocity of 0, meaning
+			// going left. Note that this function (character.shoot) tells the
+			// character to shoot after the timer has counted down from that
+			// last shoot, so this part does not need to keep track of that.
 			character.shoot(-1, 0);
-			break;
-		case KeyEvent.VK_RIGHT:
-			if (!rightPressed) {
-				rightPressed = true;
-			}
+		}
+		if (eventChar == KeyEvent.VK_RIGHT) {
+			// every refresh that up key is pressed, launch the character shoot
+			// function with a x velocity of 1 and a y velocity of 0, meaning
+			// going right. Note that this function (character.shoot) tells the
+			// character to shoot after the timer has counted down from that
+			// last shoot, so this part does not need to keep track of that.
 			character.shoot(1, 0);
-			break;
 		}
 	}
 
 	@Override
-	public void keyReleased(KeyEvent arg0) {
+	public void keyReleased(KeyEvent keyEvent) {
 		// When a key is released, resets the key variable
-		switch (arg0.getKeyCode()) {
-		case KeyEvent.VK_W:
-			if (wPressed) {
-				wPressed = false;
-			}
-			break;
-		case KeyEvent.VK_A:
-			if (aPressed) {
-				aPressed = false;
-			}
-			break;
-		case KeyEvent.VK_D:
-			if (dPressed) {
-				dPressed = false;
-			}
-			break;
-		case KeyEvent.VK_UP:
-			if (upPressed) {
-				upPressed = false;
-			}
-			break;
-		case KeyEvent.VK_DOWN:
-			if (downPressed) {
-				downPressed = false;
-			}
-			break;
-		case KeyEvent.VK_LEFT:
-			if (leftPressed) {
-				leftPressed = false;
-			}
-			break;
-		case KeyEvent.VK_RIGHT:
-			if (rightPressed) {
-				rightPressed = false;
-			}
-			break;
+		int eventChar = keyEvent.getKeyCode();
+		// This defines the integer to represent the key release
+
+		if (eventChar == KeyEvent.VK_W && wPressed) {
+			// If a is released, and the variable was true, set the variable to
+			// false. wPressed keeps track of if w was lasted pressed or
+			// released
+			wPressed = false;
+		}
+		if (eventChar == KeyEvent.VK_A && aPressed) {
+			// If a is released, and the variable was true, set the variable to
+			// false. aPressed keeps track of if a was lasted pressed or
+			// released
+			aPressed = false;
+		}
+		if (eventChar == KeyEvent.VK_D) {
+			// If a is released, and the variable was true, set the variable to
+			// false. dPressed keeps track of if d was lasted pressed or
+			// released
+			dPressed = false;
 		}
 	}
 

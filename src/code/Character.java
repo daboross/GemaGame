@@ -172,7 +172,7 @@ public class Character {
 		for (int i = 0; i < projectiles.size(); i++) {
 			Projectile p = projectiles.get(i);
 			if (p.isAlive()) {
-				p.update((int) screenWidth + 5);
+				p.update((int) screenWidth, (int) screenHeight);
 			} else {
 				projectiles.remove(i);
 			}
@@ -192,7 +192,7 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 0; (i <= platformHandler.listLength())
+		for (int i = 0; (i < platformHandler.listLength())
 				&& (!isDoneChecking); i++) {
 
 			if (Collision
@@ -215,7 +215,7 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 0; (i <= platformHandler.listLength())
+		for (int i = 0; (i < platformHandler.listLength())
 				&& (!isDoneChecking); i++) {
 
 			if (Collision.isCollided1LeftOf2(platformHandler.xPosList().get(i)
@@ -253,7 +253,7 @@ public class Character {
 		// Bottom Edge Check
 
 		isDoneChecking = false;
-		for (int i = 0; (i <= platformHandler.listLength())
+		for (int i = 0; (i < platformHandler.listLength())
 				&& (isDoneChecking == false); i++) {
 			if (Collision
 					.isCollided1Above2(checkX, checkY, platformHandler
@@ -282,7 +282,7 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 0; (i <= platformHandler.listLength())
+		for (int i = 0; (i < platformHandler.listLength())
 				&& (isDoneChecking == false); i++) {
 			if (Collision.isCollided1Above2(platformHandler.xPosList().get(i)
 					+ xDif, platformHandler.yPosList().get(i), checkX, checkY,
@@ -340,7 +340,7 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 0; (i <= platformHandler.listLength())
+		for (int i = 0; (i < platformHandler.listLength())
 				&& (!isDoneChecking); i++) {
 
 			if (Collision
@@ -363,7 +363,7 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 0; (i <= platformHandler.listLength())
+		for (int i = 0; (i < platformHandler.listLength())
 				&& (!isDoneChecking); i++) {
 
 			if (Collision.isCollided1LeftOf2(platformHandler.xPosList().get(i)
@@ -383,7 +383,7 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 0; (i <= platformHandler.listLength())
+		for (int i = 0; (i < platformHandler.listLength())
 				&& (isDoneChecking == false); i++) {
 			if (Collision
 					.isCollided1Above2(checkX, checkY, platformHandler
@@ -412,7 +412,7 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 0; (i <= platformHandler.listLength())
+		for (int i = 0; (i < platformHandler.listLength())
 				&& (isDoneChecking == false); i++) {
 			if (Collision.isCollided1Above2(platformHandler.xPosList().get(i)
 					+ xDif, platformHandler.yPosList().get(i), checkX, checkY,
