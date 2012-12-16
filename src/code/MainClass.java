@@ -22,7 +22,7 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 	private static BackgroundHandler backgroundH; // Background Handler
 	private static PlatformHandler platformHandler; // Platform Handler
 
-	private Graphics second; // Graphics variable used in painting objects
+	private Graphics secondaryGraphics; // Graphics variable used in painting objects
 	private Image image, proj0, proj1, proj2, proj3, characterImage, platform;
 	// Various image variables that are defined in initial function
 	private URL base; // The base of this applet's .jar
@@ -42,7 +42,6 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 	// These variables remember the last Width and Height that the screen was,
 	// so that the Applet knows if it needs to resize its graphics
 	private int[][] drawRect;
-
 	// Initial Method.
 	// Gets images and sets up program.
 	@Override
@@ -79,15 +78,15 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 
 		// THIS IS WHERE THE PLATFORMS ARE GENERATED!
 		// Currently I have a fun little pattern going.
-		/*int platHeight = height - 100;
+		int platHeight = height - 100;
 		int increaseDirection = -50;
-		for (int i = -1; i <= 0; i++) {
+		for (int i = -50; i <= 50; i++) {
 			if (platHeight < 50 || platHeight > height - 100) {
 				increaseDirection *= -1;
 			}
 			platHeight += increaseDirection;
 			platformHandler.addPlatForm(i * 95, platHeight, 100, 50);
-		}*/
+		}
 		// This should load platforms from the file level.txt
 		try {
 			LevelLoader.loadTxt("level.txt");
@@ -140,7 +139,7 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 		// defines image if it does not exist.
 		if (image == null) {
 			image = createImage(width, height);
-			second = image.getGraphics();
+			secondaryGraphics = image.getGraphics();
 			rememberWidth = this.getWidth();
 			rememberHeight = this.getHeight();
 			// Remembers The current Height and width, so that it can check if
@@ -228,12 +227,12 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 
 		}
 		// clears the screen
-		second.setColor(getBackground());
-		second.fillRect(0, 0, this.getWidth(), this.getHeight());
-		second.setColor(getForeground());
+		secondaryGraphics.setColor(getBackground());
+		secondaryGraphics.fillRect(0, 0, this.getWidth(), this.getHeight());
+		secondaryGraphics.setColor(getForeground());
 		// Runs the Paint method in order to get the images for all the objects
 		// on the screen.
-		paint(second);
+		paint(secondaryGraphics);
 		// draws the Image with the translations that were already defined, to
 		// make it in the center of the screen
 		g.drawImage(image, imageTranslationX, imageTranslationY,
@@ -275,7 +274,7 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 		// Move the graphics to the characters location
 		g2d.translate(character.getCenterX(), character.getCenterY());
 		// Rotates the graphics, which will make the drawn image rotated
-		double rotate = character.rotation();
+		double rotate = character.getRotation();
 		g2d.rotate(rotate);
 		// Draws the image with the characterImage, lengthX, and lengthY
 		g2d.drawImage(characterImage, -character.lengthX, -character.lengthY,

@@ -177,261 +177,7 @@ public class Character {
 		}
 	}
 
-	public void edgeCheck() {
-		boolean isDoneChecking;
-		double xDif = MainClass.xDif();
-		double checkX = centerX - lengthX + speedX;
-		double checkY = centerY - lengthY + speedY;
-		double checkLengthX = lengthX * 2;
-		double checkLengthY = lengthY * 2;
-		PlatformHandler platformHandler = MainClass.getPlatformHandler();
-
-		// Left Edge Check
-
-		isDoneChecking = false;
-
-		for (int i = 0; (i < platformHandler.listLength()) && (!isDoneChecking); i++) {
-
-			if (Collision
-					.isCollided1LeftOf2(checkX, checkY, platformHandler
-							.xPosList().get(i) + xDif, platformHandler
-							.yPosList().get(i), checkLengthX, checkLengthY,
-							platformHandler.xLengthList().get(i),
-							platformHandler.yLengthList().get(i))) {
-				leftLimit = platformHandler.xPosList().get(i)
-						+ platformHandler.xLengthList().get(i) + xDif;
-				isLimitedLeft = true;
-				isDoneChecking = true;
-			}
-		}
-		if (!isDoneChecking) {
-			isLimitedLeft = false;
-			isDoneChecking = true;
-		}
-		// Right Edge Check
-
-		isDoneChecking = false;
-
-		for (int i = 0; (i < platformHandler.listLength()) && (!isDoneChecking); i++) {
-
-			if (Collision.isCollided1LeftOf2(platformHandler.xPosList().get(i)
-					+ xDif, platformHandler.yPosList().get(i), checkX, checkY,
-					platformHandler.xLengthList().get(i), platformHandler
-							.yLengthList().get(i), checkLengthX, checkLengthY)) {
-				rightLimit = platformHandler.xPosList().get(i) + xDif;
-				isLimitedRight = true;
-				isDoneChecking = true;
-			}
-		}
-		if (!isDoneChecking) {
-			isLimitedRight = false;
-			isDoneChecking = true;
-		}
-
-		// Horizontal Limiters
-
-		if (isLimitedLeft && !isLimitedRight) {
-			if (speedX < 0) {
-				speedX = 0;
-				centerX = leftLimit + lengthX;
-			}
-		}
-		if (isLimitedRight && !isLimitedLeft) {
-			if (speedX > 0) {
-				speedX = 0;
-				centerX = rightLimit - lengthX;
-			}
-		}
-
-		// Updating checkX
-		checkX = centerX - lengthX + speedX;
-
-		// Bottom Edge Check
-
-		isDoneChecking = false;
-		for (int i = 0; (i < platformHandler.listLength())
-				&& (isDoneChecking == false); i++) {
-			if (Collision
-					.isCollided1Above2(checkX, checkY, platformHandler
-							.xPosList().get(i) + xDif, platformHandler
-							.yPosList().get(i), checkLengthX, checkLengthY,
-							platformHandler.xLengthList().get(i),
-							platformHandler.yLengthList().get(i))) {
-				bottomLimit = platformHandler.yPosList().get(i);
-				isLimitedBottom = true;
-				isDoneChecking = true;
-			}
-		}
-		if (!isDoneChecking) {
-			bottomLimit = screenHeight;
-			if (checkY + checkLengthY >= bottomLimit) {
-				isLimitedBottom = true;
-				isDoneChecking = true;
-			}
-			if (!isDoneChecking) {
-				isLimitedBottom = false;
-				isDoneChecking = true;
-			}
-		}
-
-		// Top Edge Check
-
-		isDoneChecking = false;
-
-		for (int i = 0; (i < platformHandler.listLength())
-				&& (isDoneChecking == false); i++) {
-			if (Collision.isCollided1Above2(platformHandler.xPosList().get(i)
-					+ xDif, platformHandler.yPosList().get(i), checkX, checkY,
-					platformHandler.xLengthList().get(i), platformHandler
-							.yLengthList().get(i), checkLengthX, checkLengthY)) {
-				topLimit = platformHandler.yPosList().get(i)
-						+ platformHandler.yLengthList().get(i);
-				isLimitedTop = true;
-				isDoneChecking = true;
-			}
-		}
-		if (!isDoneChecking) {
-			topLimit = 0;
-			if (checkY <= topLimit) {
-				isLimitedTop = true;
-				isDoneChecking = true;
-			}
-		}
-		if (!isDoneChecking) {
-			isLimitedTop = false;
-			isDoneChecking = true;
-		}
-
-		// Vertical Limiters
-
-		if (isLimitedBottom && !isLimitedTop) {
-			if (speedY >= 0) {
-				speedY = 0;
-				centerY = bottomLimit - lengthY;
-			}
-		}
-
-		if (isLimitedTop && !isLimitedBottom) {
-			if (speedY <= 0) {
-				speedY = 0;
-				centerY = topLimit + lengthY;
-			}
-		}
-		if (isLimitedBottom && isLimitedTop) {
-			speedY = 0;
-			centerY = bottomLimit - lengthY;
-		}
-	}
-
-	public void edgeVarCheck() {
-		boolean isDoneChecking;
-		double xDif = MainClass.xDif();
-		double checkX = centerX - lengthX + speedX;
-		double checkY = centerY - lengthY + speedY;
-		double checkLengthX = lengthX * 2;
-		double checkLengthY = lengthY * 2;
-		PlatformHandler platformHandler = MainClass.getPlatformHandler();
-
-		// Left Edge Check
-
-		isDoneChecking = false;
-
-		for (int i = 0; (i < platformHandler.listLength()) && (!isDoneChecking); i++) {
-
-			if (Collision
-					.isCollided1LeftOf2(checkX, checkY, platformHandler
-							.xPosList().get(i) + xDif, platformHandler
-							.yPosList().get(i), checkLengthX, checkLengthY,
-							platformHandler.xLengthList().get(i),
-							platformHandler.yLengthList().get(i))) {
-				leftLimit = platformHandler.xPosList().get(i)
-						+ platformHandler.xLengthList().get(i) + xDif;
-				isLimitedLeft = true;
-				isDoneChecking = true;
-			}
-		}
-		if (!isDoneChecking) {
-			isLimitedLeft = false;
-			isDoneChecking = true;
-		}
-		// Right Edge Check
-
-		isDoneChecking = false;
-
-		for (int i = 0; (i < platformHandler.listLength()) && (!isDoneChecking); i++) {
-
-			if (Collision.isCollided1LeftOf2(platformHandler.xPosList().get(i)
-					+ xDif, platformHandler.yPosList().get(i), checkX, checkY,
-					platformHandler.xLengthList().get(i), platformHandler
-							.yLengthList().get(i), checkLengthX, checkLengthY)) {
-				rightLimit = platformHandler.xPosList().get(i) + xDif;
-				isLimitedRight = true;
-				isDoneChecking = true;
-			}
-		}
-		if (!isDoneChecking) {
-			isLimitedRight = false;
-			isDoneChecking = true;
-		}
-		// Bottom Edge Check
-
-		isDoneChecking = false;
-
-		for (int i = 0; (i < platformHandler.listLength())
-				&& (isDoneChecking == false); i++) {
-			if (Collision
-					.isCollided1Above2(checkX, checkY, platformHandler
-							.xPosList().get(i) + xDif, platformHandler
-							.yPosList().get(i), checkLengthX, checkLengthY,
-							platformHandler.xLengthList().get(i),
-							platformHandler.yLengthList().get(i))) {
-				bottomLimit = platformHandler.yPosList().get(i);
-				isLimitedBottom = true;
-				isDoneChecking = true;
-			}
-		}
-		if (!isDoneChecking) {
-			bottomLimit = screenHeight;
-			if (checkY + checkLengthY >= bottomLimit) {
-				isLimitedBottom = true;
-				isDoneChecking = true;
-			}
-			if (!isDoneChecking) {
-				isLimitedBottom = false;
-				isDoneChecking = true;
-			}
-		}
-
-		// Top Edge Check
-
-		isDoneChecking = false;
-
-		for (int i = 0; (i < platformHandler.listLength())
-				&& (isDoneChecking == false); i++) {
-			if (Collision.isCollided1Above2(platformHandler.xPosList().get(i)
-					+ xDif, platformHandler.yPosList().get(i), checkX, checkY,
-					platformHandler.xLengthList().get(i), platformHandler
-							.yLengthList().get(i), checkLengthX, checkLengthY)) {
-				topLimit = platformHandler.yPosList().get(i)
-						+ platformHandler.yLengthList().get(i);
-				isLimitedTop = true;
-				isDoneChecking = true;
-			}
-		}
-		if (!isDoneChecking) {
-			topLimit = 0;
-			if (checkY <= topLimit) {
-				isLimitedTop = true;
-				isDoneChecking = true;
-			}
-		}
-		if (!isDoneChecking) {
-			isLimitedTop = false;
-			isDoneChecking = true;
-		}
-	}
-
-	public void setBoundries() {
+	private void setBoundries() {
 		double xDif = MainClass.xDif();
 		double checkX = centerX - lengthX;
 		double checkY = centerY - lengthY;
@@ -447,10 +193,10 @@ public class Character {
 		double nearestBoundryRight = 1000;
 		double nearestBoundryUp = 1000;
 		double nearestBoundryDown = 1000;
-		leftLimit=xDif-100;
-		rightLimit=xDif+100;
-		topLimit=0;
-		bottomLimit=screenHeight;
+		leftLimit = 1;
+		rightLimit = screenWidth - 1;
+		topLimit = 1;
+		bottomLimit = screenHeight - 1;
 		for (int i = 0; i < platformHandler.listLength(); i++) {
 			if (Collision.isCollided1D(platformHandler.yPosList.get(i),
 					platformHandler.yLengthList.get(i), checkY, checkLengthY)) {
@@ -503,7 +249,7 @@ public class Character {
 		}
 	}
 
-	public void checkBoundries() {
+	private void checkBoundries() {
 		double leftCheckX = centerX - lengthX + speedX;
 		double rightCheckX = centerX + lengthX + speedX;
 		double topCheckX = centerY - lengthY + speedY;
@@ -530,7 +276,7 @@ public class Character {
 		}
 	}
 
-	public void enforceBoundries() {
+	private void enforceBoundries() {
 		if ((isLimitedLeft && speedX < 0)) {
 			speedX = 0;
 			centerX = leftLimit + lengthX;
@@ -578,7 +324,7 @@ public class Character {
 		return projectiles;
 	}
 
-	public double rotation() {
+	public double getRotation() {
 		return rotation;
 	}
 
