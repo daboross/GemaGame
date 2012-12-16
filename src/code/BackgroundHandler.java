@@ -44,7 +44,7 @@ public class BackgroundHandler {
 		}
 		increaseRates[0] = 0.4;
 		increaseRates[1] = 0.7;
-		increaseRates[2] = 1.0;
+		increaseRates[2] = 0.99;
 		// Setting the increase rates for each of these backgrounds
 	}
 

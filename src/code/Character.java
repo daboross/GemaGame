@@ -100,7 +100,6 @@ public class Character {
 		// direction, stop it.
 		speedX += velocityX;
 		speedX *= 0.9;
-		rotation += 0.1 * speedX;
 
 		// Changes in speed Y
 
@@ -140,6 +139,7 @@ public class Character {
 		edgeCheck();
 
 		// X
+		rotation += 0.1 * speedX;
 		if (centerX + speedX < leftScrollEdgeOffSet) {
 			MainClass.changeBg(leftScrollEdgeOffSet - (centerX + speedX), 0);
 			centerX = leftScrollEdgeOffSet;
@@ -192,8 +192,7 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 0; (i < platformHandler.listLength())
-				&& (!isDoneChecking); i++) {
+		for (int i = 0; (i < platformHandler.listLength()) && (!isDoneChecking); i++) {
 
 			if (Collision
 					.isCollided1LeftOf2(checkX, checkY, platformHandler
@@ -215,8 +214,7 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 0; (i < platformHandler.listLength())
-				&& (!isDoneChecking); i++) {
+		for (int i = 0; (i < platformHandler.listLength()) && (!isDoneChecking); i++) {
 
 			if (Collision.isCollided1LeftOf2(platformHandler.xPosList().get(i)
 					+ xDif, platformHandler.yPosList().get(i), checkX, checkY,
@@ -340,8 +338,7 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 0; (i < platformHandler.listLength())
-				&& (!isDoneChecking); i++) {
+		for (int i = 0; (i < platformHandler.listLength()) && (!isDoneChecking); i++) {
 
 			if (Collision
 					.isCollided1LeftOf2(checkX, checkY, platformHandler
@@ -363,8 +360,7 @@ public class Character {
 
 		isDoneChecking = false;
 
-		for (int i = 0; (i < platformHandler.listLength())
-				&& (!isDoneChecking); i++) {
+		for (int i = 0; (i < platformHandler.listLength()) && (!isDoneChecking); i++) {
 
 			if (Collision.isCollided1LeftOf2(platformHandler.xPosList().get(i)
 					+ xDif, platformHandler.yPosList().get(i), checkX, checkY,
@@ -459,10 +455,6 @@ public class Character {
 	public ArrayList<Projectile> getProjectiles() {
 		// The projectiles that are in the air
 		return projectiles;
-	}
-
-	public boolean getGrounded() {
-		return isLimitedBottom;
 	}
 
 	public double rotation() {

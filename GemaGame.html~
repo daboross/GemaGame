@@ -1,0 +1,23 @@
+<html><body>
+This is my Java Applet Game, GemaGame.
+<br> If it does not load, please update to the <a href=http://java.com/en/download/index.jsp>Latest Java Version</a> 
+<hr>
+<center>
+<applet code=code.MainClass.class 
+      archive="GemaGame.jar"
+      width=640 height=480>
+    </applet>
+</center>
+<hr>
+This game really has no point yet. I currently am just making the physics engine.<br>
+The source code is available here: <a href=https://github.com/daboross/GemaGame>https://github.com/daboross/GemaGame</a><br>
+I am actively coding this game, expect bugs.<br>
+Controls:<br>
+You can use w Key to jump<br>
+You can use a Key to move left<br>
+You can use d Key to move right<br>
+You can use Left Arrow Key to shoot left<br>
+You can use Right Arrow Key to shoot Right<br>
+You can use Up Arrow Key to shoot Up<br>
+You can use Down Arrow Key to shoot Down</html>
+</body>
