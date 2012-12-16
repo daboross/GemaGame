@@ -65,12 +65,15 @@ public class Character {
 	// before he has to touch the ground again
 	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
+	public Character(int rightEdge, int bottomEdge) {
+		screenWidth = rightEdge;
+		screenHeight = bottomEdge;
+	}
+
 	// This is an ArrayList of all the projectiles that are in the air made by
 	// the character.
 	public void update(boolean wPressed, boolean sPressed, boolean aPressed,
-			boolean dPressed, int rightEdge, int bottomEdge) {
-		screenWidth = rightEdge;
-		screenHeight = bottomEdge;
+			boolean dPressed) {
 		// This updates the screen width and height variables with ones passed
 		// when the update function is called
 
@@ -139,10 +142,10 @@ public class Character {
 		// X
 		rotation += 0.1 * speedX;
 		if (centerX + speedX < leftScrollEdgeOffSet) {
-			MainClass.changeBg(leftScrollEdgeOffSet - (centerX + speedX), 0);
+			RunLevel.changeBg(leftScrollEdgeOffSet - (centerX + speedX), 0);
 			centerX = leftScrollEdgeOffSet;
 		} else if (centerX + speedX > screenWidth - rightScrollEdgeOffSet) {
-			MainClass.changeBg((screenWidth - rightScrollEdgeOffSet)
+			RunLevel.changeBg((screenWidth - rightScrollEdgeOffSet)
 					- (centerX + speedX), 0);
 			centerX = screenWidth - rightScrollEdgeOffSet;
 		} else {
@@ -178,12 +181,12 @@ public class Character {
 	}
 
 	private void setBoundries() {
-		double xDif = MainClass.xDif();
+		double xDif = RunLevel.getBackgroundHandler().getDifX();
 		double checkX = centerX - lengthX;
 		double checkY = centerY - lengthY;
 		double checkLengthX = lengthX * 2;
 		double checkLengthY = lengthY * 2;
-		PlatformHandler platformHandler = MainClass.getPlatformHandler();
+		PlatformHandler platformHandler = RunLevel.getPlatformHandler();
 		ArrayList<Double> leftCheckList = new ArrayList<Double>();
 		ArrayList<Double> rightCheckList = new ArrayList<Double>();
 		ArrayList<Double> topCheckList = new ArrayList<Double>();
@@ -324,7 +327,7 @@ public class Character {
 		return projectiles;
 	}
 
-	public double getRotation() {
+	public double rotation() {
 		return rotation;
 	}
 

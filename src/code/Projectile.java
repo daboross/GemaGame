@@ -5,7 +5,7 @@ public class Projectile {
 	private int animationDirection;
 	// These are variables that the projectile class uses to keep track of
 	// itself. Each instance of this class represents one projectile.
-	private BackgroundHandler bg = MainClass.background();
+	private BackgroundHandler bg = RunLevel.getBackgroundHandler();
 	// Gets the background handler from MainClass so that it can be used through
 	// the class without repetitive retrievings.
 	private boolean alive = true; // Keeps track of if this projectile should be

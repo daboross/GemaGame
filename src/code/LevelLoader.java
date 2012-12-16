@@ -114,7 +114,7 @@ public class LevelLoader {
 			// Loops through all the platform properties that have been gotten
 			// from the file, and adds each of them to the platform Handler
 			// stored in Main Class
-			MainClass.getPlatformHandler().addPlatForm(
+			RunLevel.getPlatformHandler().addPlatForm(
 					platformsToAddXPos.get(i), platformsToAddYPos.get(i),
 					platformsToAddXLength.get(i), platformsToAddYLength.get(i));
 		}
