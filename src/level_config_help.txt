@@ -1,0 +1,13 @@
+Level Help File
+The syntax for a platform is as follows.
+xPos yPos xLength yLength
+This would add a platform that has the properties xPos:30 yPos:2 xLength:100 yLength:50
+30 2 100 50
+
+The program will treat anything that is not a number as a divider(Letters, spaces, and any non-number symbols are dividers). Multiple dividers will be considered as one. 
+Any lines that are not comments and do not have 4 divided numbers will fail to load that line. Other lines will load if one line fails.
+
+These are some valid entries:
+
+23 48 56 78
+0$0s49t94

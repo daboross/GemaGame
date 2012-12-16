@@ -63,48 +63,29 @@ public class LevelLoader {
 
 			nextNumberEquals = 0;// reset the nextNumberEquals variable.
 			// Loop to go through all characters in this line.
-
-			for (int charNumber = 0; charNumber < lineLength
-					&& nextNumberEquals < 4;) {
-				currentChar = lineList.get(lineNumber).charAt(charNumber);
-				// This is the current Character.
-
-				if (currentChar == ';') {
-					boolean isDone = false;
-					// Boolean used to tell if the mini number finder loop is
-					// done.
-					charNumber++;
-					// Adds one to the current character number, so that the
-					// mini number finder loop will use the digit after ;
-					String currentSequence = "";
-					// A string used to holding the current sequence of numbers
-					// that the mini loop uses.
-					//
-					// This loop ;launches when a ; is found
-					// It will combined the digits after the ; into one number,
-					// then put that number into the currentAdditions Variable
-					// After adding to currentAdditions, it changes the
-					// nextNumberEquals by one so that next time it is launched,
-					// it puts the number into the next field (xPos, yPos,
-					// xLength, and yLength are all stored in currentAdditions)
-					for (; !isDone; charNumber++) {
-						currentChar = lineList.get(lineNumber).charAt(
-								charNumber);
-						if (java.lang.Character.isDigit(currentChar)) {
-							currentSequence = (currentSequence + currentChar);
-						} else {
-							isDone = true;
-							currentAdditions[nextNumberEquals] = Integer
-									.valueOf(currentSequence);
-							nextNumberEquals++;
-						}
-					}// End of Mini Number Getter Loop
-				} else {
-					// If the value of the character isn't ;, then go to the
-					// next character
-					System.out.println("Invalid Formating in: "+fileName);
-					System.out.println("Invalid Line: "+ lineList.get(lineNumber));
-					System.out.println("Line Number: "+lineNumber);
+			int charNumber = 0;
+			String currentSequence = "";
+			while (nextNumberEquals < 4) {
+				if (charNumber < lineLength) {
+					currentChar = lineList.get(lineNumber).charAt(charNumber);
+					// This is the current Character.
+					// If the current Character is a ;,
+					if (java.lang.Character.isDigit(currentChar)) {
+						charNumber++;
+						currentSequence = (currentSequence + currentChar);
+					} else if (currentSequence != "") {
+						currentAdditions[nextNumberEquals] = Integer
+								.valueOf(currentSequence);
+						currentSequence = "";
+						nextNumberEquals++;
+					} else {
+						charNumber++;
+					}
+				} else if (currentSequence != "") {
+					currentAdditions[nextNumberEquals] = Integer
+							.valueOf(currentSequence);
+					currentSequence = "";
+					nextNumberEquals++;
 				}
 			}// End of current line Loop
 
@@ -120,9 +101,11 @@ public class LevelLoader {
 				platformsToAddYLength.add(currentAdditions[3]);
 				numberOfPlatformsToAdd++;
 			} else {
-				System.out.println("Invalid Formating in: "+fileName);
-				System.out.println("Invalid Line: "+ lineList.get(lineNumber));
-				System.out.println("Line Number: "+lineNumber);
+				System.out.println("2Invalid Formating in: " + fileName);
+				System.out.println("Invalid Line: " + lineList.get(lineNumber));
+				System.out.println("Line Number: " + (lineNumber + 1));
+				System.out
+						.println("Please use format for each line: ;INT;INT;INT;INT;");
 			}
 
 		}// End of main loop
