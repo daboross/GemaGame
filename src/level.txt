@@ -1,0 +1,12 @@
+#Sample Level File
+#The Level Getter will ignore any lines that start with #
+#The syntax for a platform is as follows.
+#;xPos;;yPos;;xLength;;yLength;;
+#
+#You should have nothing in the line except for numbers and ;s
+#This would add a platform that has the properties xPos:30 yPos:2 xLength:100 yLength:50
+#;30;2;100;50
+#Do not include any lines that are not starting with either ; or #.
+#even blank lines.
+#And in lines that are not comments, do not use anything except numbers and ;. do not use spaces.
+;0;;100;;30;;30;

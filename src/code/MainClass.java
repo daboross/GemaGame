@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -56,7 +57,6 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		// Gets the images for paint() to use and assigns them to already
 		// created variables
 		backgroundImages = new Image[1];
@@ -87,6 +87,13 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 			}
 			platHeight += increaseDirection;
 			platformHandler.addPlatForm(i * 95, platHeight, 100, 50);
+		}
+		//This should load platforms from the file level.txt
+		try {
+			LevelLoader.loadTxt("level.txt");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		// Starts this thread/applet
