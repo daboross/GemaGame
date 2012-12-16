@@ -79,20 +79,19 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 
 		// THIS IS WHERE THE PLATFORMS ARE GENERATED!
 		// Currently I have a fun little pattern going.
-		int platHeight = height - 100;
+		/*int platHeight = height - 100;
 		int increaseDirection = -50;
-		for (int i = -100; i <= 100; i++) {
+		for (int i = -1; i <= 0; i++) {
 			if (platHeight < 50 || platHeight > height - 100) {
 				increaseDirection *= -1;
 			}
 			platHeight += increaseDirection;
 			platformHandler.addPlatForm(i * 95, platHeight, 100, 50);
-		}
-		//This should load platforms from the file level.txt
+		}*/
+		// This should load platforms from the file level.txt
 		try {
 			LevelLoader.loadTxt("level.txt");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -267,6 +266,11 @@ public class MainClass extends Applet implements Runnable, KeyListener {
 					(int) (platformHandler.yLengthList().get(i) + 0), this);
 		}
 		// Get a graphics2d for better manipulation
+		g.setColor(Color.RED);
+		g.drawRect((int) character.getLeftLimit(),
+				(int) character.getTopLimit(),
+				(int) (character.getRightLimit() - character.getLeftLimit()),
+				(int) (character.getBottomLimit() - character.getTopLimit()));
 		Graphics2D g2d = (Graphics2D) g;
 		// Move the graphics to the characters location
 		g2d.translate(character.getCenterX(), character.getCenterY());

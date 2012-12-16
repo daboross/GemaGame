@@ -74,7 +74,8 @@ public class Character {
 		// This updates the screen width and height variables with ones passed
 		// when the update function is called
 
-		edgeVarCheck();
+		setBoundries();
+		checkBoundries();
 		// This runs a function that checks if the Character is Limited in any
 		// direction, and it sets isLimitedRight, isLimitedLeft, isLimitedTop,
 		// isLimitedBottom, leftLimit, rightLimit,topLimit,bottomLimit
@@ -91,11 +92,6 @@ public class Character {
 			velocityX = 0;
 		}
 		// Those if checks resolve conflicts with move left key and move right
-
-		if ((velocityX > 1 && isLimitedRight)
-				|| (velocityX < 1 && isLimitedLeft)) {
-			velocityX = 0;
-		}
 		// If the character would move right or left, and it is limited in that
 		// direction, stop it.
 		speedX += velocityX;
@@ -136,7 +132,9 @@ public class Character {
 		// pressed, then jump.
 
 		// Edge Check
-		edgeCheck();
+		setBoundries();
+		checkBoundries();
+		enforceBoundries();
 
 		// X
 		rotation += 0.1 * speedX;
@@ -433,6 +431,129 @@ public class Character {
 		}
 	}
 
+	public void setBoundries() {
+		double xDif = MainClass.xDif();
+		double checkX = centerX - lengthX;
+		double checkY = centerY - lengthY;
+		double checkLengthX = lengthX * 2;
+		double checkLengthY = lengthY * 2;
+		PlatformHandler platformHandler = MainClass.getPlatformHandler();
+		ArrayList<Double> leftCheckList = new ArrayList<Double>();
+		ArrayList<Double> rightCheckList = new ArrayList<Double>();
+		ArrayList<Double> topCheckList = new ArrayList<Double>();
+		ArrayList<Double> bottomCheckList = new ArrayList<Double>();
+		// These are List of possible boundaries in each direction.
+		double nearestBoundryLeft = 1000;
+		double nearestBoundryRight = 1000;
+		double nearestBoundryUp = 1000;
+		double nearestBoundryDown = 1000;
+		leftLimit=xDif-100;
+		rightLimit=xDif+100;
+		topLimit=0;
+		bottomLimit=screenHeight;
+		for (int i = 0; i < platformHandler.listLength(); i++) {
+			if (Collision.isCollided1D(platformHandler.yPosList.get(i),
+					platformHandler.yLengthList.get(i), checkY, checkLengthY)) {
+				// If the platform is collided with Character on the y axis,
+				// then add its sides as possible x-boundaries
+				leftCheckList.add(platformHandler.xPosList.get(i)
+						+ platformHandler.xLengthList.get(i) + xDif);
+				rightCheckList.add(platformHandler.xPosList.get(i) + xDif);
+			}
+			if (Collision.isCollided1D(platformHandler.xPosList.get(i) + xDif,
+					platformHandler.xLengthList.get(i), checkX, checkLengthX)) {
+				// If the platform is collided with Character on the x axis,
+				// then add its sides as possible y-boundaries
+				topCheckList.add(platformHandler.yPosList.get(i)
+						+ platformHandler.yLengthList.get(i));
+				bottomCheckList.add(platformHandler.yPosList.get(i));
+			}
+		}
+		double leftCheckX = checkX;
+		for (double checkB : leftCheckList) {
+			if ((checkB <= leftCheckX)
+					&& (Math.abs(leftCheckX - checkB) < nearestBoundryLeft)) {
+				nearestBoundryLeft = Math.abs(leftCheckX - checkB);
+				leftLimit = checkB;
+			}
+		}
+		double rightCheckX = checkX + checkLengthX;
+		for (double checkB : rightCheckList) {
+			if ((checkB >= rightCheckX)
+					&& (Math.abs(rightCheckX - checkB) < nearestBoundryRight)) {
+				nearestBoundryRight = Math.abs(rightCheckX - checkB);
+				rightLimit = checkB;
+			}
+		}
+		double topCheckY = checkY;
+		for (double checkB : topCheckList) {
+			if ((checkB <= topCheckY)
+					&& (Math.abs(topCheckY - checkB) < nearestBoundryUp)) {
+				nearestBoundryUp = Math.abs(topCheckY - checkB);
+				topLimit = checkB;
+			}
+		}
+		double bottomCheckY = checkY + checkLengthY;
+		for (double checkB : bottomCheckList) {
+			if ((checkB >= bottomCheckY)
+					&& (Math.abs(bottomCheckY - checkB) < nearestBoundryDown)) {
+				nearestBoundryDown = Math.abs(bottomCheckY - checkB);
+				bottomLimit = checkB;
+			}
+		}
+	}
+
+	public void checkBoundries() {
+		double leftCheckX = centerX - lengthX + speedX;
+		double rightCheckX = centerX + lengthX + speedX;
+		double topCheckX = centerY - lengthY + speedY;
+		double bottomCheckX = centerY + lengthY + speedY;
+		if (leftCheckX < leftLimit) {
+			isLimitedLeft = true;
+		} else {
+			isLimitedLeft = false;
+		}
+		if (rightCheckX > rightLimit) {
+			isLimitedRight = true;
+		} else {
+			isLimitedRight = false;
+		}
+		if (topCheckX < topLimit) {
+			isLimitedTop = true;
+		} else {
+			isLimitedTop = false;
+		}
+		if (bottomCheckX > bottomLimit) {
+			isLimitedBottom = true;
+		} else {
+			isLimitedBottom = false;
+		}
+	}
+
+	public void enforceBoundries() {
+		if ((isLimitedLeft && speedX < 0)) {
+			speedX = 0;
+			centerX = leftLimit + lengthX;
+		}
+		if (isLimitedRight && speedX > 0) {
+			speedX = 0;
+			centerX = rightLimit - lengthX;
+
+		}
+		if ((isLimitedTop && speedY < 0)) {
+			speedY = 0;
+			centerY = topLimit + lengthY;
+		}
+		if (isLimitedBottom && speedY > 0) {
+			speedY = 0;
+			centerY = bottomLimit - lengthY;
+		}
+		if ((velocityX > 0 && isLimitedRight)
+				|| (velocityX < 0 && isLimitedLeft)) {
+			velocityX = 0;
+		}
+	}
+
 	public void shoot(int xRate, int yRate) {
 		// Tells the Character to shoot at next opportunity
 		shootWhenReady = true;
@@ -459,5 +580,21 @@ public class Character {
 
 	public double rotation() {
 		return rotation;
+	}
+
+	public double getLeftLimit() {
+		return leftLimit;
+	}
+
+	public double getTopLimit() {
+		return topLimit;
+	}
+
+	public double getBottomLimit() {
+		return bottomLimit;
+	}
+
+	public double getRightLimit() {
+		return rightLimit;
 	}
 }
