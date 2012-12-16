@@ -1,6 +1,5 @@
 package code;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -37,7 +36,7 @@ public class RunLevel implements Runnable, KeyListener {
 		mainClass = mainClassGiven;
 		// Sets certain things in the program.
 		File baseFile = new File("");
-		String ImageFolder = (baseFile.getAbsolutePath()+"/images/");
+		String ImageFolder = (baseFile.getAbsolutePath() + "/images/");
 		// Gets the images for paint() to use and assigns them to already
 		// created variables
 		backgroundImages = new Image[1];
@@ -106,13 +105,8 @@ public class RunLevel implements Runnable, KeyListener {
 				g.drawImage(backgroundImages[0], xPos, yPos, null);
 			}
 		}
-		g.setColor(Color.darkGray);
 		// This loop goes through and draws each platform in PlatformHandler
 		for (int i = 0; i < platformHandler.listLength(); i++) {
-			g.drawRect((int) (platformHandler.xPosList().get(i) + backgroundH
-					.getDifX()), (int) (platformHandler.yPosList().get(i) + 0),
-					(int) (platformHandler.xLengthList().get(i) + 0),
-					(int) (platformHandler.yLengthList().get(i) + 0));
 			g.drawImage(platform,
 					(int) (platformHandler.xPosList().get(i) + backgroundH
 							.getDifX()),
@@ -120,11 +114,6 @@ public class RunLevel implements Runnable, KeyListener {
 					(int) (platformHandler.xLengthList().get(i) + 0),
 					(int) (platformHandler.yLengthList().get(i) + 0), null);
 		}
-		g.setColor(Color.RED);
-		g.drawRect((int) character.getLeftLimit(),
-				(int) character.getTopLimit(),
-				(int) (character.getRightLimit() - character.getLeftLimit()),
-				(int) (character.getBottomLimit() - character.getTopLimit()));
 		// Get a graphics2d for better manipulation
 		Graphics2D g2d = (Graphics2D) g;
 		// Move the graphics to the characters location
@@ -135,10 +124,6 @@ public class RunLevel implements Runnable, KeyListener {
 		// Draws the image with the characterImage, lengthX, and lengthY
 		g2d.drawImage(characterImage, -character.lengthX, -character.lengthY,
 				null);
-		g.setColor(Color.CYAN);
-		g.drawOval(-character.lengthX, -character.lengthY, 20, 20);
-		g.drawRect(0, 0, 10, 10);
-		g.drawRect(-10, -10, 10, 10);
 		// UnRotates the graphics so that the other objects aren't rotated.
 		g2d.rotate(-rotate);
 		// UnTranslates the graphics so that the other objects aren't
@@ -257,7 +242,7 @@ public class RunLevel implements Runnable, KeyListener {
 	@Override
 	public void keyTyped(KeyEvent keyEvent) {
 	}
-	
+
 	public static void changeBg(double changeX, double changeY) {
 		// Forwards function to the Background Handler
 		backgroundH.changeDifX(changeX, changeY);
