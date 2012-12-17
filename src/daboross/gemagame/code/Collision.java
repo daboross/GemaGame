@@ -1,4 +1,4 @@
-package gemagame.code;
+package daboross.gemagame.code;
 
 public class Collision {
 	public static boolean isCollided(double xPos1, double yPos1, double xPos2,

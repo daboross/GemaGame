@@ -1,4 +1,4 @@
-package gemagame.code;
+package daboross.gemagame.code;
 
 public class BackgroundHandler {
 	final int lengthX = 2000;// The length that one background is graphically

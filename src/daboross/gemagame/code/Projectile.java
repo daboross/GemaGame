@@ -1,4 +1,4 @@
-package gemagame.code;
+package daboross.gemagame.code;
 
 public class Projectile {
 	private double centerY, speedX, speedY, comX, comY, centerX = 0;

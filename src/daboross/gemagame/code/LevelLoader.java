@@ -1,4 +1,4 @@
-package gemagame.code;
+package daboross.gemagame.code;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

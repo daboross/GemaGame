@@ -1,4 +1,4 @@
-package gemagame.code;
+package daboross.gemagame.code;
 
 public class PauseHandler {
 
