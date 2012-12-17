@@ -39,7 +39,7 @@ public class RunLevel implements Runnable, KeyListener {
 		backgroundImages = new Image[1];
 		try {
 			URL base = mainClass.getDocumentBase();
-			URL imageBase = new URL(base, "gemagame/data/images/");
+			URL imageBase = new URL(base, "daboross/gemagame/data/images/");
 			backgroundImages[0] = mainClass.getImage(imageBase,
 					"Background.png");
 			platform = mainClass.getImage(imageBase, "platform.png");
