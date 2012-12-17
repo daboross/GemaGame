@@ -1,12 +1,14 @@
 package daboross.gemagame.code;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class LevelLoader {
-	public static void loadTxt(String fileName) throws IOException {
+	public static void loadTxt(String fileName, MainClass mainClass)
+			throws IOException {
 		ArrayList<String> lineList = new ArrayList<String>();
 		ArrayList<Double> platformsToAddXPos = new ArrayList<Double>();
 		ArrayList<Double> platformsToAddYPos = new ArrayList<Double>();
@@ -15,7 +17,10 @@ public class LevelLoader {
 		int numberOfPlatformsToAdd = 0;
 		// These four ArrayLists store the platform properties that are to be
 		// added at end of function.
-		BufferedReader reader = new BufferedReader(new FileReader(fileName));
+		InputStream inputStream = mainClass.getClass().getResourceAsStream(
+				fileName);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				inputStream));
 		while (true) {
 			String currentLine = reader.readLine();
 			// no more lines to read

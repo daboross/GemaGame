@@ -3,12 +3,15 @@ package daboross.gemagame.code;
 import java.util.ArrayList;
 
 public class Character {
-	final int lengthX = 10;// Half the total Width of the Character
-	final int lengthY = 10;// Half the total Height of the Character
-	final int jumpHeight = 20;// How much the speedY increases when the
-								// character jumps
-	final int maxJumpsLeft = 1;// How many jumps should the character have after
-								// he leaves the ground? (1 is no extra jumps)
+	final int lengthX = 10;
+	// Half the total Width of the Character
+	final int lengthY = 10;
+	// Half the total Height of the Character
+	final int jumpHeight = 20;
+	// How much the speedY increases when the character jumps
+	final int maxJumpsLeft = 1;
+	// How many jumps should the character have after he leaves the ground?
+	// (1 is no extra jumps)
 	private double centerX, centerY = 100;
 	// the center of the character's x position and y position. These define the
 	// center, not the upper left hand corner
@@ -22,7 +25,6 @@ public class Character {
 	private double leftLimit, topLimit, bottomLimit, rightLimit = 0;
 	// These are changed to represent the nearest wall or floor or ceiling in
 	// each direction
-
 	private double leftScrollEdgeOffSet = 150;
 	private double rightScrollEdgeOffSet = 150;
 	// How close the character gets to the edge of the screen before he starts
@@ -48,12 +50,12 @@ public class Character {
 	// This variable is updated when the character moves, and represents how
 	// much the character has turned or rotated. Used when the character is
 	// drawn
-
 	private boolean isLimitedLeft, isLimitedRight = false;
 	private boolean isLimitedTop, isLimitedBottom = false;
 	// These variables are updated to hold whether the Character is limited in
 	// moving to the Left, Right, Top or Bottom
-
+	// This is an ArrayList of all the projectiles that are in the air made by
+	// the character.
 	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
 	public Character(int rightEdge, int bottomEdge) {
@@ -61,8 +63,6 @@ public class Character {
 		screenHeight = bottomEdge;
 	}
 
-	// This is an ArrayList of all the projectiles that are in the air made by
-	// the character.
 	public void update(boolean wPressed, boolean sPressed, boolean aPressed,
 			boolean dPressed) {
 		// This updates the screen width and height variables with ones passed
@@ -167,13 +167,14 @@ public class Character {
 		double nearestBoundryRight = 1000;
 		double nearestBoundryUp = 1000;
 		double nearestBoundryDown = 1000;
-		leftLimit = 1;
-		rightLimit = screenWidth - 1;
-		topLimit = 1;
-		bottomLimit = screenHeight - 1;
+		leftLimit = 0;
+		rightLimit = screenWidth;
+		topLimit = 0;
+		bottomLimit = screenHeight;
 		for (int i = 0; i < platformHandler.listLength(); i++) {
 			if (Collision.isCollided1D(platformHandler.yPosList.get(i),
-					platformHandler.yLengthList.get(i), checkY, checkLengthY)) {
+					platformHandler.yLengthList.get(i), checkY + speedY,
+					checkLengthY)) {
 				// If the platform is collided with Character on the y axis,
 				// then add its sides as possible x-boundaries
 				leftCheckList.add(platformHandler.xPosList.get(i)
@@ -181,7 +182,8 @@ public class Character {
 				rightCheckList.add(platformHandler.xPosList.get(i) + xDif);
 			}
 			if (Collision.isCollided1D(platformHandler.xPosList.get(i) + xDif,
-					platformHandler.xLengthList.get(i), checkX, checkLengthX)) {
+					platformHandler.xLengthList.get(i), checkX + speedX,
+					checkLengthX)) {
 				// If the platform is collided with Character on the x axis,
 				// then add its sides as possible y-boundaries
 				topCheckList.add(platformHandler.yPosList.get(i)
