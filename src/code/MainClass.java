@@ -10,6 +10,7 @@ public class MainClass extends Applet {
 	// defines the width and height that the applet will act as if it is
 	private int height = 480;
 	private int width = 640;
+	private boolean paintGame;
 
 	// Variables are defined in Initial function
 	private Graphics secondaryGraphics; // Graphics variable used in painting
@@ -32,6 +33,7 @@ public class MainClass extends Applet {
 
 	@Override
 	public void init() {
+		System.out.println("MainClass init.");
 		// Sets certain things in the program.
 		runLevel = new RunLevel(this);
 		setBackground(Color.BLACK);
@@ -41,6 +43,7 @@ public class MainClass extends Applet {
 
 	@Override
 	public void start() {
+		System.out.println("MainClass start");
 		// Starts this thread/applet
 		Thread Thread = new Thread(runLevel);
 		Thread.start();
@@ -75,7 +78,7 @@ public class MainClass extends Applet {
 				contractedImageY = this.getHeight();
 				// Resize graphics X so that it matches graphics Y
 				contractedImageX = (int) ((double) contractedImageY
-						/ (double) height * (double) width);
+						/ (double) height * width);
 			}
 			if (contractedImageX > this.getWidth()) {
 				// If the graphics Y is bigger then the screen Y after
@@ -84,7 +87,7 @@ public class MainClass extends Applet {
 				contractedImageX = this.getWidth();
 				// resize Y so they match
 				contractedImageY = (int) ((double) contractedImageX
-						/ (double) width * (double) height);
+						/ (double) width * height);
 			}
 			// Calculate how far the image should be moved in order to be in the
 			// center of the screen
@@ -120,7 +123,7 @@ public class MainClass extends Applet {
 				contractedImageY = this.getHeight();
 				// Resize graphics X so that it matches graphics Y
 				contractedImageX = (int) ((double) contractedImageY
-						/ (double) height * (double) width);
+						/ (double) height * width);
 			}
 			if (contractedImageX > this.getWidth()) {
 				// If the graphics Y is bigger then the screen Y after
@@ -129,7 +132,7 @@ public class MainClass extends Applet {
 				contractedImageX = this.getWidth();
 				// resize Y so they match
 				contractedImageY = (int) ((double) contractedImageX
-						/ (double) width * (double) height);
+						/ (double) width * height);
 			}
 			// Calculate how far the image should be moved in order to be in the
 			// center of the screen
@@ -153,7 +156,9 @@ public class MainClass extends Applet {
 		secondaryGraphics.setColor(getForeground());
 		// Runs the Paint method in order to get the images for all the objects
 		// on the screen.
-		runLevel.paint(secondaryGraphics);
+		if (paintGame) {
+			runLevel.paint(secondaryGraphics);
+		}
 		// draws the Image with the translations that were already defined, to
 		// make it in the center of the screen
 		g.drawImage(image, imageTranslationX, imageTranslationY,
@@ -177,7 +182,15 @@ public class MainClass extends Applet {
 		// [3][] is y length
 	}
 
-	public void paintMe() {
+	public void paintMe(boolean gameOn) {
+		// Runs this functions paint method on RunLevel's paint method.
+		// If gameOn then run the method on RunLevel, otherwise run it on the
+		// menu class.
+		paintGame = gameOn;
 		repaint();
+	}
+
+	public RunLevel getRunLevel() {
+		return runLevel;
 	}
 }

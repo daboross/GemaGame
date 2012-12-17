@@ -3,11 +3,9 @@ package code;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.File;
-import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class RunLevel implements Runnable, KeyListener {
@@ -33,21 +31,28 @@ public class RunLevel implements Runnable, KeyListener {
 	private MainClass mainClass;
 
 	public RunLevel(MainClass mainClassGiven) {
+		System.out.println("RunLevel init.");
 		mainClass = mainClassGiven;
 		// Sets certain things in the program.
-		File baseFile = new File("");
-		String ImageFolder = (baseFile.getAbsolutePath() + "/images/");
 		// Gets the images for paint() to use and assigns them to already
 		// created variables
 		backgroundImages = new Image[1];
-		Toolkit tk = Toolkit.getDefaultToolkit();
-		backgroundImages[0] = tk.getImage(ImageFolder + "Background.png");
-		platform = tk.getImage(ImageFolder + "platform.png");
-		characterImage = tk.getImage(ImageFolder + "Character.png");
-		proj0 = tk.getImage(ImageFolder + "projectileLeft.png");
-		proj1 = tk.getImage(ImageFolder + "projectileUp.png");
-		proj2 = tk.getImage(ImageFolder + "projectileRight.png");
-		proj3 = tk.getImage(ImageFolder + "projectileDown.png");
+		try {
+			URL base = mainClass.getDocumentBase();
+			URL imageBase = new URL(base, "images/");
+			backgroundImages[0] = mainClass.getImage(imageBase,
+					"Background.png");
+			platform = mainClass.getImage(imageBase, "platform.png");
+			characterImage = mainClass.getImage(imageBase, "Character.png");
+			proj0 = mainClass.getImage(imageBase, "projectileLeft.png");
+			proj1 = mainClass.getImage(imageBase, "projectileUp.png");
+			proj2 = mainClass.getImage(imageBase, "projectileRight.png");
+			proj3 = mainClass.getImage(imageBase, "projectileDown.png");
+			System.out.println("Loaded Images");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Load Images Failed");
+		}
 		// Creates the Background Handler, Character, and Platform Handler
 		// classes
 		backgroundH = new BackgroundHandler();
@@ -66,15 +71,19 @@ public class RunLevel implements Runnable, KeyListener {
 			platformHandler.addPlatForm(i * 95, platHeight, 100, 50);
 		}
 		// This should load platforms from the file level.txt
-		try {
-			LevelLoader.loadTxt("level.txt");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		/*
+		 * try { String host = mainClass.getDocumentBase().getPath(); String
+		 * pathName = ("" + host + "gemagame/level.txt");
+		 * System.out.println("Loading Level: " + pathName);
+		 * LevelLoader.loadTxt(pathName);
+		 * System.out.println("Loaded level file"); } catch (Exception e) {
+		 * System.out.println("level file Load Failed"); e.printStackTrace(); }
+		 */
 	}
 
 	@Override
 	public void run() {
+		System.out.println("Started Run Thread");
 		while (true) {
 			// Calls Character update Function for Movement Updates
 			character.update(wPressed, sPressed, aPressed, dPressed);
@@ -82,7 +91,7 @@ public class RunLevel implements Runnable, KeyListener {
 			if (drawImage) {
 				// Calls Background Handler Update Function for Movement Updates
 				backgroundH.update();
-				mainClass.paintMe();
+				mainClass.paintMe(true);
 				// repaints the screen
 			} else {
 				drawImage = true;
@@ -92,11 +101,12 @@ public class RunLevel implements Runnable, KeyListener {
 				Thread.sleep(17);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+				Thread.dumpStack();
 			}
 		}
 	}
 
-	public Graphics paint(Graphics g) {
+	public void paint(Graphics g) {
 		// This loop goes through and draws each layer of background
 		for (int i = 0; i < backgroundH.getNumberLayers(); i++) {
 			for (int k = 0; k < 2; k++) {
@@ -132,7 +142,7 @@ public class RunLevel implements Runnable, KeyListener {
 		// Goes through and draws every Character projectile on the screen
 		ArrayList<Projectile> projectiles = character.getProjectiles();
 		for (int i = 0; i < projectiles.size(); i++) {
-			Projectile p = (Projectile) projectiles.get(i);
+			Projectile p = projectiles.get(i);
 			// Checks what direction the projectile is facing, so that the
 			// correct image is used. proj0-3 images represent the four
 			// directions(up,right,down,left(not necessarily in that order)
@@ -157,7 +167,6 @@ public class RunLevel implements Runnable, KeyListener {
 				break;
 			}
 		}
-		return g;
 	}
 
 	@Override

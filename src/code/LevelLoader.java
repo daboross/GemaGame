@@ -15,7 +15,6 @@ public class LevelLoader {
 		int numberOfPlatformsToAdd = 0;
 		// These four ArrayLists store the platform properties that are to be
 		// added at end of function.
-
 		BufferedReader reader = new BufferedReader(new FileReader(fileName));
 		while (true) {
 			String currentLine = reader.readLine();
