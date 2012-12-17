@@ -11,14 +11,12 @@ public class MainClass extends Applet {
 	private int height = 480;
 	private int width = 640;
 	private boolean paintGame;
-
 	// Variables are defined in Initial function
-	private Graphics secondaryGraphics; // Graphics variable used in painting
-										// objects
+	private Graphics secondaryGraphics;
+	// Graphics variable used in painting objects
 	private Image image;
 	// Various image variables that are defined in initial function
-
-	private int imageTranslationX, imageTranslationY = 0; // These variables
+	private int imageTranslationX, imageTranslationY = 0;
 	private int contractedImageX, contractedImageY;
 	// These variables record the amount that the main graphics is Translated
 	// and Contracted
@@ -27,15 +25,16 @@ public class MainClass extends Applet {
 	// so that the Applet knows if it needs to resize its graphics
 	private int[][] drawRect;
 	// Initial Method.
-	// Gets images and sets up program.
 
 	private RunLevel runLevel;
+	private Menu menuClass;
 
 	@Override
 	public void init() {
 		System.out.println("MainClass init.");
 		// Sets certain things in the program.
 		runLevel = new RunLevel(this);
+		menuClass = new Menu(this);
 		setBackground(Color.BLACK);
 		setFocusable(true);
 		addKeyListener(runLevel);
@@ -158,6 +157,8 @@ public class MainClass extends Applet {
 		// on the screen.
 		if (paintGame) {
 			runLevel.paint(secondaryGraphics);
+		} else {
+			menuClass.paint(secondaryGraphics);
 		}
 		// draws the Image with the translations that were already defined, to
 		// make it in the center of the screen

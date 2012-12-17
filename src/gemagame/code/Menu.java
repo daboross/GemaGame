@@ -13,14 +13,13 @@ public class Menu {
 		mainClass = mainClassSet;
 		try {
 			URL base = mainClass.getDocumentBase();
-			URL imageBase = new URL(base, "images/menu/");
+			URL imageBase = new URL(base, "gemagame/data/images/menu/");
 			upperImage = mainClass.getImage(imageBase, "upperImage.png");
 			System.out.println("Loaded Images -Menu");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Load Images Failed -Menu");
 		}
-
 	}
 
 	public void paint(Graphics g) {
