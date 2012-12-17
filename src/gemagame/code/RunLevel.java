@@ -1,4 +1,4 @@
-package code;
+package gemagame.code;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;

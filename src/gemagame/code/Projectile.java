@@ -1,4 +1,4 @@
-package code;
+package gemagame.code;
 
 public class Projectile {
 	private double centerY, speedX, speedY, comX, comY, centerX = 0;

@@ -1,4 +1,4 @@
-package code;
+package gemagame.code;
 
 import java.util.ArrayList;
 

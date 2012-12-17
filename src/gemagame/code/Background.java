@@ -1,4 +1,4 @@
-package code;
+package gemagame.code;
 
 public class Background {
 	private double bgX0, bgX1, bgX2, bgY0, bgY1, bgY2, difX, totalDifX = 0;

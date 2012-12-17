@@ -1,4 +1,4 @@
-package code;
+package gemagame.code;
 
 import java.util.ArrayList;
 
@@ -7,20 +7,18 @@ public class Character {
 	final int lengthY = 10;// Half the total Height of the Character
 	final int jumpHeight = 20;// How much the speedY increases when the
 								// character jumps
-	final int maxJumpsLeft = 3;// How many jumps should the character have after
+	final int maxJumpsLeft = 1;// How many jumps should the character have after
 								// he leaves the ground? (1 is no extra jumps)
-	private double centerX, centerY = 100;// the center of the character's x
-											// position and y position. These
-											// define the center, not the upper
-											// left hand corner
-	private double speedX, speedY = 0;// The amount of distance that the
-										// character travels each update. Each
-										// update these are multiplied by a
-										// Decimal
-	private double velocityX = 0;// the amount that speedX will increase by
-									// each update
-	private double gravity = 1;// the amount that is subtracted from speedY each
-								// update
+	private double centerX, centerY = 100;
+	// the center of the character's x position and y position. These define the
+	// center, not the upper left hand corner
+	private double speedX, speedY = 0;
+	// The amount of distance that the character travels each update. Each
+	// update these are multiplied by a Decimal
+	private double velocityX = 0;
+	// the amount that speedX will increase by each update
+	private double gravity = 1;
+	// the amount that is subtracted from speedY each update
 	private double leftLimit, topLimit, bottomLimit, rightLimit = 0;
 	// These are changed to represent the nearest wall or floor or ceiling in
 	// each direction
@@ -55,14 +53,7 @@ public class Character {
 	private boolean isLimitedTop, isLimitedBottom = false;
 	// These variables are updated to hold whether the Character is limited in
 	// moving to the Left, Right, Top or Bottom
-	private boolean jumpVar = false;
-	// This is a variable that represents if the jump button has been released
-	// sense it was last pressed, making it so that you have to release and
-	// repress the jump key every time you want to jump
 
-	private int jumpsLeft = 0;
-	// This variable represents how many more times the character can jump
-	// before he has to touch the ground again
 	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
 	public Character(int rightEdge, int bottomEdge) {
@@ -104,32 +95,12 @@ public class Character {
 
 		if ((!(isLimitedTop || isLimitedBottom))
 				|| (isLimitedTop && !isLimitedBottom && speedY >= 0)) {
-			speedY *= .9;
+			speedY *= .95d;
 			speedY += gravity;
 		}
 
-		if (isLimitedBottom) {
-			jumpsLeft = maxJumpsLeft;
-		}
-		// If the Character is on the ground, reset its number of jumps it can
-		// do.
-
-		if (isLimitedTop) {
-			jumpsLeft = 0;
-		}
-		// If the character is touch the ceiling, set its number of jumps left
-		// to 0.
-
-		if (wPressed) {
-			if (jumpVar) {
-				if (jumpsLeft > 0) {
-					jumpVar = false;
-					speedY -= jumpHeight;
-					jumpsLeft -= 1;
-				}
-			}
-		} else {
-			jumpVar = true;
+		if (wPressed && isLimitedBottom) {
+			speedY -= jumpHeight;
 		}
 		// If jump key is pressed, and it has been released since it was last
 		// pressed, then jump.
@@ -257,22 +228,22 @@ public class Character {
 		double rightCheckX = centerX + lengthX + speedX;
 		double topCheckX = centerY - lengthY + speedY;
 		double bottomCheckX = centerY + lengthY + speedY;
-		if (leftCheckX < leftLimit) {
+		if (leftCheckX <= leftLimit) {
 			isLimitedLeft = true;
 		} else {
 			isLimitedLeft = false;
 		}
-		if (rightCheckX > rightLimit) {
+		if (rightCheckX >= rightLimit) {
 			isLimitedRight = true;
 		} else {
 			isLimitedRight = false;
 		}
-		if (topCheckX < topLimit) {
+		if (topCheckX <= topLimit) {
 			isLimitedTop = true;
 		} else {
 			isLimitedTop = false;
 		}
-		if (bottomCheckX > bottomLimit) {
+		if (bottomCheckX >= bottomLimit) {
 			isLimitedBottom = true;
 		} else {
 			isLimitedBottom = false;

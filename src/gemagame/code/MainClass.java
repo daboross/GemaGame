@@ -1,4 +1,4 @@
-package code;
+package gemagame.code;
 
 import java.applet.Applet;
 import java.awt.Color;
