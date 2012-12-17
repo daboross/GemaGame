@@ -71,14 +71,18 @@ public class RunLevel implements Runnable, KeyListener {
 			platformHandler.addPlatForm(i * 95, platHeight, 100, 50);
 		}
 		// This should load platforms from the file level.txt
-		/*
-		 * try { String host = mainClass.getDocumentBase().getPath(); String
-		 * pathName = ("" + host + "gemagame/level.txt");
-		 * System.out.println("Loading Level: " + pathName);
-		 * LevelLoader.loadTxt(pathName);
-		 * System.out.println("Loaded level file"); } catch (Exception e) {
-		 * System.out.println("level file Load Failed"); e.printStackTrace(); }
-		 */
+
+		try {
+			//String host = mainClass.getDocumentBase().getPath();
+			String pathName = ("levels/level.txt");
+			System.out.println("Loading Level: " + pathName);
+			LevelLoader.loadTxt(pathName, mainClass);
+			System.out.println("Loaded level file");
+		} catch (Exception e) {
+			System.out.println("level file Load Failed");
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override
@@ -101,7 +105,6 @@ public class RunLevel implements Runnable, KeyListener {
 				Thread.sleep(17);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-				Thread.dumpStack();
 			}
 		}
 	}
