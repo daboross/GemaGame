@@ -18,10 +18,10 @@ public class Menu implements Runnable, KeyListener {
 			URL base = mainClass.getDocumentBase();
 			URL imageBase = new URL(base, "daboross/gemagame/data/images/menu/");
 			upperImage = mainClass.getImage(imageBase, "upperImage.png");
-			System.out.println("Loaded Images -Menu");
+			System.out.println("Loaded Menu Images");
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("Load Images Failed -Menu");
+			System.out.println("Menu Load Images Failed");
 		}
 	}
 

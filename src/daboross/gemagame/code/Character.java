@@ -95,12 +95,12 @@ public class Character {
 
 		if ((!(isLimitedTop || isLimitedBottom))
 				|| (isLimitedTop && !isLimitedBottom && speedY >= 0)) {
-			speedY *= .95d;
+			speedY *= .95;
 			speedY += gravity;
 		}
 
 		if (wPressed && isLimitedBottom) {
-			speedY -= jumpHeight;
+			speedY = -jumpHeight;
 		}
 		// If jump key is pressed, and it has been released since it was last
 		// pressed, then jump.

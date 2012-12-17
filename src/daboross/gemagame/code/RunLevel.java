@@ -31,7 +31,7 @@ public class RunLevel implements Runnable, KeyListener {
 	private MainClass mainClass;
 
 	public RunLevel(MainClass mainClassGiven) {
-		System.out.println("RunLevel init.");
+		System.out.println("Initializing RunLevel");
 		mainClass = mainClassGiven;
 		// Sets certain things in the program.
 		// Gets the images for paint() to use and assigns them to already
@@ -59,35 +59,23 @@ public class RunLevel implements Runnable, KeyListener {
 		character = new Character(width, height);
 		platformHandler = new PlatformHandler();
 
-		// THIS IS WHERE THE PLATFORMS ARE GENERATED!
-		// Currently I have a fun little pattern going.
-		int platHeight = height - 100;
-		int increaseDirection = -50;
-		for (int i = -50; i <= 50; i++) {
-			if (platHeight < 50 || platHeight > height - 100) {
-				increaseDirection *= -1;
-			}
-			platHeight += increaseDirection;
-			platformHandler.addPlatForm(i * 95, platHeight, 100, 50);
-		}
-		// This should load platforms from the file level.txt
+		/*
+		 * int platHeight = height - 100; int increaseDirection = -50; for (int
+		 * i = -50; i <= 50; i++) { if (platHeight < 50 || platHeight > height -
+		 * 100) { increaseDirection *= -1; } platHeight += increaseDirection;
+		 * platformHandler.addPlatForm(i * 95, platHeight, 100, 50); }
+		 */
 
-		try {
-			//String host = mainClass.getDocumentBase().getPath();
-			String pathName = ("levels/level.txt");
-			System.out.println("Loading Level: " + pathName);
-			LevelLoader.loadTxt(pathName, mainClass);
-			System.out.println("Loaded level file");
-		} catch (Exception e) {
-			System.out.println("level file Load Failed");
-			e.printStackTrace();
-		}
+		// This should load platforms from the file level.txt
+		String pathName = ("levels/level.txt");
+		LevelLoader.loadTxt(pathName, mainClass);
+		System.out.println("LevelLoaderFinished");
 
 	}
 
 	@Override
 	public void run() {
-		System.out.println("Started Run Thread");
+		System.out.println("Starting RunLevel");
 		while (true) {
 			// Calls Character update Function for Movement Updates
 			character.update(wPressed, sPressed, aPressed, dPressed);

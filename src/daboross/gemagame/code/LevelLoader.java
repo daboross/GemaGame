@@ -15,6 +15,7 @@ public class LevelLoader {
 		int numberOfPlatformsToAdd = 0;
 		// These four ArrayLists store the platform properties that are to be
 		// added at end of function.
+		System.out.println("Loading Level: " + fileName);
 		try {
 			InputStream inputStream = mainClass.getClass().getResourceAsStream(
 					fileName);
@@ -35,9 +36,7 @@ public class LevelLoader {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("");
-			System.out.println("Exception Caught in LevelLoader");
+			System.out.println("Invalid File: " + fileName);
 		}
 
 		// Variables to be used in the following for loop.
@@ -80,9 +79,10 @@ public class LevelLoader {
 					currentChar = lineList.get(lineNumber).charAt(charNumber);
 					// This is the current Character.
 					// If the current Character is a ;,
-					if (java.lang.Character.isDigit(currentChar)) {
-						charNumber++;
+					if (java.lang.Character.isDigit(currentChar)
+							|| currentChar == '-') {
 						currentSequence = (currentSequence + currentChar);
+						charNumber++;
 					} else if (currentSequence != "") {
 						currentAdditions[nextNumberEquals] = Integer
 								.valueOf(currentSequence);
@@ -96,12 +96,28 @@ public class LevelLoader {
 							.valueOf(currentSequence);
 					currentSequence = "";
 					nextNumberEquals++;
+				} else {
+					System.out.println("Line Ended Abruptly");
+					break;
 				}
 			}// End of current line Loop
 
 			// This checks if the current addition platform has a length and
 			// height, and all 4 values have been gone through and added.
-			if (currentAdditions[2] > 0 && currentAdditions[3] > 0
+			if (currentAdditions[2] < 0) {
+				System.out.print("Warning! Platform not loaded because yPos"
+						+ "Value is negetive. In File: ");
+
+				System.out.println(fileName + ", Line Number: "
+						+ (lineNumber + 1) + ", Invalid Content: "
+						+ lineList.get(lineNumber));
+			} else if (currentAdditions[2] > mainClass.getHeight()) {
+				System.out.print("Warning! Platform not loaded because yPos"
+						+ "Value is bigger then screen height. In File: ");
+				System.out.println(fileName + ", Line Number: "
+						+ (lineNumber + 1) + ", Invalid Content: "
+						+ lineList.get(lineNumber));
+			} else if (currentAdditions[2] > 0 && currentAdditions[3] > 0
 					&& nextNumberEquals == 4) {
 				// If it does have a width and height, then add it to the
 				// Platforms To Add ArrayLists
@@ -110,13 +126,18 @@ public class LevelLoader {
 				platformsToAddXLength.add(currentAdditions[2]);
 				platformsToAddYLength.add(currentAdditions[3]);
 				numberOfPlatformsToAdd++;
+				System.out.println("Loading Plaform: xPos."
+						+ currentAdditions[0] + " yPos." + currentAdditions[1]
+						+ " xLength." + currentAdditions[2] + " yLength."
+						+ currentAdditions[3]);
 			} else {
-				System.out.println("Invalid Formating in: " + fileName);
-				System.out.println("Invalid Line: " + lineList.get(lineNumber));
-				System.out.println("Line Number: " + (lineNumber + 1));
-				System.out
-						.println("Please use format for each line: ;INT;INT;INT;INT;");
+				System.out.print("4 seperated Integers not found in File: ");
+				System.out.println(fileName + ", Line Number: "
+						+ (lineNumber + 1) + ", Invalid Content: "
+						+ lineList.get(lineNumber));
 			}
+			System.out.println("Looping for new line, currentLine:"
+					+ lineNumber + " numberOfLines:" + lineList.size());
 
 		}// End of main loop
 
@@ -129,6 +150,6 @@ public class LevelLoader {
 					platformsToAddXLength.get(i), platformsToAddYLength.get(i));
 		}
 		System.out.println("Loaded " + numberOfPlatformsToAdd
-				+ " platforms from file " + fileName + ".");
+				+ " platforms from " + fileName + ".");
 	}// End of Function
 }// End Of Class
