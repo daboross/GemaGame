@@ -1,55 +1,69 @@
 package daboross.gemagame.code;
 
+/**
+ * @author daboross
+ * 
+ */
 public class BackgroundHandler {
-	final int lengthX = 2000;// The length that one background is graphically
-								// represented x-wise
-	final int lengthY = 0;// ?
+	/**
+	 * The length that one background is graphically represented x-wise
+	 */
+	final int lengthX = 2000;
+	/**
+	 * totalDifX holds the total amount that the backgrounds have scrolled with
+	 * Respect to the front most background, and the objects on the screen difX
+	 * holds how far the background should scroll next update. It is added to
+	 * every time the changeDifX function is called, and it is used and set to 0
+	 * every update
+	 */
 	private double totalDifX, difX = 0;
-	// totalDifX holds the total amount that the backgrounds have scrolled with
-	// Respect to the front most background, and the objects on the screen
-	// difX holds how far the background should scroll next update. It is added
-	// to every time the changeDifX function is called, and it is used and set
-	// to 0 every update
-	private int numberOfLayers;// The number of background layers that exist on
-								// the screen
+	/**
+	 * The number of background layers that exist on the screen
+	 */
+	private int numberOfLayers;
+	/**
+	 * Every background layer has to have 2 parts that interchange and shift
+	 * around each other. This allows them to scroll infinitely. The first //
+	 * number in this 2D array is which of these 2 you are talking about. one is
+	 * always going to be lengthX farther then the other. The second number is
+	 * which background layer it is.
+	 */
 	private double[][] xPositions, yPositions;
-	// Every background layer has to have 2 parts that interchange and shift
-	// around each other. This allows them to scroll infinitely. The first
-	// number
-	// in this 2D array is which of these 2 you are talking about. one is always
-	// going to be lengthX farther then the other. The second number is which
-	// background layer it is.
+	/**
+	 * The rate at which each background layer will scroll. The number held in
+	 * this is multiplied by the total scroll distance to determine how far this
+	 * background scrolls
+	 */
 	private double[] increaseRates;
 
-	// The rate at which each background layer will scroll. The number held in
-	// this is multiplied by the total scroll distance to determine how far this
-	// background scrolls
-
+	/** The initial function for creating a BackgroundHandler */
 	public BackgroundHandler() {
-		numberOfLayers = 3;// The number of background layers
+		numberOfLayers = 3;
 		xPositions = new double[2][numberOfLayers];
 		yPositions = new double[2][numberOfLayers];
 		increaseRates = new double[numberOfLayers];
-		// Initializing these three variables.
+		/** Give each background its initial x Position */
 		for (int i = 0; i < numberOfLayers; i++) {
-			// giving the different background of different layers their initial
-			// x positions
 			xPositions[0][i] = 0;
 			xPositions[1][i] = lengthX;
 		}
+		/** Give each background its initial y Position */
 		for (int i = 0; i < numberOfLayers; i++) {
 			double yPos = i * 200;
 			yPositions[0][i] = yPos;
 			yPositions[1][i] = yPos;
 		}
+		/** Define the increase rates for each background */
 		increaseRates[0] = 0.4;
 		increaseRates[1] = 0.7;
 		increaseRates[2] = 0.99;
-		// Setting the increase rates for each of these backgrounds
 	}
 
+	/**
+	 * This function tells the BackgroundHandler to update, moving each
+	 * background the amount it should
+	 */
 	public void update() {
-		// Repeats for every background in every layer.
 		for (int k = 0; k < 2; k++) {
 			for (int i = 0; i < numberOfLayers; i++) {
 				xPositions[k][i] += difX * increaseRates[i];
@@ -74,10 +88,19 @@ public class BackgroundHandler {
 		// Reseting difX
 	}
 
+	/**
+	 * Returns the visual position for the background number and layer //
+	 * specified, if they are not correct then you get an error in the //
+	 * console, and they value 0 is returned.
+	 * 
+	 * @param backgroundNumber
+	 *            The number of the Background to get. Only use 0 or 1.
+	 * @param layerNumber
+	 *            The layer number of the Background to get. Will return 0 if
+	 *            invalid number is specified
+	 * @return
+	 */
 	public double getBgX(int backgroundNumber, int layerNumber) {
-		// Returns the visual position for the background number and layer
-		// specified, if they are not correct then you get an error in the
-		// console, and they value 0 is returned.
 		if ((layerNumber == 0 || layerNumber == 1 || layerNumber == 2)
 				&& (backgroundNumber == 0 || backgroundNumber == 1)) {
 			return xPositions[backgroundNumber][layerNumber];
@@ -88,17 +111,22 @@ public class BackgroundHandler {
 		}
 	}
 
+	
+	/**
+	 * Gets the total scrolling difference, useful for getting the visual //
+	 * positions of objects that scroll with the background when the //
+	 * character scrolls the screen.
+	 */
 	public double getDifX() {
 		return totalDifX;
-		// Gets the total scrolling difference, useful for getting the visual
-		// positions of objects that scroll with the background when the
-		// character scrolls the screen.
 	}
 
+	/**
+	 * Returns the visual position for the background number and layer //
+	 * specified, if they are not correct then you get an error in the //
+	 * console, and they value 0 is returned.
+	 */
 	public double getBgY(int backgroundNumber, int layerNumber) {
-		// Returns the visual position for the background number and layer
-		// specified, if they are not correct then you get an error in the
-		// console, and they value 0 is returned.
 		if ((layerNumber == 0 || layerNumber == 1 || layerNumber == 2)
 				&& (backgroundNumber == 0 || backgroundNumber == 1)) {
 			return yPositions[backgroundNumber][layerNumber];
@@ -109,15 +137,17 @@ public class BackgroundHandler {
 		}
 	}
 
+	/**
+	 * Makes this class scroll everything by the amount specified. currently
+	 * changeY does not do anything.
+	 */
 	public void changeDifX(double changeX, double changeY) {
-		// Makes this class scroll everything by the amount specified. currently
-		// changeY does not do anything.
 		difX += changeX;
 		totalDifX += changeX;
 	}
 
+	/** @return The number of background layers there are. */
 	public int getNumberLayers() {
-		// Returns the number of layers.
 		return numberOfLayers;
 	}
 }

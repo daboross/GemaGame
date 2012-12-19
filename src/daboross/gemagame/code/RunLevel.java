@@ -10,32 +10,48 @@ import java.util.ArrayList;
 
 public class RunLevel implements Runnable, KeyListener {
 
-	// defines the width and height that the applet will act as if it is
+	/** Defines the width and height that the applet will act as if it is */
 	private int height = 480;
 	private int width = 640;
 
-	// Variables are defined in Initial function
-	private Character character; // Character
-	private static BackgroundHandler backgroundH; // Background Handler
-	private static PlatformHandler platformHandler; // Platform Handler
+	/** The Character in this game */
+	private Character character;
+	/** The Background Handler in this game */
+	private static BackgroundHandler backgroundH;
+	/** The Game's Platform Handler */
+	private static PlatformHandler platformHandler;
+	/**
+	 * Various image variables that are defined in initial function
+	 */
 	private Image proj0, proj1, proj2, proj3, characterImage, platform;
-	// Various image variables that are defined in initial function
-	private boolean wPressed, sPressed, aPressed, dPressed = false;
-	// These are variables that keep track of whether or not keys are pressed.
+	/**
+	 * These are variables that keep track of whether or not keys are pressed.
+	 */
+	private boolean wPressed, aPressed, dPressed = false;
 
-	private Image[] backgroundImages;// This is an array that holds all the
-										// different background images
-	private boolean drawImage = false;// This variable flips every tick, and it
-										// makes it so it only draws images
-										// every other tick
+	/**
+	 * This is an array that holds all the different background images
+	 */
+	private Image[] backgroundImages;
+	/**
+	 * This variable flips every tick, and it makes it so it only draws images
+	 * every other tick
+	 */
+	private boolean drawImage = false;
+	/** This variable holds this games MainClass */
 	private MainClass mainClass;
 
-	public RunLevel(MainClass mainClassGiven) {
+	/**
+	 * This is the init for the RunLevel Function Sets certain things in the
+	 * program. Gets the images for paint() to use and assigns them to already
+	 * created variables
+	 * 
+	 * @param mainClass
+	 *            This is this Game's mainClass
+	 */
+	public RunLevel(MainClass mainClass) {
 		System.out.println("Initializing RunLevel");
-		mainClass = mainClassGiven;
-		// Sets certain things in the program.
-		// Gets the images for paint() to use and assigns them to already
-		// created variables
+		this.mainClass = mainClass;
 		backgroundImages = new Image[1];
 		try {
 			URL base = mainClass.getDocumentBase();
@@ -53,20 +69,15 @@ public class RunLevel implements Runnable, KeyListener {
 			e.printStackTrace();
 			System.out.println("Load Images Failed");
 		}
-		// Creates the Background Handler, Character, and Platform Handler
-		// classes
+		/**
+		 * Creates the Background Handler, Character, and Platform Handler
+		 * classes
+		 */
 		backgroundH = new BackgroundHandler();
 		character = new Character(width, height);
 		platformHandler = new PlatformHandler();
 
-		/*
-		 * int platHeight = height - 100; int increaseDirection = -50; for (int
-		 * i = -50; i <= 50; i++) { if (platHeight < 50 || platHeight > height -
-		 * 100) { increaseDirection *= -1; } platHeight += increaseDirection;
-		 * platformHandler.addPlatForm(i * 95, platHeight, 100, 50); }
-		 */
-
-		// This should load platforms from the file level.txt
+		/** This should load platforms from the file level.txt */
 		String pathName = ("levels/level.txt");
 		LevelLoader.loadTxt(pathName, mainClass);
 		System.out.println("LevelLoaderFinished");
@@ -74,21 +85,23 @@ public class RunLevel implements Runnable, KeyListener {
 	}
 
 	@Override
+	/**This function runs the game.*/
 	public void run() {
 		System.out.println("Starting RunLevel");
 		while (true) {
-			// Calls Character update Function for Movement Updates
-			character.update(wPressed, sPressed, aPressed, dPressed);
-
+			/* Calls Character update Function for Movement Updates */
+			character.update(wPressed, aPressed, dPressed);
+			/*
+			 * Calls Background Handler Update Function for Movement Updates
+			 */
 			if (drawImage) {
-				// Calls Background Handler Update Function for Movement Updates
 				backgroundH.update();
+				/* Repaints the screen */
 				mainClass.paintMe(true);
-				// repaints the screen
 			} else {
 				drawImage = true;
 			}
-			// Tries to sleep the thread for 17 milliseconds
+			/* Tries to sleep the thread for 17 milliseconds */
 			try {
 				Thread.sleep(17);
 			} catch (InterruptedException e) {
@@ -97,6 +110,12 @@ public class RunLevel implements Runnable, KeyListener {
 		}
 	}
 
+	/**
+	 * This will paint all the game objects given a graphics (g)
+	 * 
+	 * @param g
+	 *            This is the graphics to paint all the objects onto
+	 */
 	public void paint(Graphics g) {
 		// This loop goes through and draws each layer of background
 		for (int i = 0; i < backgroundH.getNumberLayers(); i++) {
@@ -134,11 +153,13 @@ public class RunLevel implements Runnable, KeyListener {
 		ArrayList<Projectile> projectiles = character.getProjectiles();
 		for (int i = 0; i < projectiles.size(); i++) {
 			Projectile p = projectiles.get(i);
-			// Checks what direction the projectile is facing, so that the
-			// correct image is used. proj0-3 images represent the four
-			// directions(up,right,down,left(not necessarily in that order)
-			// The projectile class keeps track of what direction it is facing
-			// with an integer.
+			/*
+			 * Checks what direction the projectile is facing, so that the //
+			 * correct image is used. proj0-3 images represent the four //
+			 * directions(up,right,down,left(not necessarily in that order) //
+			 * The projectile class keeps track of what direction it is facing
+			 * // with an integer.
+			 */
 			switch (p.getDirection()) {
 			case 0:
 				g.drawImage(proj0, (int) p.getCenterX() - 1,

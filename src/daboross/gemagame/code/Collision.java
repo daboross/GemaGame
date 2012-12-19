@@ -1,10 +1,36 @@
 package daboross.gemagame.code;
 
+/**
+ * This class is all static functions that check collision.
+ * 
+ * @author daboross
+ * 
+ */
 public class Collision {
+	/**
+	 * This function checks if 2 objects are collided, in any way overlapping
+	 * 
+	 * @param xPos1
+	 *            The x Position for the first object
+	 * @param yPos1
+	 *            The y Position for the first object
+	 * @param xPos2
+	 *            The x Position for the Second Object
+	 * @param yPos2
+	 *            The y Position for the Second Object
+	 * @param xLength1
+	 *            The x Length for the First Object
+	 * @param yLength1
+	 *            The x Length for the First Object
+	 * @param xLength2
+	 *            The x Length for the Second Object
+	 * @param yLength2
+	 *            The x Length for the Second Object
+	 * @return If the two objects are collided
+	 */
 	public static boolean isCollided(double xPos1, double yPos1, double xPos2,
 			double yPos2, double xLength1, double yLength1, double xLength2,
 			double yLength2) {
-		// Returns true if the 2 objects defined are collided on both X and Y
 		double xMin1 = xPos1;
 		double xMax1 = xPos1 + xLength1;
 		double xMin2 = xPos2;
@@ -24,8 +50,27 @@ public class Collision {
 		return false;
 	}
 
-	/*
-	 * Is Collided Above. Returns true if 1 is above 2.
+	/**
+	 * This function checks if 2 objects are collided with the first one above
+	 * the second one
+	 * 
+	 * @param xPos1
+	 *            The x Position for the first object
+	 * @param yPos1
+	 *            The y Position for the first object
+	 * @param xPos2
+	 *            The x Position for the Second Object
+	 * @param yPos2
+	 *            The y Position for the Second Object
+	 * @param xLength1
+	 *            The x Length for the First Object
+	 * @param yLength1
+	 *            The x Length for the First Object
+	 * @param xLength2
+	 *            The x Length for the Second Object
+	 * @param yLength2
+	 *            The x Length for the Second Object
+	 * @return If the two objects are collided, first one above second one.
 	 */
 	public static boolean isCollided1Above2(double xPos1, double yPos1,
 			double xPos2, double yPos2, double xLength1, double yLength1,
@@ -48,15 +93,32 @@ public class Collision {
 
 	}
 
+	/**
+	 * tries to return true if object 1 is to the left of object 2, and is //
+	 * collided with object 2. object one is defined by upper left
+	 * point(xPos1,yPos1), and length(xLength1, yLength1) Object two is defined
+	 * by upper left point(xPos2,yPos2), and length(xLength2, yLength2)
+	 * 
+	 * @param xPos1
+	 *            The x Position for the first object
+	 * @param yPos1
+	 *            The y Position for the first object
+	 * @param xPos2
+	 *            The x Position for the Second Object
+	 * @param yPos2
+	 *            The y Position for the Second Object
+	 * @param xLength1
+	 *            The x Length for the First Object
+	 * @param yLength1
+	 *            The x Length for the First Object
+	 * @param xLength2
+	 *            The x Length for the Second Object
+	 * @param yLength2
+	 *            The x Length for the Second Object
+	 */
 	public static boolean isCollided1LeftOf2(double xPos1, double yPos1,
 			double xPos2, double yPos2, double xLength1, double yLength1,
 			double xLength2, double yLength2) {
-		// tries to return true if object 1 is to the left of object 2, and is
-		// collided with object 2.
-		// object one is defined by upper left point(xPos1,yPos1), and
-		// length(xLength1, yLength1)
-		// Object two is defined by upper left point(xPos2,yPos2), and
-		// length(xLength2, yLength2)
 		double xMin1 = xPos1;
 		double xMin2 = xPos2;
 		double xMax1 = xPos1 + xLength1;
@@ -75,6 +137,21 @@ public class Collision {
 		return false;
 	}
 
+	/**
+	 * This function checks if two 1 dimensional objects are collided. If they
+	 * are overlapping at all. This could be used to check if two objects were
+	 * collided on only x or only y.
+	 * 
+	 * @param p1
+	 *            the position of the first object
+	 * @param length1
+	 *            the length of the first object
+	 * @param p2
+	 *            the position of the second object
+	 * @param length2
+	 *            the length of the second object
+	 * @return if the 2 objects are collided
+	 */
 	public static boolean isCollided1D(double p1, double length1, double p2,
 			double length2) {
 		// returns true if object1(with left point p1 and length length1) is

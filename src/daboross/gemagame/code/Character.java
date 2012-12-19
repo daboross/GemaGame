@@ -3,77 +3,136 @@ package daboross.gemagame.code;
 import java.util.ArrayList;
 
 public class Character {
+	/** Half the total Width of the Character */
 	final int lengthX = 10;
-	// Half the total Width of the Character
+	/** Half the total Height of the Character */
 	final int lengthY = 10;
-	// Half the total Height of the Character
+	/** How much the speedY increases when the character jumps */
 	final int jumpHeight = 20;
-	// How much the speedY increases when the character jumps
+	/**
+	 * How many jumps should the character have after he leaves the ground? (1
+	 * is no extra jumps)
+	 */
 	final int maxJumpsLeft = 1;
-	// How many jumps should the character have after he leaves the ground?
-	// (1 is no extra jumps)
+	/**
+	 * the center of the character's x position and y position. These define the
+	 * center, not the upper left hand corner
+	 */
 	private double centerX, centerY = 100;
-	// the center of the character's x position and y position. These define the
-	// center, not the upper left hand corner
+	/**
+	 * The amount of distance that the character travels each update. Each //
+	 * update these are multiplied by a Decimal
+	 */
 	private double speedX, speedY = 0;
-	// The amount of distance that the character travels each update. Each
-	// update these are multiplied by a Decimal
+	/**
+	 * the amount that speedX will increase by each update
+	 */
 	private double velocityX = 0;
-	// the amount that speedX will increase by each update
+	/**
+	 * the amount that is subtracted from speedY each update
+	 */
 	private double gravity = 1;
-	// the amount that is subtracted from speedY each update
+	/**
+	 * These are changed to represent the nearest wall or floor or ceiling in
+	 * each direction
+	 */
 	private double leftLimit, topLimit, bottomLimit, rightLimit = 0;
-	// These are changed to represent the nearest wall or floor or ceiling in
-	// each direction
+	/**
+	 * How close the character gets to the left edge of the screen before he
+	 * starts scrolling the view.
+	 */
 	private double leftScrollEdgeOffSet = 150;
+	/**
+	 * How close the character gets to the right edge of the screen before he
+	 * starts scrolling the view.
+	 */
 	private double rightScrollEdgeOffSet = 150;
-	// How close the character gets to the edge of the screen before he starts
-	// scrolling the view.
-
-	private double screenWidth, screenHeight;
-	// These are updated each update to represent the width and height of the
-	// screen
-
+	/**
+	 * These are updated each update to represent the width and height of the
+	 * screen
+	 */
+	private int screenWidth, screenHeight;
+	/**
+	 * A timer used in counting how long until the character can shoot again
+	 */
 	private int shootTimer = 0;
-	// A timer used in counting how long until the character can shoot again
+	/**
+	 * The amount the shootTimer is reset to when the character shoots
+	 */
 	private int shootTimerReset = 20;
-	// The amount the shootTimer is reset to when the character shoots
+	/**
+	 * When an arrow key is pressed and the timer isn't reset yet, this variable
+	 * is set to true.
+	 */
 	private boolean shootWhenReady = false;
-	// When an arrow key is pressed and the timer isn't reset yet, this variable
-	// is set to true.
+	/**
+	 * When the character can shoot again, if shootWhenReady, then it will shoot
+	 * with the speeds shootWhenReadyX and shootWhenReadyY.
+	 */
 	private int shootWhenReadyX, shootWhenReadyY = 0;
-	// When the character can shoot again, if shootWhenReady, then it will shoot
-	// with the speeds shootWhenReadyX and shootWhenReadyY.
+	/**
+	 * How fast projectiles the character shoots go.
+	 */
 	private int projSpeed = 10;
-	// How fast projectiles the character shoots go.
+	/**
+	 * This variable is updated when the character moves, and represents how
+	 * much the character has turned or rotated. Used when the character is
+	 * drawn
+	 */
 	private double rotation = 0;
-	// This variable is updated when the character moves, and represents how
-	// much the character has turned or rotated. Used when the character is
-	// drawn
-	private boolean isLimitedLeft, isLimitedRight = false;
-	private boolean isLimitedTop, isLimitedBottom = false;
-	// These variables are updated to hold whether the Character is limited in
-	// moving to the Left, Right, Top or Bottom
-	// This is an ArrayList of all the projectiles that are in the air made by
-	// the character.
+	/**
+	 * These variables are updated to hold whether the Character is limited in
+	 * moving to the Left, Right, Top or Bottom
+	 */
+	private boolean isLimitedLeft, isLimitedRight, isLimitedTop,
+			isLimitedBottom = false;
+	/**
+	 * This is an ArrayList of all the projectiles that are in the air made by
+	 * the character.
+	 */
 	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
+	/**
+	 * This defines the Character.
+	 * 
+	 * @param rightEdge
+	 *            this is the width of the screen
+	 * @param bottomEdge
+	 *            This is the height of the screen
+	 */
 	public Character(int rightEdge, int bottomEdge) {
 		screenWidth = rightEdge;
 		screenHeight = bottomEdge;
 	}
 
-	public void update(boolean wPressed, boolean sPressed, boolean aPressed,
-			boolean dPressed) {
-		// This updates the screen width and height variables with ones passed
-		// when the update function is called
+	/**
+	 * This updates the screen width and height variables with ones passed //
+	 * when the update function is called
+	 * 
+	 * @param wPressed
+	 *            This represents the state of the W key. True is pressed, false
+	 *            is released
+	 * @param aPressed
+	 *            This represents the state of the A key. True is pressed, false
+	 *            is released
+	 * @param dPressed
+	 *            This represents the state of the D key. True is pressed, false
+	 *            is released
+	 */
+	public void update(boolean wPressed, boolean aPressed, boolean dPressed) {
+		/**
+		 * This runs a function that checks if the Character is Limited in any
+		 * direction, and it sets isLimitedRight, isLimitedLeft, isLimitedTop,
+		 * isLimitedBottom, leftLimit, rightLimit,topLimit,bottomLimit
+		 */
+		setBoundaries();
+		checkBoundaries();
 
-		setBoundries();
-		checkBoundries();
-		// This runs a function that checks if the Character is Limited in any
-		// direction, and it sets isLimitedRight, isLimitedLeft, isLimitedTop,
-		// isLimitedBottom, leftLimit, rightLimit,topLimit,bottomLimit
-
+		/**
+		 * This checks resolve conflicts with move left key and move right // If
+		 * the character would move right or left, and it is limited in that
+		 * direction, stop it.
+		 */
 		if (dPressed) {
 			if (aPressed) {
 				velocityX = 0;
@@ -85,30 +144,21 @@ public class Character {
 		} else {
 			velocityX = 0;
 		}
-		// Those if checks resolve conflicts with move left key and move right
-		// If the character would move right or left, and it is limited in that
-		// direction, stop it.
 		speedX += velocityX;
 		speedX *= 0.9;
 
 		// Changes in speed Y
-
 		if ((!(isLimitedTop || isLimitedBottom))
 				|| (isLimitedTop && !isLimitedBottom && speedY >= 0)) {
 			speedY *= .95;
 			speedY += gravity;
 		}
-
+		/** If jump key is pressed, and Character is grounded, jump */
 		if (wPressed && isLimitedBottom) {
 			speedY = -jumpHeight;
 		}
-		// If jump key is pressed, and it has been released since it was last
-		// pressed, then jump.
 
-		// Edge Check
-		setBoundries();
-		checkBoundries();
-		enforceBoundries();
+		enforceBoundaries();
 
 		// X
 		rotation += 0.1 * speedX;
@@ -135,7 +185,8 @@ public class Character {
 			shootTimer -= 1;
 		} else if (shootWhenReady) {
 			Projectile p = new Projectile(centerX, centerY, shootWhenReadyX
-					* (projSpeed), shootWhenReadyY * (projSpeed));
+					* (projSpeed), shootWhenReadyY * (projSpeed), screenWidth,
+					screenHeight);
 			projectiles.add(p);
 			shootTimer = shootTimerReset;
 			shootWhenReady = false;
@@ -143,15 +194,20 @@ public class Character {
 		// Prunes projectile list
 		for (int i = 0; i < projectiles.size(); i++) {
 			Projectile p = projectiles.get(i);
-			if (p.isAlive()) {
-				p.update((int) screenWidth, (int) screenHeight);
-			} else {
+			p.update();
+			if (!p.isAlive()) {
 				projectiles.remove(i);
 			}
 		}
 	}
 
-	private void setBoundries() {
+	/**
+	 * This sets the Boundaries of the Character, It does not require any
+	 * Parameters and does not return anything, as it is manipulating private
+	 * variables. It sets the boundary variables, topLimit, bottomLimit,
+	 * leftLimit and rightLimit
+	 */
+	private void setBoundaries() {
 		double xDif = RunLevel.getBackgroundHandler().getDifX();
 		double checkX = centerX - lengthX;
 		double checkY = centerY - lengthY;
@@ -162,7 +218,6 @@ public class Character {
 		ArrayList<Double> rightCheckList = new ArrayList<Double>();
 		ArrayList<Double> topCheckList = new ArrayList<Double>();
 		ArrayList<Double> bottomCheckList = new ArrayList<Double>();
-		// These are List of possible boundaries in each direction.
 		double nearestBoundryLeft = 1000;
 		double nearestBoundryRight = 1000;
 		double nearestBoundryUp = 1000;
@@ -225,7 +280,12 @@ public class Character {
 		}
 	}
 
-	private void checkBoundries() {
+	/**
+	 * This checks if the Character is collided with the Boundaries that are set
+	 * by setBoundaries. This function sets isLimitedLeft, isLimitedRight,
+	 * isLimitedTop, and isLimitedBottom
+	 */
+	private void checkBoundaries() {
 		double leftCheckX = centerX - lengthX + speedX;
 		double rightCheckX = centerX + lengthX + speedX;
 		double topCheckX = centerY - lengthY + speedY;
@@ -252,7 +312,12 @@ public class Character {
 		}
 	}
 
-	private void enforceBoundries() {
+	/**
+	 * This enforces the Boundaries, using variables set by setBoundaries and
+	 * checkBoundaries. This function uses the info provided by those functions
+	 * and sets the speedX, speedY, centerX, and centerY.
+	 */
+	private void enforceBoundaries() {
 		if ((isLimitedLeft && speedX < 0)) {
 			speedX = 0;
 			centerX = leftLimit + lengthX;
@@ -276,47 +341,57 @@ public class Character {
 		}
 	}
 
+	/**
+	 * This function tells the Character to shoot at the next opportunity
+	 * 
+	 * @param xRate
+	 *            this is the x Speed that the projectile will move. This is
+	 *            multiplied by the Character's ProjectileSpeed when the
+	 *            Projectile is created, so only use 1, 0, or -1 if you are not
+	 *            trying to make super slow or super fast projectiles
+	 */
 	public void shoot(int xRate, int yRate) {
-		// Tells the Character to shoot at next opportunity
 		shootWhenReady = true;
 		shootWhenReadyX = xRate;
 		shootWhenReadyY = yRate;
 	}
 
+	/**
+	 * This gets the x Position of this Characters Center.
+	 * 
+	 * @return the x position of the center of this character.Note that this is
+	 *         the center, not the upper left hand corner
+	 */
 	public int getCenterX() {
-		// The X for the center position of the Character, not the upper-left
-		// hand corner
 		return (int) centerX;
 	}
 
+	/**
+	 * This gets the y Position of this Characters Center.
+	 * 
+	 * @return the y position of the center of this character. Note that this is
+	 *         the center, not the upper left hand corner
+	 */
 	public int getCenterY() {
-		// The Y for the center position of the Character, not the upper-left
-		// hand corner
 		return (int) centerY;
 	}
 
+	/**
+	 * This function returns an ArrayList of Projectiles
+	 * 
+	 * @return an ArrayList of the Projectiles in the Air
+	 */
 	public ArrayList<Projectile> getProjectiles() {
 		// The projectiles that are in the air
 		return projectiles;
 	}
 
+	/**
+	 * This returns the Characters current rotation
+	 * 
+	 * @return This characters current rotation
+	 */
 	public double rotation() {
 		return rotation;
-	}
-
-	public double getLeftLimit() {
-		return leftLimit;
-	}
-
-	public double getTopLimit() {
-		return topLimit;
-	}
-
-	public double getBottomLimit() {
-		return bottomLimit;
-	}
-
-	public double getRightLimit() {
-		return rightLimit;
 	}
 }

@@ -5,58 +5,92 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 
+/**
+ * @author daboross
+ * 
+ */
 @SuppressWarnings({ "serial" })
 public class MainClass extends Applet {
-	// defines the width and height that the applet will act as if it is
-	private int height = 480;
-	private int width = 640;
+	/** These are different Threads in the Game */
+	Thread runLevelThread, levelFileWriterThread;
+	/**
+	 * This is the Height of the Applet. The applet will auto-resize the
+	 * graphics of this size to fit in the current window.
+	 */
+	public static final int height = 480;
+	/**
+	 * This is the Width of the Applet. The applet will auto-resize the graphics
+	 * of this size to fit in the current window.
+	 */
+	public static final int width = 640;
+	/**
+	 * This variable is used to tell if the MainClass should paint the Game, or
+	 * the Menu. true is game, false in menu
+	 */
 	private boolean paintGame;
-	// Variables are defined in Initial function
+	/** This variable is used in Painting the applet */
 	private Graphics secondaryGraphics;
-	// Graphics variable used in painting objects
+	/** This variable is used in Painting the applet */
 	private Image image;
-	// Various image variables that are defined in initial function
+	/** This variable is used in Painting the applet */
 	private int imageTranslationX, imageTranslationY = 0;
+	/** This variable is used in Painting the applet */
 	private int contractedImageX, contractedImageY;
-	// These variables record the amount that the main graphics is Translated
-	// and Contracted
+	/** This variable is used in Painting the applet */
 	private int rememberWidth, rememberHeight;
-	// These variables remember the last Width and Height that the screen was,
-	// so that the Applet knows if it needs to resize its graphics
+	/** This variable is used in Painting the applet */
 	private int[][] drawRect;
-	// Initial Method.
 
+	/** This is the applet's runLevel Class. */
 	private RunLevel runLevel;
+	/** This is the applet's mainClass Class. */
 	private Menu menuClass;
 
+	/** This is the applet's LevelFileWriter Class. */
+	// private LevelFileWriter levelFileWriter;
+
 	@Override
+	/** This is the initial function called by the applet html page or applet viewer*/
 	public void init() {
 		System.out.println("MainClass init.");
-		// Sets certain things in the program.
 		runLevel = new RunLevel(this);
 		menuClass = new Menu(this);
+		// levelFileWriter = new LevelFileWriter();
 		setBackground(Color.BLACK);
 		setFocusable(true);
 		addKeyListener(runLevel);
 	}
 
 	@Override
+	/** This function is called by the applet's html page or applet viewer */
 	public void start() {
 		System.out.println("MainClass start");
 		// Starts this thread/applet
-		Thread Thread = new Thread(runLevel);
-		Thread.start();
+		runLevelThread = new Thread(runLevel);
+		// levelFileWriterThread = new Thread(levelFileWriter);
+		runLevelThread.start();
+		// levelFileWriterThread.start();
 	}
 
 	@Override
+	/**This is an unused Function*/
 	public void stop() {
-
 	}
 
 	@Override
+	/**This is an unused Function*/
 	public void destroy() {
 	}
 
+	/**
+	 * This is a function called by Java when rePaint is called. Do not call
+	 * this function manually
+	 * 
+	 * @param g
+	 *            This is the graphics to paint the images onto.
+	 * 
+	 * @see java.awt.Container#update(java.awt.Graphics)
+	 */
 	@Override
 	public void update(Graphics g) {
 		// defines image if it does not exist.
@@ -170,6 +204,21 @@ public class MainClass extends Applet {
 		}// This draws rectangles of black around the image in order
 	}
 
+	/**
+	 * This is a helper function for the Graphics Update that records rectangle
+	 * values into a 2D array
+	 * 
+	 * @param drawNumber
+	 *            This is second number to use in setting the 2D array
+	 * @param xPos
+	 *            This is the x position to store
+	 * @param yPos
+	 *            This is the y position to store
+	 * @param xLength
+	 *            This is the x length to store
+	 * @param yLength
+	 *            This is the y length to store
+	 */
 	private void setDrawRect(int drawNumber, int xPos, int yPos, int xLength,
 			int yLength) {
 		// This is a helper function for the graphics function
@@ -183,6 +232,14 @@ public class MainClass extends Applet {
 		// [3][] is y length
 	}
 
+	/**
+	 * Call this function when you want to update the game's graphics.
+	 * 
+	 * @param gameOn
+	 *            this is a boolean that represents whether to paint the
+	 *            RunLevel graphics or the Menu graphics. true is runLevel false
+	 *            is Menu
+	 */
 	public void paintMe(boolean gameOn) {
 		// Runs this functions paint method on RunLevel's paint method.
 		// If gameOn then run the method on RunLevel, otherwise run it on the
@@ -191,6 +248,11 @@ public class MainClass extends Applet {
 		repaint();
 	}
 
+	/**
+	 * This is a function to return the Run Level class that this game uses
+	 * 
+	 * @return The game's RunLevel
+	 */
 	public RunLevel getRunLevel() {
 		return runLevel;
 	}

@@ -3,18 +3,18 @@ package daboross.gemagame.code;
 import java.util.ArrayList;
 
 public class PlatformHandler {
-
+	/**
+	 * Each platform is basically an entry into each of these lists, for example
+	 * platform 6 would be xPosList.get(6), yPosList.get(6), xLengthLisy.get(6)
+	 * and yLengthList.get(6). those would be the values that define the
+	 * platform 6.
+	 */
 	ArrayList<Double> xPosList, yPosList, xLengthList, yLengthList;
-	// Each platform is basically an entry into each of these lists, for example
-	// platform 6 would be xPosList.get(6), yPosList.get(6), xLengthLisy.get(6)
-	// and yLengthList.get(6). those would be the values that define the
-	// platform 6.
+	/** The number of platforms */
 	int listLength;
 
-	// Stores the number of platforms
-
+	/** Initial Platform Handler Function */
 	public PlatformHandler() {
-		// initializes the ArrayLists, and list length.
 		xPosList = new ArrayList<Double>();
 		yPosList = new ArrayList<Double>();
 		xLengthList = new ArrayList<Double>();
@@ -22,10 +22,20 @@ public class PlatformHandler {
 		listLength = 0;
 	}
 
+	/**
+	 * Adds a platform to the list of platforms
+	 * 
+	 * @param xPos
+	 *            this is the x position of the platform you are adding
+	 * @param yPos
+	 *            this is the y position of the platform you are adding
+	 * @param xLength
+	 *            this is the x length of the platform you are adding
+	 * @param yLength
+	 *            this is the y length of the platform you are adding
+	 */
 	public void addPlatForm(double xPos, double yPos, double xLength,
 			double yLength) {
-		// Adds the values given to each list, respectively, and adds one to
-		// list length
 		xPosList.add(xPos);
 		yPosList.add(yPos);
 		xLengthList.add(xLength);
@@ -33,30 +43,40 @@ public class PlatformHandler {
 		listLength += 1;
 	}
 
+	/** This returns an ArrayList of the x Positions of all the platforms. */
 	public ArrayList<Double> xPosList() {
-		// returns the xPosList to be used to get values.
-		// Never use this to alter the list.
 		return xPosList;
 	}
 
+	/** This returns an ArrayList of the y Positions of all the platforms. */
 	public ArrayList<Double> yPosList() {
-		// returns the yPosList to be used to get values.
-		// Never use this to alter the list.
 		return yPosList;
 	}
 
+	/** This returns an ArrayList of the x Lengths of all the platforms. */
 	public ArrayList<Double> xLengthList() {
 		// returns the xLength to be used to get values.
 		// Never use this to alter the list.
 		return xLengthList;
 	}
 
+	/** This returns an ArrayList of the y Lengths of all the platforms. */
 	public ArrayList<Double> yLengthList() {
 		// returns the yLength to be used to get values.
 		// Never use this to alter the list.
 		return yLengthList;
 	}
 
+	/** Removes all platforms. */
+	public void clearPlatformList() {
+		xPosList = new ArrayList<Double>();
+		yPosList = new ArrayList<Double>();
+		xLengthList = new ArrayList<Double>();
+		yLengthList = new ArrayList<Double>();
+		listLength = 0;
+	}
+
+	/** Returns the number of platforms */
 	public int listLength() {
 		return listLength;
 	}
