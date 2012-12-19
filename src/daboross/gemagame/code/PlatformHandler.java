@@ -13,8 +13,13 @@ public class PlatformHandler {
 	/** The number of platforms */
 	int listLength;
 
-	/** Initial Platform Handler Function */
-	public PlatformHandler() {
+	/**
+	 * Initial Platform Handler Function
+	 * 
+	 * @param classHandler
+	 */
+	public PlatformHandler(ClassHandler classHandler) {
+		classHandler.setPlatformHandler(this);
 		xPosList = new ArrayList<Double>();
 		yPosList = new ArrayList<Double>();
 		xLengthList = new ArrayList<Double>();

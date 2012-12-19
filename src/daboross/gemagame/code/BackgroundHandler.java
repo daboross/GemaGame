@@ -37,7 +37,8 @@ public class BackgroundHandler {
 	private double[] increaseRates;
 
 	/** The initial function for creating a BackgroundHandler */
-	public BackgroundHandler() {
+	public BackgroundHandler(ClassHandler classHandler) {
+		classHandler.setBackgroundHandler(this);
 		numberOfLayers = 3;
 		xPositions = new double[2][numberOfLayers];
 		yPositions = new double[2][numberOfLayers];
@@ -111,7 +112,6 @@ public class BackgroundHandler {
 		}
 	}
 
-	
 	/**
 	 * Gets the total scrolling difference, useful for getting the visual //
 	 * positions of objects that scroll with the background when the //

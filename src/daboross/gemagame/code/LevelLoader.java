@@ -8,11 +8,15 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class LevelLoader {
-	private static MainClass mainClass;
-	private static String fileName;
+	private MainClass mainClass;
+	private String fileName;
 
-	public static void loadTxt(String getFileName, MainClass setMainClass) {
-		mainClass = setMainClass;
+	public LevelLoader(ClassHandler classHandler) {
+		mainClass = classHandler.getMainClass();
+		classHandler.setLevelLoader(this);
+	}
+
+	public void loadTxt(String getFileName) {
 		fileName = getFileName;
 		ArrayList<String> lineList = new ArrayList<String>();
 		ArrayList<Double> platformsToAddXPos = new ArrayList<Double>();
@@ -160,7 +164,7 @@ public class LevelLoader {
 				+ " platforms from " + fileName + ".");
 	}// End of Function
 
-	public static void reloadTxt() {
+	public void reloadTxt() {
 		ArrayList<String> lineList = new ArrayList<String>();
 		ArrayList<Double> platformsToAddXPos = new ArrayList<Double>();
 		ArrayList<Double> platformsToAddYPos = new ArrayList<Double>();
@@ -308,7 +312,7 @@ public class LevelLoader {
 				+ " platforms from " + fileName + ".");
 	}// End of Function
 
-	public static void loadFile(File file) {
+	public void loadFile(File file) {
 		ArrayList<String> lineList = new ArrayList<String>();
 		ArrayList<Double> platformsToAddXPos = new ArrayList<Double>();
 		ArrayList<Double> platformsToAddYPos = new ArrayList<Double>();

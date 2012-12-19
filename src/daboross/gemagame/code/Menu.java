@@ -11,9 +11,11 @@ public class Menu implements Runnable, KeyListener {
 	MainClass mainClass;
 	Image upperImage;
 	boolean menuAlive = true;
+	ClassHandler classHandler;
 
-	public Menu(MainClass mainClassSet) {
-		mainClass = mainClassSet;
+	public Menu(ClassHandler classHandler) {
+		this.classHandler = classHandler;
+		mainClass = classHandler.getMainClass();
 		try {
 			URL base = mainClass.getDocumentBase();
 			URL imageBase = new URL(base, "daboross/gemagame/data/images/menu/");

@@ -100,7 +100,8 @@ public class Character {
 	 * @param bottomEdge
 	 *            This is the height of the screen
 	 */
-	public Character(int rightEdge, int bottomEdge) {
+	public Character(ClassHandler classHandler, int rightEdge, int bottomEdge) {
+		classHandler.setCharacter(this);
 		screenWidth = rightEdge;
 		screenHeight = bottomEdge;
 	}

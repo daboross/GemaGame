@@ -40,6 +40,8 @@ public class RunLevel implements Runnable, KeyListener {
 	private boolean drawImage = false;
 	/** This variable holds this games MainClass */
 	private MainClass mainClass;
+	@SuppressWarnings("unused")
+	private ClassHandler classHandler;
 
 	/**
 	 * This is the init for the RunLevel Function Sets certain things in the
@@ -49,9 +51,10 @@ public class RunLevel implements Runnable, KeyListener {
 	 * @param mainClass
 	 *            This is this Game's mainClass
 	 */
-	public RunLevel(MainClass mainClass) {
+	public RunLevel(ClassHandler classHandler) {
 		System.out.println("Initializing RunLevel");
-		this.mainClass = mainClass;
+		this.classHandler = classHandler;
+		this.mainClass = classHandler.getMainClass();
 		backgroundImages = new Image[1];
 		try {
 			URL base = mainClass.getDocumentBase();
@@ -73,13 +76,14 @@ public class RunLevel implements Runnable, KeyListener {
 		 * Creates the Background Handler, Character, and Platform Handler
 		 * classes
 		 */
-		backgroundH = new BackgroundHandler();
-		character = new Character(width, height);
-		platformHandler = new PlatformHandler();
+		backgroundH = new BackgroundHandler(classHandler);
+		character = new Character(classHandler, width, height);
+		platformHandler = new PlatformHandler(classHandler);
+		classHandler.setLevelLoader(new LevelLoader(classHandler));
 
 		/** This should load platforms from the file level.txt */
 		String pathName = ("levels/level.txt");
-		LevelLoader.loadTxt(pathName, mainClass);
+		classHandler.getLevelLoader().loadTxt(pathName);
 		System.out.println("LevelLoaderFinished");
 
 	}

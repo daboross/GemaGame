@@ -9,10 +9,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class LevelFileWriter implements Runnable {
-	private static ArrayList<String> linesToWrite;
-	private static File file;
+	private ArrayList<String> linesToWrite;
+	private File file;
+	private ClassHandler classHandler;
 
-	public LevelFileWriter() {
+	public LevelFileWriter(ClassHandler classHandler) {
+		this.classHandler = classHandler;
+		classHandler.setLevelFileWriter(this);
 		linesToWrite = new ArrayList<String>();
 		file = new File("level.txt");
 	}
@@ -44,11 +47,11 @@ public class LevelFileWriter implements Runnable {
 				}
 			}
 			writeFile(linesToWrite);
-			LevelLoader.loadFile(file);
+			classHandler.getLevelLoader().loadFile(file);
 		}
 	}
 
-	public static void writeFile(ArrayList<String> linesToWrite) {
+	public void writeFile(ArrayList<String> linesToWrite) {
 		BufferedWriter writer = null;
 		try {
 			FileWriter fileWriter = new FileWriter(file);

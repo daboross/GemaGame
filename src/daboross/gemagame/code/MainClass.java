@@ -12,7 +12,7 @@ import java.awt.Image;
 @SuppressWarnings({ "serial" })
 public class MainClass extends Applet {
 	/** These are different Threads in the Game */
-	Thread runLevelThread, levelFileWriterThread;
+	Thread runLevelThread, levelFileWriterThread, menuThread;
 	/**
 	 * This is the Height of the Applet. The applet will auto-resize the
 	 * graphics of this size to fit in the current window.
@@ -45,17 +45,22 @@ public class MainClass extends Applet {
 	private RunLevel runLevel;
 	/** This is the applet's mainClass Class. */
 	private Menu menuClass;
+	/** This is a package of classes */
+	private ClassHandler classHandler;
 
 	/** This is the applet's LevelFileWriter Class. */
-	// private LevelFileWriter levelFileWriter;
+	private LevelFileWriter levelFileWriter;
+	private boolean isLevelWriterOn = false;
 
 	@Override
 	/** This is the initial function called by the applet html page or applet viewer*/
 	public void init() {
+		classHandler = new ClassHandler();
+		classHandler.setMainClass(this);
 		System.out.println("MainClass init.");
-		runLevel = new RunLevel(this);
-		menuClass = new Menu(this);
-		// levelFileWriter = new LevelFileWriter();
+		runLevel = new RunLevel(classHandler);
+		menuClass = new Menu(classHandler);
+		levelFileWriter = new LevelFileWriter(classHandler);
 		setBackground(Color.BLACK);
 		setFocusable(true);
 		addKeyListener(runLevel);
@@ -65,11 +70,14 @@ public class MainClass extends Applet {
 	/** This function is called by the applet's html page or applet viewer */
 	public void start() {
 		System.out.println("MainClass start");
-		// Starts this thread/applet
 		runLevelThread = new Thread(runLevel);
-		// levelFileWriterThread = new Thread(levelFileWriter);
+		classHandler.setRunLevelThread(runLevelThread);
 		runLevelThread.start();
-		// levelFileWriterThread.start();
+		levelFileWriterThread = new Thread(levelFileWriter);
+		classHandler.setLevelWriterThread(levelFileWriterThread);
+		if (isLevelWriterOn) {
+			levelFileWriterThread.start();
+		}
 	}
 
 	@Override
