@@ -1,5 +1,6 @@
 package daboross.gemagame.code;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
@@ -18,8 +19,8 @@ public class Menu implements Runnable, KeyListener {
 		mainClass = classHandler.getMainClass();
 		try {
 			URL base = mainClass.getDocumentBase();
-			URL imageBase = new URL(base, "daboross/gemagame/data/images/menu/");
-			upperImage = mainClass.getImage(imageBase, "upperImage.png");
+			URL imageBase = new URL(base, "daboross/gemagame/data/images/");
+			upperImage = mainClass.getImage(imageBase, "platform.png");
 			System.out.println("Loaded Menu Images");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -28,15 +29,21 @@ public class Menu implements Runnable, KeyListener {
 	}
 
 	public void paint(Graphics g) {
-		g.drawImage(upperImage, 0, 0, null);
+		mainClass.setVisible(true);
+		g.setColor(Color.cyan);
+		g.fillRect(1, 1, classHandler.getScreenWidth() - 2,
+				classHandler.getScreenHeight() / 4 - 2);
+		g.fillRect(2, 2, 638, 200);
+		g.drawImage(upperImage, 2, 2, null);
+		System.out.println("painting Menu");
 	}
 
 	@Override
 	public void run() {
+		System.out.println("Running Menu");
 		mainClass.addKeyListener(this);
-		while (menuAlive) {
-		}
-		mainClass.removeKeyListener(this);
+		mainClass.paint(false);
+		System.out.println("Running Menu");
 	}
 
 	@Override
@@ -49,11 +56,9 @@ public class Menu implements Runnable, KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent keyEvent) {
-		int eventChar = keyEvent.getKeyCode();
-		if (eventChar == KeyEvent.VK_UP) {
-		} else if (eventChar == KeyEvent.VK_DOWN) {
-		} else if (eventChar == KeyEvent.VK_SPACE) {
-		}
+		mainClass.removeKeyListener(this);
+		classHandler.getRunLevelThread().start();
+		System.out.println("Menu Ended");
 	}
 
 }

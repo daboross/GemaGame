@@ -101,7 +101,7 @@ public class RunLevel implements Runnable, KeyListener {
 			if (drawImage) {
 				backgroundH.update();
 				/* Repaints the screen */
-				mainClass.paintMe(true);
+				mainClass.paint(true);
 			} else {
 				drawImage = true;
 			}

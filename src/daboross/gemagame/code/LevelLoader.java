@@ -10,10 +10,12 @@ import java.util.ArrayList;
 public class LevelLoader {
 	private MainClass mainClass;
 	private String fileName;
+	private ClassHandler classHandler;
 
 	public LevelLoader(ClassHandler classHandler) {
 		mainClass = classHandler.getMainClass();
 		classHandler.setLevelLoader(this);
+		this.classHandler = classHandler;
 	}
 
 	public void loadTxt(String getFileName) {
@@ -122,7 +124,7 @@ public class LevelLoader {
 				System.out.println(fileName + ", Line Number: "
 						+ (lineNumber + 1) + ", Invalid Content: "
 						+ lineList.get(lineNumber));
-			} else if (currentAdditions[2] > mainClass.getHeight()) {
+			} else if (currentAdditions[2] > classHandler.getScreenHeight()) {
 				System.out.print("Warning! Platform not loaded because yPos"
 						+ "Value is bigger then screen height. In File: ");
 				System.out.println(fileName + ", Line Number: "
@@ -269,7 +271,7 @@ public class LevelLoader {
 				System.out.println(fileName + ", Line Number: "
 						+ (lineNumber + 1) + ", Invalid Content: "
 						+ lineList.get(lineNumber));
-			} else if (currentAdditions[2] > mainClass.getHeight()) {
+			} else if (currentAdditions[2] > classHandler.getScreenHeight()) {
 				System.out.print("Warning! Platform not loaded because yPos"
 						+ "Value is bigger then screen height. In File: ");
 				System.out.println(fileName + ", Line Number: "
@@ -410,7 +412,7 @@ public class LevelLoader {
 				System.out.println(fileName + ", Line Number: "
 						+ (lineNumber + 1) + ", Invalid Content: "
 						+ lineList.get(lineNumber));
-			} else if (currentAdditions[2] > mainClass.getHeight()) {
+			} else if (currentAdditions[2] > classHandler.getScreenHeight()) {
 				System.out.print("Warning! Platform not loaded because yPos"
 						+ "Value is bigger then screen height. In File: ");
 				System.out.println(fileName + ", Line Number: "

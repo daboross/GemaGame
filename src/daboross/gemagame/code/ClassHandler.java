@@ -34,7 +34,7 @@ public class ClassHandler {
 	 * @param mainClass
 	 *            the mainClass to set
 	 */
-	public void setMainClass(MainClass mainClass) {
+	public void setMainClass(AppletMainClass mainClass) {
 		this.mainClass = mainClass;
 	}
 
