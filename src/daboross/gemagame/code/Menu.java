@@ -2,9 +2,11 @@ package daboross.gemagame.code;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-public class Menu implements Runnable, java.awt.event.KeyListener {
+public class Menu implements Runnable, KeyListener {
 	private MainClass mainClass;
 	private ClassHandler classHandler;
 	private Image upperImage;
@@ -17,16 +19,12 @@ public class Menu implements Runnable, java.awt.event.KeyListener {
 		this.classHandler = classHandler;
 		mainClass = classHandler.getMainClass();
 		try {
-			java.net.URL base = mainClass.getDocumentBase();
-			java.net.URL imageBase = new java.net.URL(base,
-					"daboross/gemagame/data/images/menu/");
-			upperImage = mainClass.getImage(imageBase, "upperImage.png");
-			upperImageOverlay = mainClass
-					.getImage(imageBase, "upperImage0.png");
-			unSelectedButton = mainClass.getImage(imageBase,
-					"unSelectedButton.png");
-			selectedButton = mainClass
-					.getImage(imageBase, "selectedButton.png");
+			Toolkit tk = Toolkit.getDefaultToolkit();
+			String baseURL = "daboross/gemagame/data/images/menu/";
+			upperImage = tk.createImage(baseURL + "upperImage.png");
+			upperImageOverlay = tk.createImage(baseURL + "upperImage0.png");
+			selectedButton = tk.createImage(baseURL + "selectedButton.png");
+			unSelectedButton = tk.createImage(baseURL + "unSelectedButton.png");
 			System.out.println("Loaded Menu Images");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -35,28 +33,32 @@ public class Menu implements Runnable, java.awt.event.KeyListener {
 	}
 
 	public void paint(Graphics g) {
-		g.drawImage(
-				upperImage,
-				(classHandler.getScreenWidth() - upperImage.getWidth(null)) / 2,
-				0, null);
-		g.drawImage(upperImageOverlay, 0, 0, null);
-		for (int i = 0; i < 3; i++) {
-			if (i == optionSelected) {
-				g.drawImage(selectedButton,
-						(classHandler.getScreenWidth() - selectedButton
-								.getWidth(null)) / 2, 200 + i * 70, null);
-			} else {
-				g.drawImage(unSelectedButton,
-						(classHandler.getScreenWidth() - unSelectedButton
-								.getWidth(null)) / 2, 200 + i * 70, null);
+		try {
+			g.drawImage(
+					upperImage,
+					(classHandler.getScreenWidth() - upperImage.getWidth(null)) / 2,
+					0, null);
+			g.drawImage(upperImageOverlay, 0, 0, null);
+			for (int i = 0; i < 3; i++) {
+				if (i == optionSelected) {
+					g.drawImage(selectedButton,
+							(classHandler.getScreenWidth() - selectedButton
+									.getWidth(null)) / 2, 200 + i * 70, null);
+				} else {
+					g.drawImage(unSelectedButton,
+							(classHandler.getScreenWidth() - unSelectedButton
+									.getWidth(null)) / 2, 200 + i * 70, null);
+				}
 			}
+		} catch (Exception e) {
+			// e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void run() {
 		System.out.println("Running Menu");
-		mainClass.addKeyListener(this);
+		mainClass.keyListenerAdd(this);
 		while (alive) {
 			mainClass.paint(false);
 			while (optionSelected >= 3) {
@@ -104,7 +106,7 @@ public class Menu implements Runnable, java.awt.event.KeyListener {
 	}
 
 	private void end() {
-		mainClass.removeKeyListener(this);
+		mainClass.keyListenerRemove(this);
 		classHandler.getRunLevelThread().start();
 
 		alive = false;

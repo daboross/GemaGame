@@ -2,9 +2,14 @@ package daboross.gemagame.code;
 
 import java.applet.Applet;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.net.URL;
+import java.awt.event.KeyListener;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 /**
  * @author daboross
@@ -12,6 +17,7 @@ import java.net.URL;
  */
 @SuppressWarnings({ "serial" })
 public class AppletMainClass extends Applet implements MainClass {
+	private JFrame jFrame;
 	/** These are different Threads in the Game */
 	Thread runLevelThread, levelFileWriterThread, menuThread;
 	/**
@@ -30,7 +36,7 @@ public class AppletMainClass extends Applet implements MainClass {
 	 */
 	private boolean paintGame;
 	/** This variable is used in Painting the applet */
-	private Graphics secondaryGraphics;
+	private Graphics bufferedGraphics;
 	/** This variable is used in Painting the applet */
 	private Image image;
 	/** This variable is used in Painting the applet */
@@ -53,6 +59,12 @@ public class AppletMainClass extends Applet implements MainClass {
 	@Override
 	/** This is the initial function called by the applet html page or applet viewer*/
 	public void init() {
+		System.out.println("I'm an Applet");
+	}
+
+	@Override
+	/** This function is called by the applet's html page or applet viewer */
+	public void start() {
 		classHandler = new ClassHandler();
 		classHandler.setMainClass(this);
 		classHandler.setScreenHeight(height);
@@ -63,11 +75,6 @@ public class AppletMainClass extends Applet implements MainClass {
 		levelFileWriter = new LevelFileWriter(classHandler);
 		setBackground(Color.BLACK);
 		setFocusable(true);
-	}
-
-	@Override
-	/** This function is called by the applet's html page or applet viewer */
-	public void start() {
 		System.out.println("MainClass start");
 		runLevelThread = new Thread(runLevel);
 		classHandler.setRunLevelThread(runLevelThread);
@@ -99,7 +106,16 @@ public class AppletMainClass extends Applet implements MainClass {
 	@Override
 	public void paint(boolean gameOn) {
 		paintGame = gameOn;
-		update(this.getGraphics());
+		if (jFrame != null) {
+			Image buffImage = createImage(width, height);
+			// TODO
+			update(buffImage.getGraphics());
+			JLabel label = new JLabel(new ImageIcon(buffImage));
+			jFrame.add(label);
+		} else {
+			update(this.getGraphics());
+		}
+
 	}
 
 	/**
@@ -116,7 +132,7 @@ public class AppletMainClass extends Applet implements MainClass {
 		// defines image if it does not exist.
 		if (image == null) {
 			image = createImage(width, height);
-			secondaryGraphics = image.getGraphics();
+			bufferedGraphics = image.getGraphics();
 			rememberWidth = this.getWidth();
 			rememberHeight = this.getHeight();
 			// Remembers The current Height and width, so that it can check if
@@ -204,25 +220,27 @@ public class AppletMainClass extends Applet implements MainClass {
 
 		}
 		// clears the screen
-		secondaryGraphics.setColor(getBackground());
-		secondaryGraphics.fillRect(0, 0, this.getWidth() + 1,
+		bufferedGraphics.setColor(getBackground());
+		bufferedGraphics.fillRect(0, 0, this.getWidth() + 1,
 				this.getHeight() + 1);
-		secondaryGraphics.setColor(getForeground());
+		bufferedGraphics.setColor(getForeground());
 		// Runs the Paint method in order to get the images for all the objects
 		// on the screen.
 		if (paintGame) {
-			runLevel.paint(secondaryGraphics);
+			runLevel.paint(bufferedGraphics);
 		} else {
-			menuClass.paint(secondaryGraphics);
+			menuClass.paint(bufferedGraphics);
 		}
 		// draws the Image with the translations that were already defined, to
 		// make it in the center of the screen
 		g.drawImage(image, imageTranslationX, imageTranslationY,
 				contractedImageX, contractedImageY, this);
+		// This draws rectangles of black around the image in order
 		for (int k = 0; k < 4; k++) {
 			g.fillRect(drawRect[0][k], drawRect[1][k], drawRect[2][k],
 					drawRect[3][k]);
-		}// This draws rectangles of black around the image in order
+		}
+		g.dispose();
 	}
 
 	/**
@@ -253,8 +271,34 @@ public class AppletMainClass extends Applet implements MainClass {
 		// [3][] is y length
 	}
 
+	public static void main(String[] args) {
+		AppletMainClass applet = new AppletMainClass();
+		JFrame jFrame = new JFrame("Gema Game");
+		applet.jFrame = jFrame;
+		jFrame.getContentPane().add(applet);
+		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jFrame.pack();
+		jFrame.setVisible(true);
+		jFrame.setFocusable(true);
+		jFrame.setSize(new Dimension(640, 480));
+		System.out.println("I'm an application!");
+		applet.start();
+
+	}
+
+	public void keyListenerAdd(KeyListener keyListener) {
+		if (jFrame != null) {
+			jFrame.addKeyListener(keyListener);
+		}
+		System.out.println("added keyListener");
+		addKeyListener(keyListener);
+	}
+
 	@Override
-	public URL getResource(String name) {
-		return this.getClass().getResource(name);
+	public void keyListenerRemove(KeyListener keyListener) {
+		if (jFrame != null) {
+			jFrame.removeKeyListener(keyListener);
+		}
+		removeKeyListener(keyListener);
 	}
 }

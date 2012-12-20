@@ -1,5 +1,7 @@
 package daboross.gemagame.code;
 
+import javax.swing.JFrame;
+
 /**
  * This class is basically a bundle that holds a bunch of other class variables.
  * So that any class that has access to this class will have access to all of
@@ -9,6 +11,8 @@ package daboross.gemagame.code;
  * 
  */
 public class ClassHandler {
+	private boolean isApplet;
+	private JFrame jFrame;
 	private Thread runLevelThread, levelWriterThread, menuThread;
 	private int screenWidth, screenHeight;
 	private MainClass mainClass;
@@ -181,5 +185,21 @@ public class ClassHandler {
 	 */
 	public void setMenuThread(Thread menuThread) {
 		this.menuThread = menuThread;
+	}
+
+	public boolean isApplet() {
+		return isApplet;
+	}
+
+	public void setApplet(boolean isApplet) {
+		this.isApplet = isApplet;
+	}
+
+	public JFrame getjFrame() {
+		return jFrame;
+	}
+
+	public void setjFrame(JFrame jFrame) {
+		this.jFrame = jFrame;
 	}
 }

@@ -4,9 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class RunLevel implements Runnable, KeyListener {
@@ -53,16 +53,16 @@ public class RunLevel implements Runnable, KeyListener {
 		this.mainClass = classHandler.getMainClass();
 		backgroundImages = new Image[1];
 		try {
-			URL base = mainClass.getDocumentBase();
-			URL imageBase = new URL(base, "daboross/gemagame/data/images/");
-			backgroundImages[0] = mainClass.getImage(imageBase,
-					"Background.png");
-			platform = mainClass.getImage(imageBase, "platform.png");
-			characterImage = mainClass.getImage(imageBase, "Character.png");
-			proj0 = mainClass.getImage(imageBase, "projectileLeft.png");
-			proj1 = mainClass.getImage(imageBase, "projectileUp.png");
-			proj2 = mainClass.getImage(imageBase, "projectileRight.png");
-			proj3 = mainClass.getImage(imageBase, "projectileDown.png");
+			Toolkit tk = Toolkit.getDefaultToolkit();
+			String baseURL = "daboross/gemagame/data/images/";
+			backgroundImages[0] = tk.createImage(baseURL + "");
+			backgroundImages[0] = tk.createImage(baseURL + "Background.png");
+			platform = tk.createImage(baseURL + "platform.png");
+			characterImage = tk.createImage(baseURL + "Character.png");
+			proj0 = tk.createImage(baseURL + "projectileLeft.png");
+			proj1 = tk.createImage(baseURL + "projectileUp.png");
+			proj2 = tk.createImage(baseURL + "projectileRight.png");
+			proj3 = tk.createImage(baseURL + "projectileDown.png");
 			System.out.println("Loaded Images");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -88,7 +88,7 @@ public class RunLevel implements Runnable, KeyListener {
 	@Override
 	/**This function runs the game.*/
 	public void run() {
-		mainClass.addKeyListener(this);
+		mainClass.keyListenerAdd(this);
 		System.out.println("Starting RunLevel");
 		while (true) {
 			/* Calls Character update Function for Movement Updates */
