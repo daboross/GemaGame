@@ -9,6 +9,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
+
 public class RunLevel implements Runnable, KeyListener {
 
 	/** Defines the width and height that the applet will act as if it is */
@@ -54,15 +56,35 @@ public class RunLevel implements Runnable, KeyListener {
 		backgroundImages = new Image[1];
 		try {
 			Toolkit tk = Toolkit.getDefaultToolkit();
-			String baseURL = "daboross/gemagame/data/images/";
-			backgroundImages[0] = tk.createImage(baseURL + "");
-			backgroundImages[0] = tk.createImage(baseURL + "Background.png");
-			platform = tk.createImage(baseURL + "platform.png");
-			characterImage = tk.createImage(baseURL + "Character.png");
-			proj0 = tk.createImage(baseURL + "projectileLeft.png");
-			proj1 = tk.createImage(baseURL + "projectileUp.png");
-			proj2 = tk.createImage(baseURL + "projectileRight.png");
-			proj3 = tk.createImage(baseURL + "projectileDown.png");
+			if (classHandler.getjFrame() == null) {
+				String baseURL = "daboross/gemagame/data/images/";
+				backgroundImages[0] = tk
+						.createImage(baseURL + "Background.png");
+				platform = tk.createImage(baseURL + "platform.png");
+				characterImage = tk.createImage(baseURL + "Character.png");
+				proj0 = tk.createImage(baseURL + "projectileLeft.png");
+				proj1 = tk.createImage(baseURL + "projectileUp.png");
+				proj2 = tk.createImage(baseURL + "projectileRight.png");
+				proj3 = tk.createImage(baseURL + "projectileDown.png");
+			} else {
+				String baseURL = "/daboross/gemagame/data/images/";
+				Class<? extends JFrame> j = classHandler.getjFrame().getClass();
+				backgroundImages[0] = tk.createImage(j.getResource(baseURL
+						+ "Background.png"));
+				platform = tk.createImage(j.getResource(baseURL
+						+ "platform.png"));
+				characterImage = tk.createImage(j.getResource(baseURL
+						+ "Character.png"));
+				proj0 = tk.createImage(j.getResource(baseURL
+						+ "projectileLeft.png"));
+				proj1 = tk.createImage(j.getResource(baseURL
+						+ "projectileUp.png"));
+				proj2 = tk.createImage(j.getResource(baseURL
+						+ "projectileRight.png"));
+				proj3 = tk.createImage(j.getResource(baseURL
+						+ "projectileDown.png"));
+
+			}
 			System.out.println("Loaded Images");
 		} catch (Exception e) {
 			e.printStackTrace();

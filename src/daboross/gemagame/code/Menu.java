@@ -1,10 +1,13 @@
 package daboross.gemagame.code;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+
+import javax.swing.JFrame;
 
 public class Menu implements Runnable, KeyListener {
 	private MainClass mainClass;
@@ -20,11 +23,25 @@ public class Menu implements Runnable, KeyListener {
 		mainClass = classHandler.getMainClass();
 		try {
 			Toolkit tk = Toolkit.getDefaultToolkit();
-			String baseURL = "daboross/gemagame/data/images/menu/";
-			upperImage = tk.createImage(baseURL + "upperImage.png");
-			upperImageOverlay = tk.createImage(baseURL + "upperImage0.png");
-			selectedButton = tk.createImage(baseURL + "selectedButton.png");
-			unSelectedButton = tk.createImage(baseURL + "unSelectedButton.png");
+			if (classHandler.getjFrame() != null) {
+				Class<? extends JFrame> j = classHandler.getjFrame().getClass();
+				String baseURL = "/daboross/gemagame/data/images/menu/";
+				upperImage = tk.createImage(j.getResource(baseURL
+						+ "upperImage.png"));
+				upperImageOverlay = tk.createImage(j.getResource(baseURL
+						+ "upperImage0.png"));
+				selectedButton = tk.createImage(j.getResource(baseURL
+						+ "selectedButton.png"));
+				unSelectedButton = tk.createImage(j.getResource(baseURL
+						+ "unSelectedButton.png"));
+			} else {
+				String baseURL = "daboross/gemagame/data/images/menu/";
+				upperImage = tk.createImage(baseURL + "upperImage.png");
+				upperImageOverlay = tk.createImage(baseURL + "upperImage0.png");
+				selectedButton = tk.createImage(baseURL + "selectedButton.png");
+				unSelectedButton = tk.createImage(baseURL
+						+ "unSelectedButton.png");
+			}
 			System.out.println("Loaded Menu Images");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -34,6 +51,9 @@ public class Menu implements Runnable, KeyListener {
 
 	public void paint(Graphics g) {
 		try {
+			g.setColor(Color.cyan);
+			// g.fillRect(0, 0,
+			// classHandler.getScreenWidth(), classHandler.getScreenHeight());
 			g.drawImage(
 					upperImage,
 					(classHandler.getScreenWidth() - upperImage.getWidth(null)) / 2,

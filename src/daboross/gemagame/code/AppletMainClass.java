@@ -1,13 +1,14 @@
 package daboross.gemagame.code;
 
-import java.applet.Applet;
 import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
+import javax.swing.JApplet;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -16,7 +17,7 @@ import javax.swing.JLabel;
  * 
  */
 @SuppressWarnings({ "serial" })
-public class AppletMainClass extends Applet implements MainClass {
+public class AppletMainClass extends JApplet implements MainClass {
 	private JFrame jFrame;
 	/** These are different Threads in the Game */
 	Thread runLevelThread, levelFileWriterThread, menuThread;
@@ -59,6 +60,8 @@ public class AppletMainClass extends Applet implements MainClass {
 	@Override
 	/** This is the initial function called by the applet html page or applet viewer*/
 	public void init() {
+		setFocusable(true);
+		setVisible(true);
 		System.out.println("I'm an Applet");
 	}
 
@@ -106,12 +109,15 @@ public class AppletMainClass extends Applet implements MainClass {
 	@Override
 	public void paint(boolean gameOn) {
 		paintGame = gameOn;
-		if (jFrame != null) {
-			Image buffImage = createImage(width, height);
-			// TODO
-			update(buffImage.getGraphics());
+		if (getjFrame() != null) {
+			getjFrame().setLayout(new FlowLayout());
+			BufferedImage buffImage = new BufferedImage(width, height,
+					BufferedImage.TYPE_INT_ARGB);
+			Graphics graphics = buffImage.getGraphics();
+			update(graphics);
+			graphics.dispose();
 			JLabel label = new JLabel(new ImageIcon(buffImage));
-			jFrame.add(label);
+			getjFrame().add(label);
 		} else {
 			update(this.getGraphics());
 		}
@@ -240,7 +246,6 @@ public class AppletMainClass extends Applet implements MainClass {
 			g.fillRect(drawRect[0][k], drawRect[1][k], drawRect[2][k],
 					drawRect[3][k]);
 		}
-		g.dispose();
 	}
 
 	/**
@@ -272,33 +277,47 @@ public class AppletMainClass extends Applet implements MainClass {
 	}
 
 	public static void main(String[] args) {
-		AppletMainClass applet = new AppletMainClass();
-		JFrame jFrame = new JFrame("Gema Game");
-		applet.jFrame = jFrame;
-		jFrame.getContentPane().add(applet);
+		JFrame jFrame = new JFrame();
+		jFrame.setTitle("Gema Game");
+		// jFrame.getContentPane().add(applet);
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.pack();
 		jFrame.setVisible(true);
 		jFrame.setFocusable(true);
-		jFrame.setSize(new Dimension(640, 480));
+		jFrame.setSize(width, height);
 		System.out.println("I'm an application!");
+		// jFrame.setLayout(new FlowLayout());
+		AppletMainClass applet = new AppletMainClass();
+		applet.setjFrame(jFrame);
+		jFrame.setLayout(null);
+		System.out.println(width + "." + height);
+		applet.setFocusable(true);
+		applet.setVisible(true);
+		jFrame.add(applet);
 		applet.start();
 
 	}
 
 	public void keyListenerAdd(KeyListener keyListener) {
-		if (jFrame != null) {
-			jFrame.addKeyListener(keyListener);
+		if (getjFrame() != null) {
+			getjFrame().addKeyListener(keyListener);
 		}
-		System.out.println("added keyListener");
 		addKeyListener(keyListener);
 	}
 
 	@Override
 	public void keyListenerRemove(KeyListener keyListener) {
-		if (jFrame != null) {
-			jFrame.removeKeyListener(keyListener);
+		if (getjFrame() != null) {
+			getjFrame().removeKeyListener(keyListener);
 		}
 		removeKeyListener(keyListener);
+	}
+
+	public JFrame getjFrame() {
+		return jFrame;
+	}
+
+	public void setjFrame(JFrame jFrame) {
+		this.jFrame = jFrame;
 	}
 }

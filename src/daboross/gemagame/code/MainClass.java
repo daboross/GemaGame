@@ -8,6 +8,4 @@ public interface MainClass {
 	public void keyListenerAdd(KeyListener keyListener);
 
 	public void keyListenerRemove(KeyListener keyListener);
-
-	public void setVisible(boolean bool);
 }
