@@ -1,5 +1,6 @@
 package daboross.gemagame.code;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -11,8 +12,8 @@ import java.util.ArrayList;
 public class RunLevel implements Runnable, KeyListener {
 
 	/** Defines the width and height that the applet will act as if it is */
-	private int height = 480;
-	private int width = 640;
+	private final int height = 480;
+	private final int width = 640;
 
 	/** The Character in this game */
 	private Character character;
@@ -33,11 +34,6 @@ public class RunLevel implements Runnable, KeyListener {
 	 * This is an array that holds all the different background images
 	 */
 	private Image[] backgroundImages;
-	/**
-	 * This variable flips every tick, and it makes it so it only draws images
-	 * every other tick
-	 */
-	private boolean drawImage = false;
 	/** This variable holds this games MainClass */
 	private MainClass mainClass;
 	@SuppressWarnings("unused")
@@ -79,7 +75,8 @@ public class RunLevel implements Runnable, KeyListener {
 		backgroundH = new BackgroundHandler(classHandler);
 		character = new Character(classHandler, width, height);
 		platformHandler = new PlatformHandler(classHandler);
-		classHandler.setLevelLoader(new LevelLoader(classHandler));
+		@SuppressWarnings("unused")
+		LevelLoader levelLoader = new LevelLoader(classHandler);
 
 		/** This should load platforms from the file level.txt */
 		String pathName = ("levels/level.txt");
@@ -91,6 +88,7 @@ public class RunLevel implements Runnable, KeyListener {
 	@Override
 	/**This function runs the game.*/
 	public void run() {
+		mainClass.addKeyListener(this);
 		System.out.println("Starting RunLevel");
 		while (true) {
 			/* Calls Character update Function for Movement Updates */
@@ -98,13 +96,9 @@ public class RunLevel implements Runnable, KeyListener {
 			/*
 			 * Calls Background Handler Update Function for Movement Updates
 			 */
-			if (drawImage) {
-				backgroundH.update();
-				/* Repaints the screen */
-				mainClass.paint(true);
-			} else {
-				drawImage = true;
-			}
+			backgroundH.update();
+			/* Repaints the screen */
+			mainClass.paint(true);
 			/* Tries to sleep the thread for 17 milliseconds */
 			try {
 				Thread.sleep(17);
@@ -138,6 +132,13 @@ public class RunLevel implements Runnable, KeyListener {
 					(int) (platformHandler.xLengthList().get(i) + 0),
 					(int) (platformHandler.yLengthList().get(i) + 0), null);
 		}
+		g.setColor(Color.CYAN);
+		/*
+		 * g.drawRect((int) character.getLeftLimit(), (int)
+		 * character.getTopLimit(), (int) (character.getRightLimit() -
+		 * character.getLeftLimit()), (int) (character.getBottomLimit() -
+		 * character.getTopLimit()));
+		 */
 		// Get a graphics2d for better manipulation
 		Graphics2D g2d = (Graphics2D) g;
 		// Move the graphics to the characters location
@@ -158,11 +159,11 @@ public class RunLevel implements Runnable, KeyListener {
 		for (int i = 0; i < projectiles.size(); i++) {
 			Projectile p = projectiles.get(i);
 			/*
-			 * Checks what direction the projectile is facing, so that the //
-			 * correct image is used. proj0-3 images represent the four //
-			 * directions(up,right,down,left(not necessarily in that order) //
-			 * The projectile class keeps track of what direction it is facing
-			 * // with an integer.
+			 * Checks what direction the projectile is facing, so that the
+			 * correct image is used. proj0-3 images represent the four
+			 * directions(up,right,down,left(not necessarily in that order) The
+			 * projectile class keeps track of what direction it is facing with
+			 * an integer.
 			 */
 			switch (p.getDirection()) {
 			case 0:

@@ -16,4 +16,6 @@ public interface MainClass {
 	public void removeKeyListener(KeyListener keyListener);
 
 	public void setVisible(boolean bool);
+
+	public URL getResource(String name);
 }

@@ -4,6 +4,7 @@ import java.applet.Applet;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.net.URL;
 
 /**
  * @author daboross
@@ -62,7 +63,6 @@ public class AppletMainClass extends Applet implements MainClass {
 		levelFileWriter = new LevelFileWriter(classHandler);
 		setBackground(Color.BLACK);
 		setFocusable(true);
-		addKeyListener(runLevel);
 	}
 
 	@Override
@@ -76,7 +76,6 @@ public class AppletMainClass extends Applet implements MainClass {
 		menuThread = new Thread(menuClass);
 		classHandler.setMenuThread(menuThread);
 		menuThread.start();
-		// runLevelThread.start();
 	}
 
 	@Override
@@ -97,6 +96,7 @@ public class AppletMainClass extends Applet implements MainClass {
 	 *            RunLevel graphics or the Menu graphics. true is runLevel false
 	 *            is Menu
 	 */
+	@Override
 	public void paint(boolean gameOn) {
 		paintGame = gameOn;
 		update(this.getGraphics());
@@ -205,11 +205,11 @@ public class AppletMainClass extends Applet implements MainClass {
 		}
 		// clears the screen
 		secondaryGraphics.setColor(getBackground());
-		secondaryGraphics.fillRect(0, 0, this.getWidth(), this.getHeight());
+		secondaryGraphics.fillRect(0, 0, this.getWidth() + 1,
+				this.getHeight() + 1);
 		secondaryGraphics.setColor(getForeground());
 		// Runs the Paint method in order to get the images for all the objects
 		// on the screen.
-		System.out.println(paintGame);
 		if (paintGame) {
 			runLevel.paint(secondaryGraphics);
 		} else {
@@ -251,5 +251,10 @@ public class AppletMainClass extends Applet implements MainClass {
 		// [1][] is y position
 		// [2][] is x length
 		// [3][] is y length
+	}
+
+	@Override
+	public URL getResource(String name) {
+		return this.getClass().getResource(name);
 	}
 }

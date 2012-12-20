@@ -104,6 +104,8 @@ public class Character {
 		classHandler.setCharacter(this);
 		screenWidth = rightEdge;
 		screenHeight = bottomEdge;
+		centerY = bottomEdge - lengthY;
+		centerX = 0;
 	}
 
 	/**
@@ -394,5 +396,33 @@ public class Character {
 	 */
 	public double rotation() {
 		return rotation;
+	}
+
+	/**
+	 * @return the leftLimit
+	 */
+	public double getLeftLimit() {
+		return leftLimit;
+	}
+
+	/**
+	 * @return the topLimit
+	 */
+	public double getTopLimit() {
+		return topLimit;
+	}
+
+	/**
+	 * @return the bottomLimit
+	 */
+	public double getBottomLimit() {
+		return bottomLimit;
+	}
+
+	/**
+	 * @return the rightLimit
+	 */
+	public double getRightLimit() {
+		return rightLimit;
 	}
 }
