@@ -16,7 +16,7 @@ public class Projectile {
 	 * Gets the background handler from MainClass so that it can be used through
 	 * the class without repetitive retrievings.
 	 */
-	private BackgroundHandler bg = RunLevel.getBackgroundHandler();
+	private BackgroundHandler bg;
 	/**
 	 * Keeps track of if this projectile should be removed at next update
 	 */
@@ -40,7 +40,8 @@ public class Projectile {
 	 *            this is the height of the game
 	 */
 	public Projectile(double comX, double comY, double speedX, double speedY,
-			int rightEdge, int bottomEdge) {
+			int rightEdge, int bottomEdge, ClassHandler classHandler) {
+		bg = classHandler.getBackgroundHandler();
 		this.rightEdge = rightEdge;
 		this.bottomEdge = bottomEdge;
 		this.comX = comX - bg.getDifX();

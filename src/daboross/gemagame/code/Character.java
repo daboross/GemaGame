@@ -91,6 +91,7 @@ public class Character {
 	 * the character.
 	 */
 	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
+	private ClassHandler classHandler;
 
 	/**
 	 * This defines the Character.
@@ -102,6 +103,7 @@ public class Character {
 	 */
 	public Character(ClassHandler classHandler, int rightEdge, int bottomEdge) {
 		classHandler.setCharacter(this);
+		this.classHandler = classHandler;
 		screenWidth = rightEdge;
 		screenHeight = bottomEdge;
 		centerY = bottomEdge - lengthY;
@@ -166,11 +168,13 @@ public class Character {
 		// X
 		rotation += 0.1 * speedX;
 		if (centerX + speedX < leftScrollEdgeOffSet) {
-			RunLevel.changeBg(leftScrollEdgeOffSet - (centerX + speedX), 0);
+			classHandler.getBackgroundHandler().changeDifX(
+					leftScrollEdgeOffSet - (centerX + speedX), 0);
 			centerX = leftScrollEdgeOffSet;
 		} else if (centerX + speedX > screenWidth - rightScrollEdgeOffSet) {
-			RunLevel.changeBg((screenWidth - rightScrollEdgeOffSet)
-					- (centerX + speedX), 0);
+			classHandler.getBackgroundHandler().changeDifX(
+					(screenWidth - rightScrollEdgeOffSet) - (centerX + speedX),
+					0);
 			centerX = screenWidth - rightScrollEdgeOffSet;
 		} else {
 			centerX += speedX;
@@ -189,7 +193,7 @@ public class Character {
 		} else if (shootWhenReady) {
 			Projectile p = new Projectile(centerX, centerY, shootWhenReadyX
 					* (projSpeed), shootWhenReadyY * (projSpeed), screenWidth,
-					screenHeight);
+					screenHeight, classHandler);
 			projectiles.add(p);
 			shootTimer = shootTimerReset;
 			shootWhenReady = false;
@@ -211,12 +215,12 @@ public class Character {
 	 * leftLimit and rightLimit
 	 */
 	private void setBoundaries() {
-		double xDif = RunLevel.getBackgroundHandler().getDifX();
+		double xDif = classHandler.getBackgroundHandler().getDifX();
 		double checkX = centerX - lengthX;
 		double checkY = centerY - lengthY;
 		double checkLengthX = lengthX * 2;
 		double checkLengthY = lengthY * 2;
-		PlatformHandler platformHandler = RunLevel.getPlatformHandler();
+		PlatformHandler platformHandler = classHandler.getPlatformHandler();
 		ArrayList<Double> leftCheckList = new ArrayList<Double>();
 		ArrayList<Double> rightCheckList = new ArrayList<Double>();
 		ArrayList<Double> topCheckList = new ArrayList<Double>();

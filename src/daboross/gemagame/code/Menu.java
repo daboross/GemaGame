@@ -16,6 +16,7 @@ public class Menu implements Runnable, KeyListener {
 	private Image upperImageOverlay;
 
 	public Menu(ClassHandler classHandler) {
+		classHandler.setMenu(this);
 		typeTimer = 1;
 		optionSelected = 0;
 		alive = true;

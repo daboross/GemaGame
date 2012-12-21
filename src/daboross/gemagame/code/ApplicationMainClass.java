@@ -11,10 +11,6 @@ import javax.swing.JFrame;
 public class ApplicationMainClass implements MainClass {
 	private JFrame jFrame;
 	private ClassHandler classHandler;
-	private RunLevel runLevel;
-	private Menu menuClass;
-	private LevelFileWriter levelFileWriter;
-	private Thread runLevelThread, menuThread, levelFileWriterThread;
 	private static final int height = 480;
 	private static final int width = 640;
 	private Image image;
@@ -54,19 +50,10 @@ public class ApplicationMainClass implements MainClass {
 		classHandler.setjFrame(jFrame);
 		classHandler.setScreenHeight(height);
 		classHandler.setScreenWidth(width);
-		System.out.println("MainClass init.");
-		runLevel = new RunLevel(classHandler);
-		menuClass = new Menu(classHandler);
-		levelFileWriter = new LevelFileWriter(classHandler);
-		System.out.println("MainClass start");
-		runLevelThread = new Thread(runLevel);
-		classHandler.setRunLevelThread(runLevelThread);
-		levelFileWriterThread = new Thread(levelFileWriter);
-		classHandler.setLevelWriterThread(levelFileWriterThread);
-		menuThread = new Thread(menuClass);
-		classHandler.setMenuThread(menuThread);
-		menuThread.start();
-		System.out.println("Application Started");
+		LoadingScreen loadingScreen = new LoadingScreen(classHandler);
+		Thread loadingScreenThread = new Thread(loadingScreen);
+		classHandler.setLoadingScreenThread(loadingScreenThread);
+		loadingScreenThread.start();
 	}
 
 	@Override
@@ -184,9 +171,9 @@ public class ApplicationMainClass implements MainClass {
 		// Runs the Paint method in order to get the images for all the objects
 		// on the screen.
 		if (paintGame) {
-			runLevel.paint(bufferedGraphics);
+			classHandler.getRunLevel().paint(bufferedGraphics);
 		} else {
-			menuClass.paint(bufferedGraphics);
+			classHandler.getMenu().paint(bufferedGraphics);
 		}
 		// draws the Image with the translations that were already defined, to
 		// make it in the center of the screen

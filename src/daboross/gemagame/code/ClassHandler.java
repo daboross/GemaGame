@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 public class ClassHandler {
 	private boolean isApplet;
 	private JFrame jFrame;
-	private Thread runLevelThread, levelWriterThread, menuThread;
+	private Thread runLevelThread, levelWriterThread, menuThread, loadingScreenThread;
 	private int screenWidth, screenHeight;
 	private MainClass mainClass;
 	private RunLevel runLevel;
@@ -23,6 +23,8 @@ public class ClassHandler {
 	private LevelFileWriter levelFileWriter;
 	private Menu menu;
 	private LevelLoader levelLoader;
+	private FileLoader fileLoader;
+	private LoadingScreen loadingScreen;
 
 	public ClassHandler() {
 	}
@@ -201,5 +203,29 @@ public class ClassHandler {
 
 	public void setjFrame(JFrame jFrame) {
 		this.jFrame = jFrame;
+	}
+
+	public FileLoader getFileLoader() {
+		return fileLoader;
+	}
+
+	public void setFileLoader(FileLoader fileLoader) {
+		this.fileLoader = fileLoader;
+	}
+
+	public LoadingScreen getLoadingScreen() {
+		return loadingScreen;
+	}
+
+	public void setLoadingScreen(LoadingScreen loadingScreen) {
+		this.loadingScreen = loadingScreen;
+	}
+
+	public Thread getLoadingScreenThread() {
+		return loadingScreenThread;
+	}
+
+	public void setLoadingScreenThread(Thread loadingScreenThread) {
+		this.loadingScreenThread = loadingScreenThread;
 	}
 }

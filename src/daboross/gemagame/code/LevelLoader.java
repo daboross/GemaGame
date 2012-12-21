@@ -1,26 +1,24 @@
 package daboross.gemagame.code;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class LevelLoader {
-	private MainClass mainClass;
 	private String fileName;
 	private ClassHandler classHandler;
 
 	public LevelLoader(ClassHandler classHandler) {
-		mainClass = classHandler.getMainClass();
 		classHandler.setLevelLoader(this);
 		this.classHandler = classHandler;
 	}
 
-	public void loadTxt(String getFileName) {
-		fileName = getFileName;
-		ArrayList<String> lineList = new ArrayList<String>();
+	public void loadTxt(String fileName) {
+		this.fileName = fileName;
+		if (classHandler.getFileLoader() == null) {
+			classHandler.setFileLoader(new FileLoader(classHandler));
+		}
+		ArrayList<String> lineList = classHandler.getFileLoader().loadFile(
+				fileName);
 		ArrayList<Double> platformsToAddXPos = new ArrayList<Double>();
 		ArrayList<Double> platformsToAddYPos = new ArrayList<Double>();
 		ArrayList<Double> platformsToAddXLength = new ArrayList<Double>();
@@ -28,30 +26,6 @@ public class LevelLoader {
 		int numberOfPlatformsToAdd = 0;
 		// These four ArrayLists store the platform properties that are to be
 		// added at end of function.
-		System.out.println("Loading Level: " + fileName);
-		try {
-			InputStream inputStream = mainClass.getClass().getResourceAsStream(
-					fileName);
-			InputStreamReader inputStreamReader = new InputStreamReader(
-					inputStream);
-			BufferedReader bufferInputReader = new BufferedReader(
-					inputStreamReader);
-			while (true) {
-				String currentLine = bufferInputReader.readLine();
-				// no more lines to read
-				if (currentLine == null) {
-					bufferInputReader.close();
-					break;
-				}
-
-				if (!currentLine.startsWith("#")) {
-					lineList.add(currentLine);
-				}
-			}
-		} catch (Exception e) {
-			System.out.println("Invalid File: " + fileName);
-		}
-
 		// Variables to be used in the following for loop.
 		char currentChar;
 		int nextNumberEquals;
@@ -158,7 +132,7 @@ public class LevelLoader {
 			// Loops through all the platform properties that have been gotten
 			// from the file, and adds each of them to the platform Handler
 			// stored in Main Class
-			RunLevel.getPlatformHandler().addPlatForm(
+			classHandler.getPlatformHandler().addPlatForm(
 					platformsToAddXPos.get(i), platformsToAddYPos.get(i),
 					platformsToAddXLength.get(i), platformsToAddYLength.get(i));
 		}
@@ -167,7 +141,8 @@ public class LevelLoader {
 	}// End of Function
 
 	public void reloadTxt() {
-		ArrayList<String> lineList = new ArrayList<String>();
+		ArrayList<String> lineList = classHandler.getFileLoader().loadFile(
+				fileName);
 		ArrayList<Double> platformsToAddXPos = new ArrayList<Double>();
 		ArrayList<Double> platformsToAddYPos = new ArrayList<Double>();
 		ArrayList<Double> platformsToAddXLength = new ArrayList<Double>();
@@ -175,29 +150,6 @@ public class LevelLoader {
 		int numberOfPlatformsToAdd = 0;
 		// These four ArrayLists store the platform properties that are to be
 		// added at end of function.
-		System.out.println("Loading Level: " + fileName);
-		try {
-			InputStream inputStream = mainClass.getClass().getResourceAsStream(
-					fileName);
-			InputStreamReader inputStreamReader = new InputStreamReader(
-					inputStream);
-			BufferedReader bufferInputReader = new BufferedReader(
-					inputStreamReader);
-			while (true) {
-				String currentLine = bufferInputReader.readLine();
-				// no more lines to read
-				if (currentLine == null) {
-					bufferInputReader.close();
-					break;
-				}
-
-				if (!currentLine.startsWith("#")) {
-					lineList.add(currentLine);
-				}
-			}
-		} catch (Exception e) {
-			System.out.println("Invalid File: " + fileName);
-		}
 
 		// Variables to be used in the following for loop.
 		char currentChar;
@@ -301,12 +253,12 @@ public class LevelLoader {
 
 		}// End of main loop
 
-		RunLevel.getPlatformHandler().clearPlatformList();
+		classHandler.getPlatformHandler().clearPlatformList();
 		for (int i = 0; i < numberOfPlatformsToAdd; i++) {
 			// Loops through all the platform properties that have been gotten
 			// from the file, and adds each of them to the platform Handler
 			// stored in Main Class
-			RunLevel.getPlatformHandler().addPlatForm(
+			classHandler.getPlatformHandler().addPlatForm(
 					platformsToAddXPos.get(i), platformsToAddYPos.get(i),
 					platformsToAddXLength.get(i), platformsToAddYLength.get(i));
 		}
@@ -315,7 +267,8 @@ public class LevelLoader {
 	}// End of Function
 
 	public void loadFile(File file) {
-		ArrayList<String> lineList = new ArrayList<String>();
+		ArrayList<String> lineList = classHandler.getFileLoader()
+				.loadFile(file);
 		ArrayList<Double> platformsToAddXPos = new ArrayList<Double>();
 		ArrayList<Double> platformsToAddYPos = new ArrayList<Double>();
 		ArrayList<Double> platformsToAddXLength = new ArrayList<Double>();
@@ -323,23 +276,6 @@ public class LevelLoader {
 		int numberOfPlatformsToAdd = 0;
 		// These four ArrayLists store the platform properties that are to be
 		// added at end of function.
-		System.out.println("Loading Level File");
-		try {
-			FileReader fileReader = new FileReader(file);
-			BufferedReader bufferInputReader = new BufferedReader(fileReader);
-			while (true) {
-				String currentLine = bufferInputReader.readLine();
-				if (currentLine == null) {
-					bufferInputReader.close();
-					break;
-				}
-				System.out.println(currentLine);
-				lineList.add(currentLine);
-			}
-		} catch (Exception e) {
-			System.out.println("Invalid File");
-		}
-
 		// Variables to be used in the following for loop.
 		char currentChar;
 		int nextNumberEquals;
@@ -442,12 +378,12 @@ public class LevelLoader {
 
 		}// End of main loop
 
-		RunLevel.getPlatformHandler().clearPlatformList();
+		classHandler.getPlatformHandler().clearPlatformList();
 		for (int i = 0; i < numberOfPlatformsToAdd; i++) {
 			// Loops through all the platform properties that have been gotten
 			// from the file, and adds each of them to the platform Handler
 			// stored in Main Class
-			RunLevel.getPlatformHandler().addPlatForm(
+			classHandler.getPlatformHandler().addPlatForm(
 					platformsToAddXPos.get(i), platformsToAddYPos.get(i),
 					platformsToAddXLength.get(i), platformsToAddYLength.get(i));
 		}

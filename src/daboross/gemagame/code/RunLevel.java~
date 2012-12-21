@@ -50,11 +50,10 @@ public class RunLevel implements Runnable, KeyListener {
 	 *            This is this Game's mainClass
 	 */
 	public RunLevel(ClassHandler classHandler) {
-		classHandler.setRunLevel(this);
 		System.out.println("Initializing RunLevel");
 		this.classHandler = classHandler;
 		this.mainClass = classHandler.getMainClass();
-		backgroundImages = new Image[1];
+		backgroundImages = new Image[1];                                             
 		try {
 			Toolkit tk = Toolkit.getDefaultToolkit();
 			if (classHandler.getjFrame() == null) {
@@ -104,6 +103,7 @@ public class RunLevel implements Runnable, KeyListener {
 		/** This should load platforms from the file level.txt */
 		String pathName = ("levels/level.txt");
 		classHandler.getLevelLoader().loadTxt(pathName);
+		System.out.println("LevelLoaderFinished");
 
 	}
 
@@ -286,8 +286,8 @@ public class RunLevel implements Runnable, KeyListener {
 			dPressed = false;
 		}
 	}
-
 	@Override
 	public void keyTyped(KeyEvent keyEvent) {
 	}
 }
+            

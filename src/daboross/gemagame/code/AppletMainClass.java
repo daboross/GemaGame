@@ -48,14 +48,8 @@ public class AppletMainClass extends JApplet implements MainClass {
 	private int rememberWidth, rememberHeight;
 	/** This variable is used in Painting the applet */
 	private int[][] drawRect;
-	/** This is the applet's runLevel Class. */
-	private RunLevel runLevel;
-	/** This is the applet's mainClass Class. */
-	private Menu menuClass;
 	/** This is a package of classes */
 	private ClassHandler classHandler;
-	/** This is the applet's LevelFileWriter Class. */
-	private LevelFileWriter levelFileWriter;
 
 	@Override
 	/** This is the initial function called by the applet html page or applet viewer*/
@@ -73,19 +67,12 @@ public class AppletMainClass extends JApplet implements MainClass {
 		classHandler.setScreenHeight(height);
 		classHandler.setScreenWidth(width);
 		System.out.println("MainClass init.");
-		runLevel = new RunLevel(classHandler);
-		menuClass = new Menu(classHandler);
-		levelFileWriter = new LevelFileWriter(classHandler);
 		setBackground(Color.BLACK);
 		setFocusable(true);
-		System.out.println("MainClass start");
-		runLevelThread = new Thread(runLevel);
-		classHandler.setRunLevelThread(runLevelThread);
-		levelFileWriterThread = new Thread(levelFileWriter);
-		classHandler.setLevelWriterThread(levelFileWriterThread);
-		menuThread = new Thread(menuClass);
-		classHandler.setMenuThread(menuThread);
-		menuThread.start();
+		LoadingScreen loadingScreen = new LoadingScreen(classHandler);
+		Thread loadingScreenThread = new Thread(loadingScreen);
+		classHandler.setLoadingScreenThread(loadingScreenThread);
+		loadingScreenThread.start();
 	}
 
 	@Override
@@ -233,9 +220,9 @@ public class AppletMainClass extends JApplet implements MainClass {
 		// Runs the Paint method in order to get the images for all the objects
 		// on the screen.
 		if (paintGame) {
-			runLevel.paint(bufferedGraphics);
+			classHandler.getRunLevel().paint(bufferedGraphics);
 		} else {
-			menuClass.paint(bufferedGraphics);
+			classHandler.getMenu().paint(bufferedGraphics);
 		}
 		// draws the Image with the translations that were already defined, to
 		// make it in the center of the screen
