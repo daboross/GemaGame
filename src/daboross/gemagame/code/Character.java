@@ -229,23 +229,24 @@ public class Character {
 		topLimit = 0;
 		bottomLimit = screenHeight;
 		for (int i = 0; i < platformHandler.listLength(); i++) {
-			if (Collision.isCollided1D(platformHandler.yPosList.get(i),
-					platformHandler.yLengthList.get(i), checkY + speedY,
+			if (Collision.isCollided1D(platformHandler.yPosList().get(i),
+					platformHandler.yLengthList().get(i), checkY + speedY,
 					checkLengthY)) {
 				// If the platform is collided with Character on the y axis,
 				// then add its sides as possible x-boundaries
-				leftCheckList.add(platformHandler.xPosList.get(i)
-						+ platformHandler.xLengthList.get(i) + xDif);
-				rightCheckList.add(platformHandler.xPosList.get(i) + xDif);
+				leftCheckList.add(platformHandler.xPosList().get(i)
+						+ platformHandler.xLengthList().get(i) + xDif);
+				rightCheckList.add(platformHandler.xPosList().get(i) + xDif);
 			}
-			if (Collision.isCollided1D(platformHandler.xPosList.get(i) + xDif,
-					platformHandler.xLengthList.get(i), checkX + speedX,
+			if (Collision.isCollided1D(
+					platformHandler.xPosList().get(i) + xDif, platformHandler
+							.xLengthList().get(i), checkX + speedX,
 					checkLengthX)) {
 				// If the platform is collided with Character on the x axis,
 				// then add its sides as possible y-boundaries
-				topCheckList.add(platformHandler.yPosList.get(i)
-						+ platformHandler.yLengthList.get(i));
-				bottomCheckList.add(platformHandler.yPosList.get(i));
+				topCheckList.add(platformHandler.yPosList().get(i)
+						+ platformHandler.yLengthList().get(i));
+				bottomCheckList.add(platformHandler.yPosList().get(i));
 			}
 		}
 		double leftCheckX = checkX;
