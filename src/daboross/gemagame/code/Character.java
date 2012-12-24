@@ -96,12 +96,12 @@ public class Character {
 	 * @param bottomEdge
 	 *            This is the height of the screen
 	 */
-	public Character(ClassHandler classHandler, int rightEdge, int bottomEdge) {
+	public Character(ClassHandler classHandler) {
 		classHandler.setCharacter(this);
 		this.classHandler = classHandler;
-		screenWidth = rightEdge;
-		screenHeight = bottomEdge;
-		centerY = bottomEdge - lengthY;
+		screenWidth = classHandler.getScreenWidth();
+		screenHeight = classHandler.getScreenHeight();
+		centerY = screenHeight - lengthY;
 		centerX = 0;
 	}
 
@@ -203,23 +203,15 @@ public class Character {
 		}
 	}
 
-	/**
-	 * This sets the Boundaries of the Character, It does not require any
-	 * Parameters and does not return anything, as it is manipulating private
-	 * variables. It sets the boundary variables, topLimit, bottomLimit,
-	 * leftLimit and rightLimit
-	 */
 	private void setBoundaries() {
 		double xDif = classHandler.getBackgroundHandler().getDifX();
-		double checkX = centerX - lengthX;
-		double checkY = centerY - lengthY;
+		double checkX1 = centerX - lengthX;
+		double checkY1 = centerY - lengthY;
+		double checkX2 = centerX - lengthX + speedX;
+		double checkY2 = centerY - lengthY + speedY;
 		double checkLengthX = lengthX * 2;
 		double checkLengthY = lengthY * 2;
 		PlatformHandler platformHandler = classHandler.getPlatformHandler();
-		ArrayList<Double> leftCheckList = new ArrayList<Double>();
-		ArrayList<Double> rightCheckList = new ArrayList<Double>();
-		ArrayList<Double> topCheckList = new ArrayList<Double>();
-		ArrayList<Double> bottomCheckList = new ArrayList<Double>();
 		double nearestBoundryLeft = 1000;
 		double nearestBoundryRight = 1000;
 		double nearestBoundryUp = 1000;
@@ -228,57 +220,75 @@ public class Character {
 		rightLimit = screenWidth;
 		topLimit = 0;
 		bottomLimit = screenHeight;
+		// Setting these variables makes it so that if the checks at the bottom
+		// do not fail
+		int platformLimitIDLeft = -4;
+		int platformLimitIDTop = -3;
+		int platformLimitIDRight = -2;
+		int platformLimitIDBottom = -1;
 		for (int i = 0; i < platformHandler.listLength(); i++) {
-			if (Collision.isCollided1D(platformHandler.yPosList().get(i),
-					platformHandler.yLengthList().get(i), checkY + speedY,
-					checkLengthY)) {
-				// If the platform is collided with Character on the y axis,
-				// then add its sides as possible x-boundaries
-				leftCheckList.add(platformHandler.xPosList().get(i)
-						+ platformHandler.xLengthList().get(i) + xDif);
-				rightCheckList.add(platformHandler.xPosList().get(i) + xDif);
-			}
 			if (Collision.isCollided1D(
 					platformHandler.xPosList().get(i) + xDif, platformHandler
-							.xLengthList().get(i), checkX + speedX,
-					checkLengthX)) {
-				// If the platform is collided with Character on the x axis,
-				// then add its sides as possible y-boundaries
-				topCheckList.add(platformHandler.yPosList().get(i)
-						+ platformHandler.yLengthList().get(i));
-				bottomCheckList.add(platformHandler.yPosList().get(i));
+							.xLengthList().get(i), checkX1, checkLengthX)
+					|| Collision.isCollided1D(platformHandler.xPosList().get(i)
+							+ xDif, platformHandler.xLengthList().get(i),
+							checkX2, checkLengthX)) {
+				// Check Top Platform (ctp)
+				double ctp = platformHandler.yPosList().get(i)
+						+ platformHandler.yLengthList().get(i);
+				if ((ctp <= centerY)
+						&& (Math.abs(centerY + lengthY - ctp) < nearestBoundryUp)) {
+					nearestBoundryUp = Math.abs(centerY + lengthY - ctp);
+					topLimit = ctp;
+					platformLimitIDTop = i;
+				}
+				// Check Bottom Platform (cbp)
+				double cbp = platformHandler.yPosList().get(i);
+				if ((cbp >= centerY)
+						&& (Math.abs(centerY - lengthY - cbp) < nearestBoundryDown)) {
+					nearestBoundryDown = Math.abs(centerY - lengthY - cbp);
+					bottomLimit = cbp;
+					platformLimitIDBottom = i;
+				}
 			}
-		}
-		double leftCheckX = checkX;
-		for (double checkB : leftCheckList) {
-			if ((checkB <= leftCheckX)
-					&& (Math.abs(leftCheckX - checkB) < nearestBoundryLeft)) {
-				nearestBoundryLeft = Math.abs(leftCheckX - checkB);
-				leftLimit = checkB;
+			if (Collision
+					.isCollided1D(platformHandler.yPosList().get(i),
+							platformHandler.yLengthList().get(i), checkY1,
+							checkLengthY)
+					|| Collision.isCollided1D(
+							platformHandler.yPosList().get(i), platformHandler
+									.yLengthList().get(i), checkY2,
+							checkLengthY)) {
+				// Check Left Platform (clp)
+				double clp = platformHandler.xPosList().get(i)
+						+ platformHandler.xLengthList().get(i) + xDif;
+				if ((clp <= centerX)
+						&& (Math.abs(centerX + lengthX - clp) < nearestBoundryLeft)) {
+					nearestBoundryLeft = Math.abs(centerX + lengthX - clp);
+					leftLimit = clp;
+					platformLimitIDLeft = i;
+				}
+				// Check Right Platform (crp)
+				double crp = platformHandler.xPosList().get(i) + xDif;
+				if ((crp >= centerX)
+						&& (Math.abs(centerX - lengthX - crp) < nearestBoundryRight)) {
+					nearestBoundryRight = Math.abs(centerX - lengthX - crp);
+					rightLimit = crp;
+					platformLimitIDRight = i;
+				}
 			}
-		}
-		double rightCheckX = checkX + checkLengthX;
-		for (double checkB : rightCheckList) {
-			if ((checkB >= rightCheckX)
-					&& (Math.abs(rightCheckX - checkB) < nearestBoundryRight)) {
-				nearestBoundryRight = Math.abs(rightCheckX - checkB);
-				rightLimit = checkB;
+
+			if (platformLimitIDTop == platformLimitIDBottom) {
+				bottomLimit = platformHandler.yPosList()
+						.get(platformLimitIDTop);
 			}
-		}
-		double topCheckY = checkY;
-		for (double checkB : topCheckList) {
-			if ((checkB <= topCheckY)
-					&& (Math.abs(topCheckY - checkB) < nearestBoundryUp)) {
-				nearestBoundryUp = Math.abs(topCheckY - checkB);
-				topLimit = checkB;
+			if (platformLimitIDTop != platformLimitIDBottom
+					&& platformLimitIDLeft == platformLimitIDTop) {
+				leftLimit = 0;
 			}
-		}
-		double bottomCheckY = checkY + checkLengthY;
-		for (double checkB : bottomCheckList) {
-			if ((checkB >= bottomCheckY)
-					&& (Math.abs(bottomCheckY - checkB) < nearestBoundryDown)) {
-				nearestBoundryDown = Math.abs(bottomCheckY - checkB);
-				bottomLimit = checkB;
+			if (platformLimitIDTop != platformLimitIDBottom
+					&& platformLimitIDRight == platformLimitIDTop) {
+				rightLimit = screenWidth;
 			}
 		}
 	}
@@ -293,22 +303,26 @@ public class Character {
 		double rightCheckX = centerX + lengthX + speedX;
 		double topCheckX = centerY - lengthY + speedY;
 		double bottomCheckX = centerY + lengthY + speedY;
-		if (leftCheckX <= leftLimit) {
+		double leftCheckX2 = centerX - lengthX;
+		double rightCheckX2 = centerX + lengthX;
+		double topCheckX2 = centerY - lengthY;
+		double bottomCheckX2 = centerY + lengthY;
+		if (leftCheckX <= leftLimit || leftCheckX2 <= leftLimit) {
 			isLimitedLeft = true;
 		} else {
 			isLimitedLeft = false;
 		}
-		if (rightCheckX >= rightLimit) {
+		if (rightCheckX >= rightLimit || rightCheckX2 >= rightLimit) {
 			isLimitedRight = true;
 		} else {
 			isLimitedRight = false;
 		}
-		if (topCheckX <= topLimit) {
+		if (topCheckX <= topLimit || topCheckX2 <= topLimit) {
 			isLimitedTop = true;
 		} else {
 			isLimitedTop = false;
 		}
-		if (bottomCheckX >= bottomLimit) {
+		if (bottomCheckX >= bottomLimit || bottomCheckX2 >= bottomLimit) {
 			isLimitedBottom = true;
 		} else {
 			isLimitedBottom = false;

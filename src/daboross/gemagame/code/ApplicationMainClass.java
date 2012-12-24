@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyListener;
+
 import javax.swing.JFrame;
 
 public class ApplicationMainClass implements MainClass {
@@ -17,7 +18,7 @@ public class ApplicationMainClass implements MainClass {
 	private int contractedImageX, contractedImageY, rememberWidth,
 			rememberHeight, imageTranslationX, imageTranslationY;
 	private int[][] drawRect;
-	private boolean paintGame;
+	private int paintGame;
 
 	public ApplicationMainClass() {
 
@@ -36,27 +37,18 @@ public class ApplicationMainClass implements MainClass {
 		jFrame.setTitle("Gema Game");
 		jFrame.setLayout(new BorderLayout());
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		AppletMainClass applet = new AppletMainClass();
-		System.out.println("APPLICATION GO");
-		applet.setjFrame(jFrame);
-		applet.setFocusable(true);
-		applet.setVisible(true);
-		applet.setSize(640, 480);
 		jFrame.setBackground(Color.BLACK);
-		jFrame.setFocusable(true);
 		classHandler = new ClassHandler();
 		classHandler.setMainClass(this);
 		classHandler.setjFrame(jFrame);
 		classHandler.setScreenHeight(height);
 		classHandler.setScreenWidth(width);
 		LoadingScreen loadingScreen = new LoadingScreen(classHandler);
-		Thread loadingScreenThread = new Thread(loadingScreen);
-		classHandler.setLoadingScreenThread(loadingScreenThread);
-		loadingScreenThread.start();
+		loadingScreen.load(true);
 	}
 
 	@Override
-	public void paint(boolean gameOn) {
+	public void paint(int gameOn) {
 		paintGame = gameOn;
 		this.update(jFrame.getGraphics());
 	}
@@ -169,10 +161,12 @@ public class ApplicationMainClass implements MainClass {
 		bufferedGraphics.setColor(jFrame.getForeground());
 		// Runs the Paint method in order to get the images for all the objects
 		// on the screen.
-		if (paintGame) {
+		if (paintGame == 0) {
 			classHandler.getRunLevel().paint(bufferedGraphics);
-		} else {
+		} else if (paintGame == 1) {
 			classHandler.getMenu().paint(bufferedGraphics);
+		} else if (paintGame == 2) {
+			classHandler.getLoadingScreen().paint(bufferedGraphics);
 		}
 		// draws the Image with the translations that were already defined, to
 		// make it in the center of the screen

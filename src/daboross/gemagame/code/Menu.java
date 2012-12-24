@@ -77,7 +77,6 @@ public class Menu implements Runnable, KeyListener {
 		System.out.println("Running Menu");
 		mainClass.keyListenerAdd(this);
 		while (alive) {
-			mainClass.paint(false);
 			while (optionSelected >= 3) {
 				optionSelected -= 3;
 			}
@@ -87,6 +86,7 @@ public class Menu implements Runnable, KeyListener {
 			if (typeTimer > 0) {
 				typeTimer -= 1;
 			}
+			mainClass.paint(1);
 			try {
 				classHandler.getMenuThread();
 				Thread.sleep(30L);
@@ -101,7 +101,9 @@ public class Menu implements Runnable, KeyListener {
 		if (typeTimer == 0) {
 			int eventChar = keyEvent.getKeyCode();
 			if (eventChar == 32) {
-				end();
+				if (optionSelected == 0) {
+					end();
+				}
 			} else if (eventChar == 38) {
 				optionSelected -= 1;
 			} else if (eventChar == 40) {
@@ -125,9 +127,8 @@ public class Menu implements Runnable, KeyListener {
 	private void end() {
 		mainClass.keyListenerRemove(this);
 		classHandler.getRunLevelThread().start();
-
+		classHandler.getLevelWriterThread().start();
 		alive = false;
-		System.out.println("Menu Ended");
 	}
 
 	private int optionSelected;

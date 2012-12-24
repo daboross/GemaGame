@@ -13,10 +13,6 @@ import javax.swing.JFrame;
 
 public class RunLevel implements Runnable, KeyListener {
 
-	/** Defines the width and height that the applet will act as if it is */
-	private final int height = 480;
-	private final int width = 640;
-
 	/** The Character in this game */
 	private Character character;
 	/** The Background Handler in this game */
@@ -96,7 +92,7 @@ public class RunLevel implements Runnable, KeyListener {
 		 * classes
 		 */
 		backgroundH = new BackgroundHandler(classHandler);
-		character = new Character(classHandler, width, height);
+		character = new Character(classHandler);
 		platformHandler = new PlatformHandler(classHandler);
 		LevelLoader levelLoader = new LevelLoader(classHandler);
 		levelLoader.loadTxt("levels/level.txt");
@@ -116,7 +112,7 @@ public class RunLevel implements Runnable, KeyListener {
 			 */
 			backgroundH.update();
 			/* Repaints the screen */
-			mainClass.paint(true);
+			mainClass.paint(0);
 			/* Tries to sleep the thread for 17 milliseconds */
 			try {
 				Thread.sleep(17);
@@ -151,6 +147,7 @@ public class RunLevel implements Runnable, KeyListener {
 					(int) (platformHandler.yLengthList().get(i) + 0), null);
 		}
 		g.setColor(Color.CYAN);
+
 		/*
 		 * g.drawRect((int) character.getLeftLimit(), (int)
 		 * character.getTopLimit(), (int) (character.getRightLimit() -
