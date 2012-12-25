@@ -99,8 +99,8 @@ public class Character {
 	public Character(ClassHandler classHandler) {
 		classHandler.setCharacter(this);
 		this.classHandler = classHandler;
-		screenWidth = classHandler.getScreenWidth();
-		screenHeight = classHandler.getScreenHeight();
+		screenWidth = classHandler.screenWidth;
+		screenHeight = classHandler.screenHeight;
 		centerY = screenHeight - lengthY;
 		centerX = 0;
 	}

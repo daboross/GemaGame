@@ -1,5 +1,6 @@
 package daboross.gemagame.code;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -8,11 +9,17 @@ import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 
-public class Menu implements Runnable, KeyListener {
+public class Menu implements Runnable, KeyListener, Paintable {
 	private MainClass mainClass;
 	private ClassHandler classHandler;
 	private Image upperImage;
 	private Image upperImageOverlay;
+	private Image selectedButton;
+	private Image unSelectedButton;
+	private int optionSelected;
+	private boolean alive;
+	private int typeTimer;
+	private boolean errorMessagedGraphics = false;
 
 	public Menu(ClassHandler classHandler) {
 		classHandler.setMenu(this);
@@ -51,24 +58,29 @@ public class Menu implements Runnable, KeyListener {
 
 	public void paint(Graphics g) {
 		try {
-			g.drawImage(
-					upperImage,
-					(classHandler.getScreenWidth() - upperImage.getWidth(null)) / 2,
+			g.setColor(Color.black);
+			g.fillRect(0, 0, classHandler.screenWidth,
+					classHandler.screenHeight);
+			g.drawImage(upperImage,
+					(classHandler.screenWidth - upperImage.getWidth(null)) / 2,
 					10, null);
 			g.drawImage(upperImageOverlay, 0, 0, null);
 			for (int i = 0; i < 3; i++) {
 				if (i == optionSelected) {
 					g.drawImage(selectedButton,
-							(classHandler.getScreenWidth() - selectedButton
+							(classHandler.screenWidth - selectedButton
 									.getWidth(null)) / 2, 200 + i * 70, null);
 				} else {
 					g.drawImage(unSelectedButton,
-							(classHandler.getScreenWidth() - unSelectedButton
+							(classHandler.screenWidth - unSelectedButton
 									.getWidth(null)) / 2, 200 + i * 70, null);
 				}
 			}
 		} catch (Exception e) {
-			// e.printStackTrace();
+			if (errorMessagedGraphics == false) {
+				System.out.println("Menu Graphics Failed");
+				errorMessagedGraphics = true;
+			}
 		}
 	}
 
@@ -77,61 +89,67 @@ public class Menu implements Runnable, KeyListener {
 		System.out.println("Running Menu");
 		mainClass.keyListenerAdd(this);
 		while (alive) {
-			while (optionSelected >= 3) {
-				optionSelected -= 3;
-			}
-			while (optionSelected < 0) {
-				optionSelected += 3;
-			}
 			if (typeTimer > 0) {
 				typeTimer -= 1;
 			}
-			mainClass.paint(1);
+			mainClass.paint(this);
 			try {
-				classHandler.getMenuThread();
-				Thread.sleep(30L);
+				Thread.sleep(30);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
+		mainClass.keyListenerRemove(this);
 	}
 
 	@Override
 	public void keyPressed(KeyEvent keyEvent) {
 		if (typeTimer == 0) {
+			System.out.println("Got Input");
 			int eventChar = keyEvent.getKeyCode();
 			if (eventChar == 32) {
-				if (optionSelected == 0) {
-					end();
-				}
+				end();
 			} else if (eventChar == 38) {
-				optionSelected -= 1;
+				if (optionSelected > 0) {
+					optionSelected -= 1;
+				}
 			} else if (eventChar == 40) {
-				optionSelected += 1;
+				if (optionSelected < 2) {
+					optionSelected += 1;
+				}
 			}
 			typeTimer = 1;
 		}
 	}
 
-	private Image selectedButton;
-	private Image unSelectedButton;
-
 	@Override
 	public void keyReleased(KeyEvent e) {
+		typeTimer = 0;
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
 	}
 
-	private void end() {
-		mainClass.keyListenerRemove(this);
-		classHandler.getRunLevelThread().start();
-		classHandler.getLevelWriterThread().start();
+	public void end() {
 		alive = false;
+		if (optionSelected == 0) {
+			RunLevel runLevel = new RunLevel(classHandler);
+			new FileLoader(classHandler);
+			new LevelLoader(classHandler);
+			Thread runLevelThread = new Thread(runLevel);
+			classHandler.setRunLevelThread(runLevelThread);
+			runLevelThread.start();
+		} else if (optionSelected == 1) {
+			LevelCreator levelCreator = new LevelCreator(classHandler);
+			Thread levelCreatorThread = new Thread(levelCreator);
+			classHandler.setLevelCreatorThread(levelCreatorThread);
+			levelCreatorThread.start();
+		} else {
+			Menu menu = new Menu(classHandler);
+			Thread menuThread = new Thread(menu);
+			classHandler.setMenuThread(menuThread);
+			menuThread.start();
+		}
 	}
-
-	private int optionSelected;
-	private boolean alive;
-	private int typeTimer;
 }

@@ -11,14 +11,14 @@ import javax.swing.JFrame;
 public class ApplicationMainClass implements MainClass {
 	private JFrame jFrame;
 	private ClassHandler classHandler;
-	private static final int height = 480;
-	private static final int width = 640;
+	private int height = 480;
+	private int width = 640;
 	private Image image;
 	private Graphics bufferedGraphics;
 	private int contractedImageX, contractedImageY, rememberWidth,
 			rememberHeight, imageTranslationX, imageTranslationY;
 	private int[][] drawRect;
-	private int paintGame;
+	private Paintable paintingObject;
 
 	public ApplicationMainClass() {
 
@@ -41,15 +41,15 @@ public class ApplicationMainClass implements MainClass {
 		classHandler = new ClassHandler();
 		classHandler.setMainClass(this);
 		classHandler.setjFrame(jFrame);
-		classHandler.setScreenHeight(height);
-		classHandler.setScreenWidth(width);
+		this.width = classHandler.screenWidth;
+		this.height = classHandler.screenHeight;
 		LoadingScreen loadingScreen = new LoadingScreen(classHandler);
 		loadingScreen.load(true);
 	}
 
 	@Override
-	public void paint(int gameOn) {
-		paintGame = gameOn;
+	public void paint(Paintable pt) {
+		paintingObject = pt;
 		this.update(jFrame.getGraphics());
 	}
 
@@ -76,14 +76,10 @@ public class ApplicationMainClass implements MainClass {
 			contractedImageY = height;
 			// redefines contractedImage width and height so that they are not
 			// the ones we defined last time
-			if (contractedImageY > jFrame.getHeight()) {
-				// If the graphics Y is bigger then the screen Y, resize it to
-				// fit
-				contractedImageY = jFrame.getHeight();
-				// Resize graphics X so that it matches graphics Y
-				contractedImageX = (int) ((double) contractedImageY
-						/ (double) height * width);
-			}
+			contractedImageY = jFrame.getHeight();
+			// Resize graphics X so that it matches graphics Y
+			contractedImageX = (int) ((double) contractedImageY
+					/ (double) height * width);
 			if (contractedImageX > jFrame.getWidth()) {
 				// If the graphics Y is bigger then the screen Y after
 				// resizing(or not resizing) y, then resize it to be even
@@ -121,14 +117,10 @@ public class ApplicationMainClass implements MainClass {
 			contractedImageY = height;
 			// redefines contractedImage width and height so that they are not
 			// the ones we defined last time
-			if (contractedImageY > jFrame.getHeight()) {
-				// If the graphics Y is bigger then the screen Y, resize it to
-				// fit
-				contractedImageY = jFrame.getHeight();
-				// Resize graphics X so that it matches graphics Y
-				contractedImageX = (int) ((double) contractedImageY
-						/ (double) height * width);
-			}
+			contractedImageY = jFrame.getHeight();
+			// Resize graphics X so that it matches graphics Y
+			contractedImageX = (int) ((double) contractedImageY
+					/ (double) height * width);
 			if (contractedImageX > jFrame.getWidth()) {
 				// If the graphics Y is bigger then the screen Y after
 				// resizing(or not resizing) y, then resize it to be even
@@ -161,13 +153,7 @@ public class ApplicationMainClass implements MainClass {
 		bufferedGraphics.setColor(jFrame.getForeground());
 		// Runs the Paint method in order to get the images for all the objects
 		// on the screen.
-		if (paintGame == 0) {
-			classHandler.getRunLevel().paint(bufferedGraphics);
-		} else if (paintGame == 1) {
-			classHandler.getMenu().paint(bufferedGraphics);
-		} else if (paintGame == 2) {
-			classHandler.getLoadingScreen().paint(bufferedGraphics);
-		}
+		paintingObject.paint(bufferedGraphics);
 		// draws the Image with the translations that were already defined, to
 		// make it in the center of the screen
 		g.drawImage(image, imageTranslationX, imageTranslationY,

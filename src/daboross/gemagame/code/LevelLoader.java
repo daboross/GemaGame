@@ -91,7 +91,7 @@ public class LevelLoader {
 
 			// This checks if the current addition platform has a length and
 			// height, and all 4 values have been gone through and added.
-			if (currentAdditions[2] > classHandler.getScreenHeight()) {
+			if (currentAdditions[2] > classHandler.screenHeight) {
 				System.out.print("Warning! Platform not loaded because yPos"
 						+ "Value is bigger then screen height. In File: ");
 				System.out.println(fileName + ", Line Number: "
@@ -210,7 +210,7 @@ public class LevelLoader {
 				System.out.println(fileName + ", Line Number: "
 						+ (lineNumber + 1) + ", Invalid Content: "
 						+ lineList.get(lineNumber));
-			} else if (currentAdditions[2] > classHandler.getScreenHeight()) {
+			} else if (currentAdditions[2] > classHandler.screenHeight) {
 				System.out.print("Warning! Platform not loaded because yPos"
 						+ "Value is bigger then screen height. In File: ");
 				System.out.println(fileName + ", Line Number: "
@@ -329,7 +329,7 @@ public class LevelLoader {
 				System.out.println(fileName + ", Line Number: "
 						+ (lineNumber + 1) + ", Invalid Content: "
 						+ lineList.get(lineNumber));
-			} else if (currentAdditions[2] > classHandler.getScreenHeight()) {
+			} else if (currentAdditions[2] > classHandler.screenHeight) {
 				System.out.print("Warning! Platform not loaded because yPos"
 						+ "Value is bigger then screen height. In File: ");
 				System.out.println(fileName + ", Line Number: "

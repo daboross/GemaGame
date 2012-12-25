@@ -11,8 +11,8 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
-public class RunLevel implements Runnable, KeyListener {
-
+public class RunLevel implements Runnable, KeyListener, Paintable {
+	private boolean alive;
 	/** The Character in this game */
 	private Character character;
 	/** The Background Handler in this game */
@@ -34,7 +34,6 @@ public class RunLevel implements Runnable, KeyListener {
 	private Image[] backgroundImages;
 	/** This variable holds this games MainClass */
 	private MainClass mainClass;
-	@SuppressWarnings("unused")
 	private ClassHandler classHandler;
 
 	/**
@@ -86,6 +85,24 @@ public class RunLevel implements Runnable, KeyListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Load Images Failed");
+			try {
+				Toolkit tk = Toolkit.getDefaultToolkit();
+				if (classHandler.getjFrame() != null) {
+					String baseURL = ((AppletMainClass) classHandler
+							.getMainClass()).getDocumentBase()
+							+ "daboross/gemagame/data/images/menu/";
+					platform = tk.createImage(baseURL + "platform.png");
+					characterImage = tk.createImage(baseURL + "Character.png");
+					proj0 = tk.createImage(baseURL + "projectileLeft.png");
+					proj1 = tk.createImage(baseURL + "projectileUp.png");
+					proj2 = tk.createImage(baseURL + "projectileRight.png");
+					proj3 = tk.createImage(baseURL + "projectileDown.png");
+				}
+				System.out.println("Loaded Menu Images");
+			} catch (Exception ew) {
+				e.printStackTrace();
+				System.out.println("Menu Load Images Failed");
+			}
 		}
 		/**
 		 * Creates the Background Handler, Character, and Platform Handler
@@ -102,9 +119,10 @@ public class RunLevel implements Runnable, KeyListener {
 	@Override
 	/**This function runs the game.*/
 	public void run() {
+		alive = true;
 		mainClass.keyListenerAdd(this);
 		System.out.println("Starting RunLevel");
-		while (true) {
+		while (alive) {
 			/* Calls Character update Function for Movement Updates */
 			character.update(wPressed, aPressed, dPressed);
 			/*
@@ -112,7 +130,7 @@ public class RunLevel implements Runnable, KeyListener {
 			 */
 			backgroundH.update();
 			/* Repaints the screen */
-			mainClass.paint(0);
+			mainClass.paint(this);
 			/* Tries to sleep the thread for 17 milliseconds */
 			try {
 				Thread.sleep(17);
@@ -120,6 +138,10 @@ public class RunLevel implements Runnable, KeyListener {
 				e.printStackTrace();
 			}
 		}
+		Menu menu = new Menu(classHandler);
+		Thread menuThread = new Thread(menu);
+		classHandler.setMenuThread(menuThread);
+		menuThread.start();
 	}
 
 	/**
@@ -277,6 +299,9 @@ public class RunLevel implements Runnable, KeyListener {
 			// false. dPressed keeps track of if d was lasted pressed or
 			// released
 			dPressed = false;
+		}
+		if (eventChar == KeyEvent.VK_ESCAPE) {
+			alive = false;
 		}
 	}
 

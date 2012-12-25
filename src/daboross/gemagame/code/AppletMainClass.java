@@ -13,48 +13,12 @@ import javax.swing.JApplet;
  */
 @SuppressWarnings("serial")
 public class AppletMainClass extends JApplet implements MainClass {
-	/**
-	 * This is the Height of the Applet. The applet will auto-resize the
-	 * graphics of this size to fit in the current window.
-	 */
-	public static final int height = 480;
-	/**
-	 * This is the Width of the Applet. The applet will auto-resize the graphics
-	 * of this size to fit in the current window.
-	 */
-	public static final int width = 640;
-	/**
-	 * This variable is used to tell if the MainClass should paint the Game, or
-	 * the Menu. true is game, false in menu
-	 */
-	private int paintGame;
-	/**
-	 * This variable is used in Painting the applet
-	 */
 	private Graphics bufferedGraphics;
-	/**
-	 * This variable is used in Painting the applet
-	 */
 	private Image image;
-	/**
-	 * This variable is used in Painting the applet
-	 */
-	private int imageTranslationX, imageTranslationY = 0;
-	/**
-	 * This variable is used in Painting the applet
-	 */
-	private int contractedImageX, contractedImageY;
-	/**
-	 * This variable is used in Painting the applet
-	 */
-	private int rememberWidth, rememberHeight;
-	/**
-	 * This variable is used in Painting the applet
-	 */
+	private int imageTranslationX, imageTranslationY, contractedImageX,
+			contractedImageY, rememberWidth, rememberHeight, height, width;
 	private int[][] drawRect;
-	/**
-	 * This is a package of classes
-	 */
+	private Paintable paintingObject;
 	private ClassHandler classHandler;
 
 	@Override
@@ -64,7 +28,6 @@ public class AppletMainClass extends JApplet implements MainClass {
 	public void init() {
 		setFocusable(true);
 		setVisible(true);
-		System.out.println("I'm an Applet");
 	}
 
 	@Override
@@ -74,8 +37,8 @@ public class AppletMainClass extends JApplet implements MainClass {
 	public void start() {
 		classHandler = new ClassHandler();
 		classHandler.setMainClass(this);
-		classHandler.setScreenHeight(height);
-		classHandler.setScreenWidth(width);
+		this.width = classHandler.screenWidth;
+		this.height = classHandler.screenHeight;
 		System.out.println("MainClass init.");
 		setBackground(Color.BLACK);
 		setFocusable(true);
@@ -106,8 +69,9 @@ public class AppletMainClass extends JApplet implements MainClass {
 	 *            is Menu
 	 */
 	@Override
-	public void paint(int which) {
-		paintGame = which;
+	public void paint(Paintable pt) {
+		paintingObject = pt;
+		setFocusable(true);
 		update(this.getGraphics());
 	}
 
@@ -134,14 +98,10 @@ public class AppletMainClass extends JApplet implements MainClass {
 			contractedImageY = height;
 			// redefines contractedImage width and height so that they are not
 			// the ones we defined last time
-			if (contractedImageY > this.getHeight()) {
-				// If the graphics Y is bigger then the screen Y, resize it to
-				// fit
-				contractedImageY = this.getHeight();
-				// Resize graphics X so that it matches graphics Y
-				contractedImageX = (int) ((double) contractedImageY
-						/ (double) height * width);
-			}
+			contractedImageY = this.getHeight();
+			// Resize graphics X so that it matches graphics Y
+			contractedImageX = (int) ((double) contractedImageY
+					/ (double) height * width);
 			if (contractedImageX > this.getWidth()) {
 				// If the graphics Y is bigger then the screen Y after
 				// resizing(or not resizing) y, then resize it to be even
@@ -179,14 +139,10 @@ public class AppletMainClass extends JApplet implements MainClass {
 			contractedImageY = height;
 			// redefines contractedImage width and height so that they are not
 			// the ones we defined last time
-			if (contractedImageY > this.getHeight()) {
-				// If the graphics Y is bigger then the screen Y, resize it to
-				// fit
-				contractedImageY = this.getHeight();
-				// Resize graphics X so that it matches graphics Y
-				contractedImageX = (int) ((double) contractedImageY
-						/ (double) height * width);
-			}
+			contractedImageY = this.getHeight();
+			// Resize graphics X so that it matches graphics Y
+			contractedImageX = (int) ((double) contractedImageY
+					/ (double) height * width);
 			if (contractedImageX > this.getWidth()) {
 				// If the graphics Y is bigger then the screen Y after
 				// resizing(or not resizing) y, then resize it to be even
@@ -219,13 +175,7 @@ public class AppletMainClass extends JApplet implements MainClass {
 		bufferedGraphics.setColor(getForeground());
 		// Runs the Paint method in order to get the images for all the objects
 		// on the screen.
-		if (paintGame == 0) {
-			classHandler.getRunLevel().paint(bufferedGraphics);
-		} else if (paintGame == 1) {
-			classHandler.getMenu().paint(bufferedGraphics);
-		} else if (paintGame == 2) {
-			classHandler.getLoadingScreen().paint(bufferedGraphics);
-		}
+		paintingObject.paint(bufferedGraphics);
 		// draws the Image with the translations that were already defined, to
 		// make it in the center of the screen
 		g.drawImage(image, imageTranslationX, imageTranslationY,

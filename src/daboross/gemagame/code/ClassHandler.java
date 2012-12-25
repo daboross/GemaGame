@@ -11,12 +11,12 @@ import javax.swing.JFrame;
  * 
  */
 public class ClassHandler {
-
+	public final int screenWidth = 640;
+	public final int screenHeight =480;
 	private boolean isApplet;
 	private JFrame jFrame;
-	private Thread runLevelThread, levelWriterThread, menuThread,
-			loadingScreenThread;
-	private int screenWidth, screenHeight;
+	private Thread runLevelThread, levelFileWriterThread, menuThread,
+			loadingScreenThread, levelCreatorThread;
 	private MainClass mainClass;
 	private RunLevel runLevel;
 	private PlatformHandler platformHandler;
@@ -27,6 +27,7 @@ public class ClassHandler {
 	private LevelLoader levelLoader;
 	private FileLoader fileLoader;
 	private LoadingScreen loadingScreen;
+	private LevelCreator levelCreator;
 
 	public ClassHandler() {
 	}
@@ -130,22 +131,6 @@ public class ClassHandler {
 		this.levelLoader = levelLoader;
 	}
 
-	public int getScreenWidth() {
-		return screenWidth;
-	}
-
-	public void setScreenWidth(int screenWidth) {
-		this.screenWidth = screenWidth;
-	}
-
-	public int getScreenHeight() {
-		return screenHeight;
-	}
-
-	public void setScreenHeight(int screenHeight) {
-		this.screenHeight = screenHeight;
-	}
-
 	/**
 	 * @return the runLevelThread
 	 */
@@ -164,16 +149,16 @@ public class ClassHandler {
 	/**
 	 * @return the levelWriterThread
 	 */
-	public Thread getLevelWriterThread() {
-		return levelWriterThread;
+	public Thread getLevelFileWriterThread() {
+		return levelFileWriterThread;
 	}
 
 	/**
 	 * @param levelWriterThread
 	 *            the levelWriterThread to set
 	 */
-	public void setLevelWriterThread(Thread levelWriterThread) {
-		this.levelWriterThread = levelWriterThread;
+	public void setLevelFileWriterThread(Thread levelWriterThread) {
+		this.levelFileWriterThread = levelWriterThread;
 	}
 
 	/**
@@ -229,5 +214,35 @@ public class ClassHandler {
 
 	public void setLoadingScreenThread(Thread loadingScreenThread) {
 		this.loadingScreenThread = loadingScreenThread;
+	}
+
+	/**
+	 * @return the levelCreatorThread
+	 */
+	public Thread getLevelCreatorThread() {
+		return levelCreatorThread;
+	}
+
+	/**
+	 * @param levelCreatorThread
+	 *            the levelCreatorThread to set
+	 */
+	public void setLevelCreatorThread(Thread levelCreatorThread) {
+		this.levelCreatorThread = levelCreatorThread;
+	}
+
+	/**
+	 * @return the levelCreator
+	 */
+	public LevelCreator getLevelCreator() {
+		return levelCreator;
+	}
+
+	/**
+	 * @param levelCreator
+	 *            the levelCreator to set
+	 */
+	public void setLevelCreator(LevelCreator levelCreator) {
+		this.levelCreator = levelCreator;
 	}
 }

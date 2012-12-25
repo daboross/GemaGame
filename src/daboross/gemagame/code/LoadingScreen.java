@@ -6,7 +6,7 @@ import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 
-public class LoadingScreen {
+public class LoadingScreen implements Paintable {
 
 	private ClassHandler classHandler;
 	private Image loadingImage;
@@ -22,7 +22,7 @@ public class LoadingScreen {
 			Toolkit tk = Toolkit.getDefaultToolkit();
 			if (classHandler.getjFrame() == null) {
 				String baseURL = "daboross/gemagame/data/images/";
-				loadingImage = tk.createImage(baseURL + "Background.png");
+				loadingImage = tk.createImage(baseURL + "loading.png");
 			} else {
 				String baseURL = "/daboross/gemagame/data/images/";
 				Class<? extends JFrame> j = classHandler.getjFrame().getClass();
@@ -35,19 +35,11 @@ public class LoadingScreen {
 			e.printStackTrace();
 			System.out.println("Load Images Failed");
 		}
-		classHandler.getMainClass().paint(2);
+		classHandler.getMainClass().paint(this);
 		classHandler.setLoadingScreen(this);
-		RunLevel runLevel = new RunLevel(classHandler);
 		Menu menu = new Menu(classHandler);
-		new FileLoader(classHandler);
-		LevelFileWriter levelFileWriter = new LevelFileWriter(classHandler);
-		new LevelLoader(classHandler);
-		Thread levelFileWriterThread = new Thread(levelFileWriter);
 		Thread menuThread = new Thread(menu);
-		Thread runLevelThread = new Thread(runLevel);
 		classHandler.setMenuThread(menuThread);
-		classHandler.setRunLevelThread(runLevelThread);
-		classHandler.setLevelWriterThread(levelFileWriterThread);
 		menuThread.start();
 	}
 
