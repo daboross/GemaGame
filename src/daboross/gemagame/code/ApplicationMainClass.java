@@ -4,7 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 
 import javax.swing.JFrame;
 
@@ -44,7 +46,7 @@ public class ApplicationMainClass implements MainClass {
 		this.width = classHandler.screenWidth;
 		this.height = classHandler.screenHeight;
 		LoadingScreen loadingScreen = new LoadingScreen(classHandler);
-		loadingScreen.load(true);
+		loadingScreen.load();
 	}
 
 	@Override
@@ -191,5 +193,25 @@ public class ApplicationMainClass implements MainClass {
 		// [1][] is y position
 		// [2][] is x length
 		// [3][] is y length
+	}
+
+	@Override
+	public void mouseListenerAdd(MouseListener mouseListener) {
+		jFrame.addMouseListener(mouseListener);
+	}
+
+	@Override
+	public void mouseListenerRemove(MouseListener mouseListener) {
+		jFrame.removeMouseListener(mouseListener);
+	}
+
+	@Override
+	public void focusListenerAdd(FocusListener focusListener) {
+		jFrame.addFocusListener(focusListener);
+	}
+
+	@Override
+	public void focusListenerRemove(FocusListener focusListener) {
+		jFrame.removeFocusListener(focusListener);
 	}
 }

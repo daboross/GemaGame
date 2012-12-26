@@ -3,7 +3,9 @@ package daboross.gemagame.code;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 
 import javax.swing.JApplet;
 
@@ -26,6 +28,7 @@ public class AppletMainClass extends JApplet implements MainClass {
 	 * This is the initial function called by the applet html page or applet viewer
 	 */
 	public void init() {
+		System.out.println("Running Gema Game");
 		setFocusable(true);
 		setVisible(true);
 	}
@@ -35,15 +38,17 @@ public class AppletMainClass extends JApplet implements MainClass {
 	 * This function is called by the applet's html page or applet viewer
 	 */
 	public void start() {
+		System.out.println("MainClass init.");
 		classHandler = new ClassHandler();
 		classHandler.setMainClass(this);
 		this.width = classHandler.screenWidth;
 		this.height = classHandler.screenHeight;
-		System.out.println("MainClass init.");
 		setBackground(Color.BLACK);
 		setFocusable(true);
+		setVisible(true);
+		setForeground(Color.black);
 		LoadingScreen loadingScreen = new LoadingScreen(classHandler);
-		loadingScreen.load(false);
+		loadingScreen.load();
 	}
 
 	@Override
@@ -218,10 +223,37 @@ public class AppletMainClass extends JApplet implements MainClass {
 	@Override
 	public void keyListenerAdd(KeyListener keyListener) {
 		addKeyListener(keyListener);
+		System.out.println("Adding Key Listener"+keyListener);
 	}
 
 	@Override
 	public void keyListenerRemove(KeyListener keyListener) {
-		addKeyListener(keyListener);
+		removeKeyListener(keyListener);
+		System.out.println("Removing Key Listener"+keyListener);
+	}
+
+	@Override
+	public void mouseListenerAdd(MouseListener mouseListener) {
+		addMouseListener(mouseListener);
+		System.out.println("Adding Mouse Listener"+mouseListener);
+	}
+
+	@Override
+	public void mouseListenerRemove(MouseListener mouseListener) {
+		removeMouseListener(mouseListener);
+		System.out.println("Removing Mouse Listener"+mouseListener);
+
+	}
+
+	@Override
+	public void focusListenerAdd(FocusListener focusListener) {
+		addFocusListener(focusListener);
+		System.out.println("Adding Focus Listener"+focusListener);
+	}
+
+	@Override
+	public void focusListenerRemove(FocusListener focusListener) {
+		removeFocusListener(focusListener);
+		System.out.println("Removing Focus Listener"+focusListener);
 	}
 }

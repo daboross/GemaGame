@@ -4,12 +4,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
+import java.net.URL;
 
 import javax.swing.JFrame;
 
-public class Menu implements Runnable, KeyListener, Paintable {
+public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 	private MainClass mainClass;
 	private ClassHandler classHandler;
 	private Image upperImage;
@@ -28,8 +28,8 @@ public class Menu implements Runnable, KeyListener, Paintable {
 		alive = true;
 		this.classHandler = classHandler;
 		mainClass = classHandler.getMainClass();
+		Toolkit tk = Toolkit.getDefaultToolkit();
 		try {
-			Toolkit tk = Toolkit.getDefaultToolkit();
 			if (classHandler.getjFrame() != null) {
 				Class<? extends JFrame> j = classHandler.getjFrame().getClass();
 				String baseURL = "/daboross/gemagame/data/images/menu/";
@@ -42,14 +42,16 @@ public class Menu implements Runnable, KeyListener, Paintable {
 				unSelectedButton = tk.createImage(j.getResource(baseURL
 						+ "unSelectedButton.png"));
 			} else {
-				String baseURL = "daboross/gemagame/data/images/menu/";
-				upperImage = tk.createImage(baseURL + "upperImage.png");
-				upperImageOverlay = tk.createImage(baseURL + "upperImage0.png");
-				selectedButton = tk.createImage(baseURL + "selectedButton.png");
-				unSelectedButton = tk.createImage(baseURL
-						+ "unSelectedButton.png");
+				AppletMainClass apm = ((AppletMainClass) classHandler
+						.getMainClass());
+				URL base = new URL(apm.getDocumentBase(),
+						"/daboross/gemagame/data/images/menu/");
+				upperImage = apm.getImage(base, "upperImage.png");
+				upperImageOverlay = apm.getImage(base, "upperImage0.png");
+				selectedButton = apm.getImage(base, "selectedButton.png");
+				unSelectedButton = apm.getImage(base, "unSelectedButton.png");
 			}
-			System.out.println("Loaded Menu Images");
+			System.out.println("Loaded Menu images");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Menu Load Images Failed");
@@ -88,6 +90,7 @@ public class Menu implements Runnable, KeyListener, Paintable {
 	public void run() {
 		System.out.println("Running Menu");
 		mainClass.keyListenerAdd(this);
+		mainClass.focusListenerAdd(this);
 		while (alive) {
 			if (typeTimer > 0) {
 				typeTimer -= 1;
@@ -100,12 +103,12 @@ public class Menu implements Runnable, KeyListener, Paintable {
 			}
 		}
 		mainClass.keyListenerRemove(this);
+		mainClass.focusListenerRemove(this);
 	}
 
 	@Override
 	public void keyPressed(KeyEvent keyEvent) {
 		if (typeTimer == 0) {
-			System.out.println("Got Input");
 			int eventChar = keyEvent.getKeyCode();
 			if (eventChar == 32) {
 				end();
@@ -151,5 +154,15 @@ public class Menu implements Runnable, KeyListener, Paintable {
 			classHandler.setMenuThread(menuThread);
 			menuThread.start();
 		}
+	}
+
+	@Override
+	public void focusGained(FocusEvent arg0) {
+		System.out.println("Gained Focus");
+	}
+
+	@Override
+	public void focusLost(FocusEvent arg0) {
+		System.out.println("Lost Focus");
 	}
 }

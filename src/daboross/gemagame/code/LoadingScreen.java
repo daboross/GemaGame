@@ -3,6 +3,7 @@ package daboross.gemagame.code;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.net.URL;
 
 import javax.swing.JFrame;
 
@@ -16,18 +17,21 @@ public class LoadingScreen implements Paintable {
 		this.classHandler = classHandler;
 	}
 
-	public void load(boolean isJFrame) {
+	public void load() {
 		System.out.println("Loading...");
 		try {
-			Toolkit tk = Toolkit.getDefaultToolkit();
 			if (classHandler.getjFrame() == null) {
-				String baseURL = "daboross/gemagame/data/images/";
-				loadingImage = tk.createImage(baseURL + "loading.png");
+				AppletMainClass apm = ((AppletMainClass) classHandler
+						.getMainClass());
+				URL base = new URL(apm.getDocumentBase(),
+						"/daboross/gemagame/data/images/");
+				loadingImage = apm.getImage(base, "loading.png");
 			} else {
+				Toolkit tk = Toolkit.getDefaultToolkit();
 				String baseURL = "/daboross/gemagame/data/images/";
 				Class<? extends JFrame> j = classHandler.getjFrame().getClass();
 				loadingImage = tk.createImage(j.getResource(baseURL
-						+ "Background.png"));
+						+ "loading.png"));
 
 			}
 			System.out.println("Loaded Images");

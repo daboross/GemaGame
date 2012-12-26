@@ -5,14 +5,19 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
-public class RunLevel implements Runnable, KeyListener, Paintable {
-	private boolean alive;
+public class RunLevel implements Runnable, KeyListener, FocusListener,
+		Paintable {
+	private boolean paused, alive;
 	/** The Character in this game */
 	private Character character;
 	/** The Background Handler in this game */
@@ -22,7 +27,8 @@ public class RunLevel implements Runnable, KeyListener, Paintable {
 	/**
 	 * Various image variables that are defined in initial function
 	 */
-	private Image proj0, proj1, proj2, proj3, characterImage, platform;
+	private Image proj0, proj1, proj2, proj3, characterImage, platform,
+			pauseOverlay;
 	/**
 	 * These are variables that keep track of whether or not keys are pressed.
 	 */
@@ -52,17 +58,7 @@ public class RunLevel implements Runnable, KeyListener, Paintable {
 		backgroundImages = new Image[1];
 		try {
 			Toolkit tk = Toolkit.getDefaultToolkit();
-			if (classHandler.getjFrame() == null) {
-				String baseURL = "daboross/gemagame/data/images/";
-				backgroundImages[0] = tk
-						.createImage(baseURL + "Background.png");
-				platform = tk.createImage(baseURL + "platform.png");
-				characterImage = tk.createImage(baseURL + "Character.png");
-				proj0 = tk.createImage(baseURL + "projectileLeft.png");
-				proj1 = tk.createImage(baseURL + "projectileUp.png");
-				proj2 = tk.createImage(baseURL + "projectileRight.png");
-				proj3 = tk.createImage(baseURL + "projectileDown.png");
-			} else {
+			if (classHandler.getjFrame() != null) {
 				String baseURL = "/daboross/gemagame/data/images/";
 				Class<? extends JFrame> j = classHandler.getjFrame().getClass();
 				backgroundImages[0] = tk.createImage(j.getResource(baseURL
@@ -79,30 +75,26 @@ public class RunLevel implements Runnable, KeyListener, Paintable {
 						+ "projectileRight.png"));
 				proj3 = tk.createImage(j.getResource(baseURL
 						+ "projectileDown.png"));
-
+				pauseOverlay = tk.createImage(j.getResource(baseURL
+						+ "paused.png"));
+			} else {
+				AppletMainClass apm = ((AppletMainClass) classHandler
+						.getMainClass());
+				URL base = new URL(apm.getDocumentBase(),
+						"/daboross/gemagame/data/images/");
+				backgroundImages[0] = apm.getImage(base, "Background.png");
+				platform = apm.getImage(base, "platform.png");
+				characterImage = apm.getImage(base, "Character.png");
+				proj0 = apm.getImage(base, "projectileLeft.png");
+				proj1 = apm.getImage(base, "projectileUp.png");
+				proj2 = apm.getImage(base, "projectileRight.png");
+				proj3 = apm.getImage(base, "projectileDown.png");
+				pauseOverlay = apm.getImage(base, "paused.png");
 			}
 			System.out.println("Loaded Images");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Load Images Failed");
-			try {
-				Toolkit tk = Toolkit.getDefaultToolkit();
-				if (classHandler.getjFrame() != null) {
-					String baseURL = ((AppletMainClass) classHandler
-							.getMainClass()).getDocumentBase()
-							+ "daboross/gemagame/data/images/menu/";
-					platform = tk.createImage(baseURL + "platform.png");
-					characterImage = tk.createImage(baseURL + "Character.png");
-					proj0 = tk.createImage(baseURL + "projectileLeft.png");
-					proj1 = tk.createImage(baseURL + "projectileUp.png");
-					proj2 = tk.createImage(baseURL + "projectileRight.png");
-					proj3 = tk.createImage(baseURL + "projectileDown.png");
-				}
-				System.out.println("Loaded Menu Images");
-			} catch (Exception ew) {
-				e.printStackTrace();
-				System.out.println("Menu Load Images Failed");
-			}
 		}
 		/**
 		 * Creates the Background Handler, Character, and Platform Handler
@@ -120,22 +112,34 @@ public class RunLevel implements Runnable, KeyListener, Paintable {
 	/**This function runs the game.*/
 	public void run() {
 		alive = true;
+		paused = false;
+		mainClass.focusListenerAdd(this);
 		mainClass.keyListenerAdd(this);
 		System.out.println("Starting RunLevel");
 		while (alive) {
-			/* Calls Character update Function for Movement Updates */
-			character.update(wPressed, aPressed, dPressed);
-			/*
-			 * Calls Background Handler Update Function for Movement Updates
-			 */
-			backgroundH.update();
-			/* Repaints the screen */
-			mainClass.paint(this);
-			/* Tries to sleep the thread for 17 milliseconds */
-			try {
-				Thread.sleep(17);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			while (alive && !paused) {
+				/* Calls Character update Function for Movement Updates */
+				character.update(wPressed, aPressed, dPressed);
+				/*
+				 * Calls Background Handler Update Function for Movement Updates
+				 */
+				backgroundH.update();
+				/* Repaints the screen */
+				mainClass.paint(this);
+				/* Tries to sleep the thread for 17 milliseconds */
+				try {
+					Thread.sleep(17);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			while (alive && paused) {
+				mainClass.paint(this);
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		Menu menu = new Menu(classHandler);
@@ -151,6 +155,17 @@ public class RunLevel implements Runnable, KeyListener, Paintable {
 	 *            This is the graphics to paint all the objects onto
 	 */
 	public void paint(Graphics g) {
+		Graphics gtp = null;
+		BufferedImage pauseImage = null;
+		if (paused) {
+			gtp = g;
+			pauseImage = new BufferedImage(640, 480,
+					BufferedImage.TYPE_INT_ARGB);
+
+			// paint both images, preserving the alpha channels
+			g = pauseImage.getGraphics();
+			g.drawImage(pauseOverlay, 0, 0, null);
+		}
 		// This loop goes through and draws each layer of background
 		for (int i = 0; i < backgroundH.getNumberLayers(); i++) {
 			for (int k = 0; k < 2; k++) {
@@ -219,7 +234,12 @@ public class RunLevel implements Runnable, KeyListener, Paintable {
 				g.drawImage(proj3, (int) p.getCenterX() - 1,
 						(int) p.getCenterY() - 1, null);
 				break;
+
 			}
+		}
+		if (paused) {
+			g.drawImage(pauseOverlay, 0, 0, null);
+			gtp.drawImage(pauseImage, 0, 0, null);
 		}
 	}
 
@@ -227,85 +247,126 @@ public class RunLevel implements Runnable, KeyListener, Paintable {
 	public void keyPressed(KeyEvent keyEvent) {
 		// Records all key presses into variables
 		int eventChar = keyEvent.getKeyCode();
-		if (eventChar == KeyEvent.VK_W && !wPressed) {
-			// If w is pressed, and the variable that keeps track of whether w
-			// is pressed (wPressed) is not true, then set wPressed to true
-			wPressed = true;
-		}
-		if (eventChar == KeyEvent.VK_A && !aPressed) {
-			// If a is pressed, and the variable that keeps track of whether a
-			// is pressed (aPressed) is not true, then set aPressed to true
-			aPressed = true;
-		}
-		if (eventChar == KeyEvent.VK_D && !dPressed) {
-			// If d is pressed, and the variable that keeps track of whether d
-			// is pressed (dPressed) is not true, then set dPressed to true
-			dPressed = true;
-		}
-		if (eventChar == KeyEvent.VK_UP) {
-			// every refresh that up key is pressed, launch the character shoot
-			// function with a x velocity of 0 and a y velocity of -1, meaning
-			// going up. Note that this function (character.shoot) tells the
-			// character to shoot after the timer has counted down from that
-			// last shoot, so this part does not need to keep track of that.
-			character.shoot(0, -1);
-		}
-		if (eventChar == KeyEvent.VK_DOWN) {
-			// every refresh that up key is pressed, launch the character shoot
-			// function with a x velocity of 0 and a y velocity of 1, meaning
-			// going down. Note that this function (character.shoot) tells the
-			// character to shoot after the timer has counted down from that
-			// last shoot, so this part does not need to keep track of that.
-			character.shoot(0, 1);
-		}
-		if (eventChar == KeyEvent.VK_LEFT) {
-			// every refresh that up key is pressed, launch the character shoot
-			// function with a x velocity of -1 and a y velocity of 0, meaning
-			// going left. Note that this function (character.shoot) tells the
-			// character to shoot after the timer has counted down from that
-			// last shoot, so this part does not need to keep track of that.
-			character.shoot(-1, 0);
-		}
-		if (eventChar == KeyEvent.VK_RIGHT) {
-			// every refresh that up key is pressed, launch the character shoot
-			// function with a x velocity of 1 and a y velocity of 0, meaning
-			// going right. Note that this function (character.shoot) tells the
-			// character to shoot after the timer has counted down from that
-			// last shoot, so this part does not need to keep track of that.
-			character.shoot(1, 0);
+		if (!paused) {
+			if (eventChar == KeyEvent.VK_W && !wPressed) {
+				/*
+				 * If w is pressed, and the variable that keeps track of whether
+				 * w is pressed (wPressed) is not true, then set wPressed to
+				 * true
+				 */
+				wPressed = true;
+			}
+			if (eventChar == KeyEvent.VK_A && !aPressed) {
+				/*
+				 * If a is pressed, and the variable that keeps track of whether
+				 * a is pressed (aPressed) is not true, then set aPressed to
+				 * true
+				 */
+				aPressed = true;
+			}
+			if (eventChar == KeyEvent.VK_D && !dPressed) {
+				/*
+				 * If d is pressed, and the variable that keeps track of whether
+				 * d is pressed (dPressed) is not true, then set dPressed to
+				 * true
+				 */
+				dPressed = true;
+			}
+			if (eventChar == KeyEvent.VK_UP) {
+				/*
+				 * every refresh that up key is pressed, launch the character
+				 * shoot function with a x velocity of 0 and a y velocity of -1,
+				 * meaning going up. Note that this function (character.shoot)
+				 * tells the character to shoot after the timer has counted down
+				 * from that last shoot, so this part does not need to keep
+				 * track of that.
+				 */
+				character.shoot(0, -1);
+			}
+			if (eventChar == KeyEvent.VK_DOWN) {
+				/*
+				 * every refresh that up key is pressed, launch the character
+				 * shoot function with a x velocity of 0 and a y velocity of 1,
+				 * meaning going down. Note that this function (character.shoot)
+				 * tells the character to shoot after the timer has counted down
+				 * from that last shoot, so this part does not need to keep
+				 * track of that.
+				 */
+				character.shoot(0, 1);
+			}
+			if (eventChar == KeyEvent.VK_LEFT) {
+				/*
+				 * every refresh that up key is pressed, launch the character
+				 * shoot function with a x velocity of -1 and a y velocity of 0,
+				 * meaning going left. Note that this function (character.shoot)
+				 * tells the character to shoot after the timer has counted down
+				 * from that last shoot, so this part does not need to keep
+				 * track of that.
+				 */
+				character.shoot(-1, 0);
+			}
+			if (eventChar == KeyEvent.VK_RIGHT) {
+				/*
+				 * every refresh that up key is pressed, launch the character
+				 * shoot function with a x velocity of 1 and a y velocity of 0,
+				 * meaning going right. Note that this function
+				 * (character.shoot) tells the character to shoot after the
+				 * timer has counted down from that last shoot, so this part
+				 * does not need to keep track of that.
+				 */
+				character.shoot(1, 0);
+			}
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent keyEvent) {
-		// When a key is released, resets the key variable
-		int eventChar = keyEvent.getKeyCode();
-		// This defines the integer to represent the key release
+		if (!paused) {
+			// When a key is released, resets the key variable
+			int eventChar = keyEvent.getKeyCode();
+			// This defines the integer to represent the key release
 
-		if (eventChar == KeyEvent.VK_W && wPressed) {
-			// If a is released, and the variable was true, set the variable to
-			// false. wPressed keeps track of if w was lasted pressed or
-			// released
-			wPressed = false;
-		}
-		if (eventChar == KeyEvent.VK_A && aPressed) {
-			// If a is released, and the variable was true, set the variable to
-			// false. aPressed keeps track of if a was lasted pressed or
-			// released
-			aPressed = false;
-		}
-		if (eventChar == KeyEvent.VK_D) {
-			// If a is released, and the variable was true, set the variable to
-			// false. dPressed keeps track of if d was lasted pressed or
-			// released
-			dPressed = false;
-		}
-		if (eventChar == KeyEvent.VK_ESCAPE) {
-			alive = false;
+			if (eventChar == KeyEvent.VK_W && wPressed) {
+				// If a is released, and the variable was true, set the variable
+				// to
+				// false. wPressed keeps track of if w was lasted pressed or
+				// released
+				wPressed = false;
+			}
+			if (eventChar == KeyEvent.VK_A && aPressed) {
+				// If a is released, and the variable was true, set the variable
+				// to
+				// false. aPressed keeps track of if a was lasted pressed or
+				// released
+				aPressed = false;
+			}
+			if (eventChar == KeyEvent.VK_D) {
+				// If a is released, and the variable was true, set the variable
+				// to
+				// false. dPressed keeps track of if d was lasted pressed or
+				// released
+				dPressed = false;
+			}
+			if (eventChar == KeyEvent.VK_ESCAPE) {
+				paused = true;
+			}
 		}
 	}
 
 	@Override
 	public void keyTyped(KeyEvent keyEvent) {
+	}
+
+	@Override
+	public void focusGained(FocusEvent e) {
+		paused = false;
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		paused = true;
+		wPressed = false;
+		aPressed = false;
+		dPressed = false;
 	}
 }
