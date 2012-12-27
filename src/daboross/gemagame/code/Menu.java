@@ -1,5 +1,7 @@
 package daboross.gemagame.code;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -21,6 +23,7 @@ public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 	private int optionSelected;
 	private boolean alive;
 	private int typeTimer;
+	private String[] buttonNames;
 
 	public Menu(ObjectHandler objectHandler) {
 		objectHandler.setMenu(this);
@@ -30,9 +33,14 @@ public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 		this.objectHandler = objectHandler;
 		mainClass = objectHandler.getMainClass();
 		Toolkit tk = Toolkit.getDefaultToolkit();
+		buttonNames = new String[3];
+		buttonNames[0] = "Play";
+		buttonNames[1] = "Level Maker";
+		buttonNames[2] = "None Yet";
 		try {
 			if (objectHandler.getjFrame() != null) {
-				Class<? extends JFrame> j = objectHandler.getjFrame().getClass();
+				Class<? extends JFrame> j = objectHandler.getjFrame()
+						.getClass();
 				String baseURL = "/daboross/gemagame/data/images/menu/";
 				upperImage = tk.createImage(j.getResource(baseURL
 						+ "upperImage.png"));
@@ -66,15 +74,19 @@ public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 					(objectHandler.getScreenWidth() - upperImage.getWidth(null)) / 2,
 					10, null);
 			g.drawImage(upperImageOverlay, 0, 0, null);
+			g.setColor(Color.gray);
 			for (int i = 0; i < 3; i++) {
+				int x = (objectHandler.getScreenWidth() - selectedButton
+						.getWidth(null)) / 2;
+				int y = 200 + i * 70;
 				if (i == optionSelected) {
-					g.drawImage(selectedButton,
-							(objectHandler.getScreenWidth() - selectedButton
-									.getWidth(null)) / 2, 200 + i * 70, null);
+					g.setFont(new Font("Arial", Font.BOLD, 30));
+					g.drawImage(selectedButton, x, y, null);
+					g.drawString(buttonNames[i], 30, y);
 				} else {
-					g.drawImage(unSelectedButton,
-							(objectHandler.getScreenWidth() - unSelectedButton
-									.getWidth(null)) / 2, 200 + i * 70, null);
+					g.setFont(new Font("Arial", Font.PLAIN, 30));
+					g.drawImage(unSelectedButton, x, y, null);
+					g.drawString(buttonNames[i], 30, y);
 				}
 			}
 		} catch (Exception e) {
@@ -134,7 +146,6 @@ public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 		alive = false;
 		if (optionSelected == 0) {
 			RunLevel runLevel = new RunLevel(objectHandler);
-			new FileLoader(objectHandler);
 			new LevelLoader(objectHandler);
 			Thread runLevelThread = new Thread(runLevel);
 			objectHandler.setRunLevelThread(runLevelThread);

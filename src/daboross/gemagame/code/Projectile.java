@@ -14,7 +14,7 @@ public class Projectile {
 	private int animationDirection;
 	/**
 	 * Gets the background handler from MainClass so that it can be used through
-	 * the class without repetitive retrievings.
+	 * the class without repetitive retrieving.
 	 */
 	private BackgroundHandler bg;
 	/**

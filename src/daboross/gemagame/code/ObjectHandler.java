@@ -24,7 +24,6 @@ public class ObjectHandler {
 	private BackgroundHandler backgroundHandler;
 	private Menu menu;
 	private LevelLoader levelLoader;
-	private FileLoader fileLoader;
 	private LoadingScreen loadingScreen;
 	private LevelCreator levelCreator;
 
@@ -239,21 +238,6 @@ public class ObjectHandler {
 	 */
 	public void setLevelLoader(LevelLoader levelLoader) {
 		this.levelLoader = levelLoader;
-	}
-
-	/**
-	 * @return the fileLoader
-	 */
-	public FileLoader getFileLoader() {
-		return fileLoader;
-	}
-
-	/**
-	 * @param fileLoader
-	 *            the fileLoader to set
-	 */
-	public void setFileLoader(FileLoader fileLoader) {
-		this.fileLoader = fileLoader;
 	}
 
 	/**

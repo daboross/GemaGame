@@ -1,10 +1,8 @@
 package daboross.gemagame.code;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class LevelLoader {
-	private String fileName;
 	private ObjectHandler objectHandler;
 
 	public LevelLoader(ObjectHandler objectHandler) {
@@ -12,21 +10,17 @@ public class LevelLoader {
 		this.objectHandler = objectHandler;
 	}
 
-	public void loadTxt(String fileName) {
-		this.fileName = fileName;
-		if (objectHandler.getFileLoader() == null) {
-			objectHandler.setFileLoader(new FileLoader(objectHandler));
-		}
-		ArrayList<String> lineList = objectHandler.getFileLoader().loadFile(
-				fileName);
-		ArrayList<Double> platformsToAddXPos = new ArrayList<Double>();
-		ArrayList<Double> platformsToAddYPos = new ArrayList<Double>();
-		ArrayList<Double> platformsToAddXLength = new ArrayList<Double>();
-		ArrayList<Double> platformsToAddYLength = new ArrayList<Double>();
+	public void load(ArrayList<String> lineList) {
+		ArrayList<Integer> platformsToAddXPos = new ArrayList<Integer>();
+		ArrayList<Integer> platformsToAddYPos = new ArrayList<Integer>();
+		ArrayList<Integer> platformsToAddXLength = new ArrayList<Integer>();
+		ArrayList<Integer> platformsToAddYLength = new ArrayList<Integer>();
 		int numberOfPlatformsToAdd = 0;
-		// These four ArrayLists store the platform properties that are to be
-		// added at end of function.
-		// Variables to be used in the following for loop.
+		/*
+		 * These four ArrayLists store the platform properties that are to be
+		 * added at end of function. Variables to be used in the following for
+		 * loop.
+		 */
 		char currentChar;
 		int nextNumberEquals;
 		// This variable will keep track of what to do with the next number in
@@ -37,14 +31,11 @@ public class LevelLoader {
 		// 1 is y position
 		// 2 is x length
 		// 3 is y length
-		// 4 is quit loop
 
-		// Define variable constants to use, for name simplicity.
-
-		// For loops that go through every character in the line.
+		/* For loops that go through every character in the line. */
 		for (int lineNumber = 0; lineNumber < lineList.size(); lineNumber++) {
 
-			double[] currentAdditions = new double[4];
+			int[] currentAdditions = new int[4];
 			for (int i = 0; i < 4; i++) {
 				currentAdditions[i] = 0;
 			}
@@ -98,40 +89,38 @@ public class LevelLoader {
 				platformsToAddYLength.add(currentAdditions[3]);
 				numberOfPlatformsToAdd++;
 			} else {
-				System.out.print("4 seperated Integers not found in File: ");
-				System.out.println(fileName + ", Line Number: "
-						+ (lineNumber + 1) + ", Invalid Content: "
-						+ lineList.get(lineNumber));
+				System.out
+						.printf("4 seperated Integers not found /n, Line Number: "
+								+ (lineNumber + 1)
+								+ ", Invalid Content: "
+								+ lineList.get(lineNumber) + "/n");
 			}
 
 		}// End of main loop
 
 		for (int i = 0; i < numberOfPlatformsToAdd; i++) {
-			// Loops through all the platform properties that have been gotten
-			// from the file, and adds each of them to the platform Handler
-			// stored in Main Class
+			/*
+			 * Loops through all the platform properties that have been gotten
+			 * from the file, and adds each of them to the platform Handler
+			 * stored in Main Class
+			 */
 			objectHandler.getPlatformHandler().addPlatForm(
 					platformsToAddXPos.get(i), platformsToAddYPos.get(i),
 					platformsToAddXLength.get(i), platformsToAddYLength.get(i));
 		}
-		System.out.println("Loaded " + numberOfPlatformsToAdd
-				+ " platforms from " + fileName + ".");
-	}// End of Function
+		System.out.println("Loaded " + numberOfPlatformsToAdd + ".");
+	}
 
-	public void loadFile(File file) {
-		if (objectHandler.getFileLoader() == null) {
-			new FileLoader(objectHandler);
-		}
-		ArrayList<String> lineList = objectHandler.getFileLoader()
-				.loadFile(file);
-		ArrayList<Double> platformsToAddXPos = new ArrayList<Double>();
-		ArrayList<Double> platformsToAddYPos = new ArrayList<Double>();
-		ArrayList<Double> platformsToAddXLength = new ArrayList<Double>();
-		ArrayList<Double> platformsToAddYLength = new ArrayList<Double>();
-		int numberOfPlatformsToAdd = 0;
-		// These four ArrayLists store the platform properties that are to be
-		// added at end of function.
-		// Variables to be used in the following for loop.
+	public PlatformList loadToList(ArrayList<String> lineList) {
+		ArrayList<Integer> platformsToAddXPos = new ArrayList<Integer>();
+		ArrayList<Integer> platformsToAddYPos = new ArrayList<Integer>();
+		ArrayList<Integer> platformsToAddXLength = new ArrayList<Integer>();
+		ArrayList<Integer> platformsToAddYLength = new ArrayList<Integer>();
+		/*
+		 * These four ArrayLists store the platform properties that are to be
+		 * added at end of function. Variables to be used in the following for
+		 * loop.
+		 */
 		char currentChar;
 		int nextNumberEquals;
 		// This variable will keep track of what to do with the next number in
@@ -142,14 +131,11 @@ public class LevelLoader {
 		// 1 is y position
 		// 2 is x length
 		// 3 is y length
-		// 4 is quit loop
 
-		// Define variable constants to use, for name simplicity.
-
-		// For loops that go through every character in the line.
+		/* For loops that go through every character in the line. */
 		for (int lineNumber = 0; lineNumber < lineList.size(); lineNumber++) {
 
-			double[] currentAdditions = new double[4];
+			int[] currentAdditions = new int[4];
 			for (int i = 0; i < 4; i++) {
 				currentAdditions[i] = 0;
 			}
@@ -193,17 +179,7 @@ public class LevelLoader {
 					break;
 				}
 			}// End of current line Loop
-
-			// This checks if the current addition platform has a length and
-			// height, and all 4 values have been gone through and added.
-			if (currentAdditions[2] < currentAdditions[4]) {
-				System.out.print("Warning! Platform not loaded because yPos"
-						+ "Value is negetive. In File: ");
-
-				System.out.println(fileName + ", Line Number: "
-						+ (lineNumber + 1) + ", Invalid Content: "
-						+ lineList.get(lineNumber));
-			} else if (currentAdditions[2] > 0 && currentAdditions[3] > 0
+			if (currentAdditions[2] > 0 && currentAdditions[3] > 0
 					&& nextNumberEquals == 4) {
 				// If it does have a width and height, then add it to the
 				// Platforms To Add ArrayLists
@@ -211,26 +187,21 @@ public class LevelLoader {
 				platformsToAddYPos.add(currentAdditions[1]);
 				platformsToAddXLength.add(currentAdditions[2]);
 				platformsToAddYLength.add(currentAdditions[3]);
-				numberOfPlatformsToAdd++;
 			} else {
-				System.out.print("4 seperated Integers not found in File: ");
-				System.out.println(fileName + ", Line Number: "
-						+ (lineNumber + 1) + ", Invalid Content: "
-						+ lineList.get(lineNumber));
+				System.out
+						.printf("4 seperated Integers not found /n, Line Number: "
+								+ (lineNumber + 1)
+								+ ", Invalid Content: "
+								+ lineList.get(lineNumber) + "/n");
 			}
 
 		}// End of main loop
 
-		objectHandler.getPlatformHandler().clearPlatformList();
-		for (int i = 0; i < numberOfPlatformsToAdd; i++) {
-			// Loops through all the platform properties that have been gotten
-			// from the file, and adds each of them to the platform Handler
-			// stored in Main Class
-			objectHandler.getPlatformHandler().addPlatForm(
-					platformsToAddXPos.get(i), platformsToAddYPos.get(i),
-					platformsToAddXLength.get(i), platformsToAddYLength.get(i));
-		}
-		System.out.println("Loaded " + numberOfPlatformsToAdd
-				+ " platforms from " + fileName + ".");
-	}// End of Function
-}// End Of Class
+		PlatformList pl = new PlatformList();
+		pl.xPosList = platformsToAddXPos;
+		pl.yPosList = platformsToAddYPos;
+		pl.xLengthList = platformsToAddXLength;
+		pl.yLengthList = platformsToAddYLength;
+		return pl;
+	}
+}

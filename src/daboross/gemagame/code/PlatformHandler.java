@@ -9,7 +9,7 @@ public class PlatformHandler {
 	 * and yLengthList.get(6). those would be the values that define the
 	 * platform 6.
 	 */
-	private ArrayList<Double> xPosList, yPosList, xLengthList, yLengthList;
+	private ArrayList<Integer> xPosList, yPosList, xLengthList, yLengthList;
 	/** The number of platforms */
 	private int listLength;
 
@@ -20,10 +20,10 @@ public class PlatformHandler {
 	 */
 	public PlatformHandler(ObjectHandler objectHandler) {
 		objectHandler.setPlatformHandler(this);
-		xPosList = new ArrayList<Double>();
-		yPosList = new ArrayList<Double>();
-		xLengthList = new ArrayList<Double>();
-		yLengthList = new ArrayList<Double>();
+		xPosList = new ArrayList<Integer>();
+		yPosList = new ArrayList<Integer>();
+		xLengthList = new ArrayList<Integer>();
+		yLengthList = new ArrayList<Integer>();
 		listLength = 0;
 	}
 
@@ -39,46 +39,48 @@ public class PlatformHandler {
 	 * @param yLength
 	 *            this is the y length of the platform you are adding
 	 */
-	public void addPlatForm(double xPos, double yPos, double xLength,
-			double yLength) {
+	public void addPlatForm(int xPos, int yPos, int xLength, int yLength) {
 		xPosList.add(xPos);
 		yPosList.add(yPos);
 		xLengthList.add(xLength);
 		yLengthList.add(yLength);
-		listLength += 1;
+		listLength++;
 	}
 
-	/** This returns an ArrayList of the x Positions of all the platforms. */
-	public ArrayList<Double> xPosList() {
-		return xPosList;
+	/** Returns the x position of the platform i */
+	public double xPosList(int i) {
+		return xPosList.get(i);
 	}
 
-	/** This returns an ArrayList of the y Positions of all the platforms. */
-	public ArrayList<Double> yPosList() {
-		return yPosList;
+	/** Returns the y position of the platform i */
+	public double yPosList(int i) {
+		return yPosList.get(i);
 	}
 
-	/** This returns an ArrayList of the x Lengths of all the platforms. */
-	public ArrayList<Double> xLengthList() {
-		// returns the xLength to be used to get values.
-		// Never use this to alter the list.
-		return xLengthList;
+	/** Returns the x length of the platform i */
+	public double xLengthList(int i) {
+		return xLengthList.get(i);
 	}
 
-	/** This returns an ArrayList of the y Lengths of all the platforms. */
-	public ArrayList<Double> yLengthList() {
-		// returns the yLength to be used to get values.
-		// Never use this to alter the list.
-		return yLengthList;
+	/** Returns the y length of the platform i */
+	public double yLengthList(int i) {
+		return yLengthList.get(i);
 	}
 
 	/** Removes all platforms. */
 	public void clearPlatformList() {
-		xPosList = new ArrayList<Double>();
-		yPosList = new ArrayList<Double>();
-		xLengthList = new ArrayList<Double>();
-		yLengthList = new ArrayList<Double>();
+		xPosList = new ArrayList<Integer>();
+		yPosList = new ArrayList<Integer>();
+		xLengthList = new ArrayList<Integer>();
+		yLengthList = new ArrayList<Integer>();
 		listLength = 0;
+	}
+
+	public void loadFromList(PlatformList pl) {
+		if (pl != null) {
+			xPosList = pl.xPosList;
+			xLengthList = pl.xLengthList;
+		}
 	}
 
 	/** Returns the number of platforms */

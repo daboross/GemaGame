@@ -23,7 +23,6 @@ public class ApplicationMainClass implements MainClass {
 	private Paintable paintingObject;
 
 	public ApplicationMainClass() {
-
 	}
 
 	public static void main(String[] args) {
@@ -102,7 +101,7 @@ public class ApplicationMainClass implements MainClass {
 		}
 		// clears the screen
 		bufferedGraphics2.setColor(Color.black);
-		bufferedGraphics2.fillRect(0, 0, 640, 480);
+		bufferedGraphics2.fillRect(0, 0, width, height);
 		paintingObject.paint(bufferedGraphics2);
 		bufferedGraphics1
 				.drawImage(bImage2, imageTranslationX, imageTranslationY,

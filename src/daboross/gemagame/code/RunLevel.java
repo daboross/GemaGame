@@ -60,7 +60,8 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 			Toolkit tk = Toolkit.getDefaultToolkit();
 			if (objectHandler.getjFrame() != null) {
 				String baseURL = "/daboross/gemagame/data/images/";
-				Class<? extends JFrame> j = objectHandler.getjFrame().getClass();
+				Class<? extends JFrame> j = objectHandler.getjFrame()
+						.getClass();
 				backgroundImages[0] = tk.createImage(j.getResource(baseURL
 						+ "Background.png"));
 				platform = tk.createImage(j.getResource(baseURL
@@ -107,8 +108,26 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 		character = new Character(objectHandler);
 		platformHandler = new PlatformHandler(objectHandler);
 		LevelLoader levelLoader = new LevelLoader(objectHandler);
-		levelLoader.loadTxt("levels/level.txt");
-
+		if (objectHandler.getjFrame() == null) {
+			try {
+				levelLoader.load(FileHandler.ReadInternalFile(
+						"levels/level.txt", objectHandler.getMainClass()));
+			} catch (Exception e) {
+				System.out.println("Loading Internal File Failed");
+			}
+		} else {
+			try {
+				levelLoader.load(FileHandler
+						.ReadFile("GemaGameLevels/level.txt"));
+			} catch (Exception e) {
+				try {
+					levelLoader.load(FileHandler.ReadInternalFile(
+							"levels/level.txt", objectHandler.getMainClass()));
+				} catch (Exception e1) {
+					System.out.println("Loading Internal File Failed");
+				}
+			}
+		}
 	}
 
 	@Override
@@ -164,12 +183,10 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 			gtp = g;
 			pauseImage = new BufferedImage(640, 480,
 					BufferedImage.TYPE_INT_ARGB);
-
-			// paint both images, preserving the alpha channels
 			g = pauseImage.getGraphics();
 			g.drawImage(pauseOverlay, 0, 0, null);
 		}
-		// This loop goes through and draws each layer of background
+		/* This loop goes through and draws each layer of background */
 		for (int i = 0; i < backgroundH.getNumberLayers(); i++) {
 			for (int k = 0; k < 2; k++) {
 				int xPos = (int) backgroundH.getBgX(k, i);
@@ -177,14 +194,14 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 				g.drawImage(backgroundImages[0], xPos, yPos, null);
 			}
 		}
-		// This loop goes through and draws each platform in PlatformHandler
+		/* This loop goes through and draws each platform in PlatformHandler */
 		for (int i = 0; i < platformHandler.listLength(); i++) {
-			g.drawImage(platform,
-					(int) (platformHandler.xPosList().get(i) + backgroundH
-							.getDifX()),
-					(int) (platformHandler.yPosList().get(i) + 0),
-					(int) (platformHandler.xLengthList().get(i) + 0),
-					(int) (platformHandler.yLengthList().get(i) + 0), null);
+			g.drawImage(
+					platform,
+					(int) (platformHandler.xPosList(i) + backgroundH.getDifX()),
+					(int) (platformHandler.yPosList(i) + 0),
+					(int) (platformHandler.xLengthList(i) + 0),
+					(int) (platformHandler.yLengthList(i) + 0), null);
 		}
 		g.setColor(Color.CYAN);
 
@@ -194,20 +211,21 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 		 * character.getLeftLimit()), (int) (character.getBottomLimit() -
 		 * character.getTopLimit()));
 		 */
-		// Get a graphics2d for better manipulation
+		/* Get a graphics2d for better manipulation */
 		Graphics2D g2d = (Graphics2D) g;
-		// Move the graphics to the characters location
+		/* Move the graphics to the characters location */
 		g2d.translate(character.getCenterX(), character.getCenterY());
-		// Rotates the graphics, which will make the drawn image rotated
+		/* Rotates the graphics, which will make the drawn image rotated */
 		double rotate = character.rotation();
 		g2d.rotate(rotate);
-		// Draws the image with the characterImage, lengthX, and lengthY
+		/* Draws the image with the characterImage, lengthX, and lengthY */
 		g2d.drawImage(characterImage, -character.lengthX, -character.lengthY,
 				null);
-		// UnRotates the graphics so that the other objects aren't rotated.
+		/* UnRotates the graphics so that the other objects aren't rotated. */
 		g2d.rotate(-rotate);
-		// UnTranslates the graphics so that the other objects aren't
-		// Translated
+		/*
+		 * UnTranslates the graphics so that the other objects aren't Translated
+		 */
 		g2d.translate(-character.getCenterX(), -character.getCenterY());
 		// Goes through and draws every Character projectile on the screen
 		ArrayList<Projectile> projectiles = character.getProjectiles();
@@ -328,29 +346,32 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 
 	@Override
 	public void keyReleased(KeyEvent keyEvent) {
-		// When a key is released, resets the key variable
+		/* When a key is released, resets the key variable */
 		int eventChar = keyEvent.getKeyCode();
-		// This defines the integer to represent the key release
+		/* This defines the integer to represent the key release */
 		if (!paused) {
 			if (eventChar == KeyEvent.VK_W && wPressed) {
-				// If a is released, and the variable was true, set the variable
-				// to
-				// false. wPressed keeps track of if w was lasted pressed or
-				// released
+				/*
+				 * If a is released, and the variable was true, set the variable
+				 * to false. wPressed keeps track of if w was lasted pressed or
+				 * released
+				 */
 				wPressed = false;
 			}
 			if (eventChar == KeyEvent.VK_A && aPressed) {
-				// If a is released, and the variable was true, set the variable
-				// to
-				// false. aPressed keeps track of if a was lasted pressed or
-				// released
+				/*
+				 * If a is released, and the variable was true, set the variable
+				 * to false. aPressed keeps track of if a was lasted pressed or
+				 * released
+				 */
 				aPressed = false;
 			}
 			if (eventChar == KeyEvent.VK_D) {
-				// If a is released, and the variable was true, set the variable
-				// to
-				// false. dPressed keeps track of if d was lasted pressed or
-				// released
+				/*
+				 * If a is released, and the variable was true, set the variable
+				 * to false. dPressed keeps track of if d was lasted pressed or
+				 * released
+				 */
 				dPressed = false;
 			}
 			if (eventChar == KeyEvent.VK_ESCAPE) {
