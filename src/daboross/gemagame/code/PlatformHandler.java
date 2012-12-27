@@ -16,10 +16,10 @@ public class PlatformHandler {
 	/**
 	 * Initial Platform Handler Function
 	 * 
-	 * @param classHandler
+	 * @param objectHandler
 	 */
-	public PlatformHandler(ObjectHandler classHandler) {
-		classHandler.setPlatformHandler(this);
+	public PlatformHandler(ObjectHandler objectHandler) {
+		objectHandler.setPlatformHandler(this);
 		xPosList = new ArrayList<Double>();
 		yPosList = new ArrayList<Double>();
 		xLengthList = new ArrayList<Double>();

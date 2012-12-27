@@ -5,19 +5,19 @@ import java.util.ArrayList;
 
 public class LevelLoader {
 	private String fileName;
-	private ObjectHandler classHandler;
+	private ObjectHandler objectHandler;
 
-	public LevelLoader(ObjectHandler classHandler) {
-		classHandler.setLevelLoader(this);
-		this.classHandler = classHandler;
+	public LevelLoader(ObjectHandler objectHandler) {
+		objectHandler.setLevelLoader(this);
+		this.objectHandler = objectHandler;
 	}
 
 	public void loadTxt(String fileName) {
 		this.fileName = fileName;
-		if (classHandler.getFileLoader() == null) {
-			classHandler.setFileLoader(new FileLoader(classHandler));
+		if (objectHandler.getFileLoader() == null) {
+			objectHandler.setFileLoader(new FileLoader(objectHandler));
 		}
-		ArrayList<String> lineList = classHandler.getFileLoader().loadFile(
+		ArrayList<String> lineList = objectHandler.getFileLoader().loadFile(
 				fileName);
 		ArrayList<Double> platformsToAddXPos = new ArrayList<Double>();
 		ArrayList<Double> platformsToAddYPos = new ArrayList<Double>();
@@ -110,7 +110,7 @@ public class LevelLoader {
 			// Loops through all the platform properties that have been gotten
 			// from the file, and adds each of them to the platform Handler
 			// stored in Main Class
-			classHandler.getPlatformHandler().addPlatForm(
+			objectHandler.getPlatformHandler().addPlatForm(
 					platformsToAddXPos.get(i), platformsToAddYPos.get(i),
 					platformsToAddXLength.get(i), platformsToAddYLength.get(i));
 		}
@@ -119,10 +119,10 @@ public class LevelLoader {
 	}// End of Function
 
 	public void loadFile(File file) {
-		if (classHandler.getFileLoader() == null) {
-			new FileLoader(classHandler);
+		if (objectHandler.getFileLoader() == null) {
+			new FileLoader(objectHandler);
 		}
-		ArrayList<String> lineList = classHandler.getFileLoader()
+		ArrayList<String> lineList = objectHandler.getFileLoader()
 				.loadFile(file);
 		ArrayList<Double> platformsToAddXPos = new ArrayList<Double>();
 		ArrayList<Double> platformsToAddYPos = new ArrayList<Double>();
@@ -221,12 +221,12 @@ public class LevelLoader {
 
 		}// End of main loop
 
-		classHandler.getPlatformHandler().clearPlatformList();
+		objectHandler.getPlatformHandler().clearPlatformList();
 		for (int i = 0; i < numberOfPlatformsToAdd; i++) {
 			// Loops through all the platform properties that have been gotten
 			// from the file, and adds each of them to the platform Handler
 			// stored in Main Class
-			classHandler.getPlatformHandler().addPlatForm(
+			objectHandler.getPlatformHandler().addPlatForm(
 					platformsToAddXPos.get(i), platformsToAddYPos.get(i),
 					platformsToAddXLength.get(i), platformsToAddYLength.get(i));
 		}

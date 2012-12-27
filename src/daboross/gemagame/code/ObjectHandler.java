@@ -22,13 +22,11 @@ public class ObjectHandler {
 	private PlatformHandler platformHandler;
 	private Character character;
 	private BackgroundHandler backgroundHandler;
-	private LevelFileWriter levelFileWriter;
 	private Menu menu;
 	private LevelLoader levelLoader;
 	private FileLoader fileLoader;
 	private LoadingScreen loadingScreen;
 	private LevelCreator levelCreator;
-	private FileHandler fileHandler;
 
 	public ObjectHandler() {
 	}
@@ -214,21 +212,6 @@ public class ObjectHandler {
 	}
 
 	/**
-	 * @return the levelFileWriter
-	 */
-	public LevelFileWriter getLevelFileWriter() {
-		return levelFileWriter;
-	}
-
-	/**
-	 * @param levelFileWriter
-	 *            the levelFileWriter to set
-	 */
-	public void setLevelFileWriter(LevelFileWriter levelFileWriter) {
-		this.levelFileWriter = levelFileWriter;
-	}
-
-	/**
 	 * @return the menu
 	 */
 	public Menu getMenu() {
@@ -301,21 +284,6 @@ public class ObjectHandler {
 	 */
 	public void setLevelCreator(LevelCreator levelCreator) {
 		this.levelCreator = levelCreator;
-	}
-
-	/**
-	 * @return the fileHandler
-	 */
-	public FileHandler getFileHandler() {
-		return fileHandler;
-	}
-
-	/**
-	 * @param fileHandler
-	 *            the fileHandler to set
-	 */
-	public void setFileHandler(FileHandler fileHandler) {
-		this.fileHandler = fileHandler;
 	}
 
 	/**

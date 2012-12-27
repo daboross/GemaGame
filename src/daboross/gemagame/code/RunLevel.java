@@ -40,7 +40,7 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 	private Image[] backgroundImages;
 	/** This variable holds this games MainClass */
 	private MainClass mainClass;
-	private ObjectHandler classHandler;
+	private ObjectHandler objectHandler;
 
 	/**
 	 * This is the init for the RunLevel Function Sets certain things in the
@@ -50,17 +50,17 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 	 * @param mainClass
 	 *            This is this Game's mainClass
 	 */
-	public RunLevel(ObjectHandler classHandler) {
-		classHandler.setRunLevel(this);
+	public RunLevel(ObjectHandler objectHandler) {
+		objectHandler.setRunLevel(this);
 		System.out.println("Initializing RunLevel");
-		this.classHandler = classHandler;
-		this.mainClass = classHandler.getMainClass();
+		this.objectHandler = objectHandler;
+		this.mainClass = objectHandler.getMainClass();
 		backgroundImages = new Image[1];
 		try {
 			Toolkit tk = Toolkit.getDefaultToolkit();
-			if (classHandler.getjFrame() != null) {
+			if (objectHandler.getjFrame() != null) {
 				String baseURL = "/daboross/gemagame/data/images/";
-				Class<? extends JFrame> j = classHandler.getjFrame().getClass();
+				Class<? extends JFrame> j = objectHandler.getjFrame().getClass();
 				backgroundImages[0] = tk.createImage(j.getResource(baseURL
 						+ "Background.png"));
 				platform = tk.createImage(j.getResource(baseURL
@@ -80,7 +80,7 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 				pauseOverlay2 = tk.createImage(j.getResource(baseURL
 						+ "pausedEscape.png"));
 			} else {
-				AppletMainClass apm = ((AppletMainClass) classHandler
+				AppletMainClass apm = ((AppletMainClass) objectHandler
 						.getMainClass());
 				URL base = new URL(apm.getDocumentBase(),
 						"/daboross/gemagame/data/images/");
@@ -103,10 +103,10 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 		 * Creates the Background Handler, Character, and Platform Handler
 		 * classes
 		 */
-		backgroundH = new BackgroundHandler(classHandler);
-		character = new Character(classHandler);
-		platformHandler = new PlatformHandler(classHandler);
-		LevelLoader levelLoader = new LevelLoader(classHandler);
+		backgroundH = new BackgroundHandler(objectHandler);
+		character = new Character(objectHandler);
+		platformHandler = new PlatformHandler(objectHandler);
+		LevelLoader levelLoader = new LevelLoader(objectHandler);
 		levelLoader.loadTxt("levels/level.txt");
 
 	}
@@ -145,9 +145,9 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 		}
 		mainClass.removeKeyListener(this);
 		mainClass.removeFocusListener(this);
-		Menu menu = new Menu(classHandler);
+		Menu menu = new Menu(objectHandler);
 		Thread menuThread = new Thread(menu);
-		classHandler.setMenuThread(menuThread);
+		objectHandler.setMenuThread(menuThread);
 		menuThread.start();
 	}
 

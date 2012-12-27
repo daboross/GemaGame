@@ -37,8 +37,8 @@ public class BackgroundHandler {
 	private double[] increaseRates;
 
 	/** The initial function for creating a BackgroundHandler */
-	public BackgroundHandler(ObjectHandler classHandler) {
-		classHandler.setBackgroundHandler(this);
+	public BackgroundHandler(ObjectHandler objectHandler) {
+		objectHandler.setBackgroundHandler(this);
 		numberOfLayers = 3;
 		xPositions = new double[2][numberOfLayers];
 		yPositions = new double[2][numberOfLayers];

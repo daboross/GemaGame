@@ -18,7 +18,7 @@ import javax.swing.JFrame;
 
 public class LevelCreator implements Runnable, Paintable, KeyListener,
 		MouseListener, FocusListener, MouseMotionListener {
-	private ObjectHandler classHandler;
+	private ObjectHandler objectHandler;
 	@SuppressWarnings("unused")
 	private boolean alive, focused, mouseIn, mousePressed, shiftPressed, nVar,
 			isMouseOnPlatform;
@@ -28,18 +28,18 @@ public class LevelCreator implements Runnable, Paintable, KeyListener,
 	private BackgroundHandler backgroundH;
 	private Image platform, backgroundImage;
 
-	public LevelCreator(ObjectHandler classHandler) {
+	public LevelCreator(ObjectHandler objectHandler) {
 		try {
 			Toolkit tk = Toolkit.getDefaultToolkit();
-			if (classHandler.getjFrame() != null) {
+			if (objectHandler.getjFrame() != null) {
 				String baseURL = "/daboross/gemagame/data/images/";
-				Class<? extends JFrame> j = classHandler.getjFrame().getClass();
+				Class<? extends JFrame> j = objectHandler.getjFrame().getClass();
 				backgroundImage = tk.createImage(j.getResource(baseURL
 						+ "Background.png"));
 				platform = tk.createImage(j.getResource(baseURL
 						+ "platform.png"));
 			} else {
-				AppletMainClass apm = ((AppletMainClass) classHandler
+				AppletMainClass apm = ((AppletMainClass) objectHandler
 						.getMainClass());
 				URL base = new URL(apm.getDocumentBase(),
 						"/daboross/gemagame/data/images/");
@@ -51,16 +51,16 @@ public class LevelCreator implements Runnable, Paintable, KeyListener,
 			e.printStackTrace();
 			System.out.println("Load Images Failed");
 		}
-		backgroundH = new BackgroundHandler(classHandler);
-		this.classHandler = classHandler;
-		classHandler.setLevelCreator(this);
+		backgroundH = new BackgroundHandler(objectHandler);
+		this.objectHandler = objectHandler;
+		objectHandler.setLevelCreator(this);
 		focused = true;
 		mouseIn = true;
 		mousePressed = false;
 		mousePlatformID = -1;
 		numberOfPlatforms = 0;
-		mouseX = classHandler.getScreenWidth() / 2;
-		mouseY = classHandler.getScreenHeight() / 2;
+		mouseX = objectHandler.getScreenWidth() / 2;
+		mouseY = objectHandler.getScreenHeight() / 2;
 		xPos = new ArrayList<Integer>();
 		yPos = new ArrayList<Integer>();
 		xLengths = new ArrayList<Integer>();
@@ -69,15 +69,15 @@ public class LevelCreator implements Runnable, Paintable, KeyListener,
 
 	@Override
 	public void run() {
-		classHandler.getMainClass().addKeyListener(this);
-		classHandler.getMainClass().addFocusListener(this);
-		classHandler.getMainClass().addMouseListener(this);
-		classHandler.getMainClass().addMouseMotionListener(this);
+		objectHandler.getMainClass().addKeyListener(this);
+		objectHandler.getMainClass().addFocusListener(this);
+		objectHandler.getMainClass().addMouseListener(this);
+		objectHandler.getMainClass().addMouseMotionListener(this);
 		alive = true;
 		while (alive) {
-			classHandler.getMainClass().paint(this);
+			objectHandler.getMainClass().paint(this);
 			if (mouseIn) {
-				if (mouseX > classHandler.getScreenWidth() - 30) {
+				if (mouseX > objectHandler.getScreenWidth() - 30) {
 					scroll -= 5;
 					backgroundH.changeDifX(-5, 0);
 				}
@@ -92,15 +92,15 @@ public class LevelCreator implements Runnable, Paintable, KeyListener,
 			} catch (InterruptedException e) {
 			}
 		}
-		classHandler.getMainClass().removeKeyListener(this);
-		classHandler.getMainClass().removeFocusListener(this);
-		classHandler.getMainClass().removeMouseListener(this);
-		classHandler.getMainClass().removeMouseMotionListener(this);
+		objectHandler.getMainClass().removeKeyListener(this);
+		objectHandler.getMainClass().removeFocusListener(this);
+		objectHandler.getMainClass().removeMouseListener(this);
+		objectHandler.getMainClass().removeMouseMotionListener(this);
 		for (int i = 0; i < numberOfPlatforms; i++) {
 		}
-		Menu menu = new Menu(classHandler);
+		Menu menu = new Menu(objectHandler);
 		Thread menuThread = new Thread(menu);
-		classHandler.setMenuThread(menuThread);
+		objectHandler.setMenuThread(menuThread);
 		menuThread.start();
 	}
 
@@ -177,8 +177,8 @@ public class LevelCreator implements Runnable, Paintable, KeyListener,
 	@Override
 	public void mousePressed(MouseEvent e) {
 		mousePressed = true;
-		int mX = classHandler.getMainClass().realX(e.getX());
-		int mY = classHandler.getMainClass().realY(e.getY());
+		int mX = objectHandler.getMainClass().realX(e.getX());
+		int mY = objectHandler.getMainClass().realY(e.getY());
 		if (numberOfPlatforms != 0) {
 			for (int i = 0; i < numberOfPlatforms; i++) {
 				if (Collision.pointOnPlane(mX - scroll, mY, xPos.get(i),
@@ -215,8 +215,8 @@ public class LevelCreator implements Runnable, Paintable, KeyListener,
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		int mX = classHandler.getMainClass().realX(e.getX());
-		int mY = classHandler.getMainClass().realY(e.getY());
+		int mX = objectHandler.getMainClass().realX(e.getX());
+		int mY = objectHandler.getMainClass().realY(e.getY());
 		if (isMouseOnPlatform) {
 			if (shiftPressed) {
 				xLengths.set(mousePlatformID,
@@ -233,7 +233,7 @@ public class LevelCreator implements Runnable, Paintable, KeyListener,
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		mouseX = classHandler.getMainClass().realX(e.getX());
-		mouseY = classHandler.getMainClass().realY(e.getY());
+		mouseX = objectHandler.getMainClass().realX(e.getX());
+		mouseY = objectHandler.getMainClass().realY(e.getY());
 	}
 }

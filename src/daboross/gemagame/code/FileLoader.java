@@ -15,11 +15,11 @@ import java.util.ArrayList;
  * 
  */
 public class FileLoader {
-	ObjectHandler classHandler;
+	ObjectHandler objectHandler;
 
-	public FileLoader(ObjectHandler classHandler) {
-		classHandler.setFileLoader(this);
-		this.classHandler = classHandler;
+	public FileLoader(ObjectHandler objectHandler) {
+		objectHandler.setFileLoader(this);
+		this.objectHandler = objectHandler;
 	}
 
 	public ArrayList<String> loadFile(File file) {
@@ -47,11 +47,11 @@ public class FileLoader {
 		ArrayList<String> lineList = new ArrayList<String>();
 		try {
 			InputStream inputStream;
-			if (classHandler.getjFrame() == null) {
-				inputStream = classHandler.getMainClass().getClass()
+			if (objectHandler.getjFrame() == null) {
+				inputStream = objectHandler.getMainClass().getClass()
 						.getResourceAsStream(filePath);
 			} else {
-				inputStream = classHandler
+				inputStream = objectHandler
 						.getjFrame()
 						.getClass()
 						.getResourceAsStream(

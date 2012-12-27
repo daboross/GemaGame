@@ -9,19 +9,19 @@ import javax.swing.JFrame;
 
 public class LoadingScreen implements Paintable {
 
-	private ObjectHandler classHandler;
+	private ObjectHandler objectHandler;
 	private Image loadingImage;
 
-	public LoadingScreen(ObjectHandler classHandler) {
-		classHandler.setLoadingScreen(this);
-		this.classHandler = classHandler;
+	public LoadingScreen(ObjectHandler objectHandler) {
+		objectHandler.setLoadingScreen(this);
+		this.objectHandler = objectHandler;
 	}
 
 	public void load() {
 		System.out.println("Loading...");
 		try {
-			if (classHandler.getjFrame() == null) {
-				AppletMainClass apm = ((AppletMainClass) classHandler
+			if (objectHandler.getjFrame() == null) {
+				AppletMainClass apm = ((AppletMainClass) objectHandler
 						.getMainClass());
 				URL base = new URL(apm.getDocumentBase(),
 						"/daboross/gemagame/data/images/");
@@ -29,7 +29,7 @@ public class LoadingScreen implements Paintable {
 			} else {
 				Toolkit tk = Toolkit.getDefaultToolkit();
 				String baseURL = "/daboross/gemagame/data/images/";
-				Class<? extends JFrame> j = classHandler.getjFrame().getClass();
+				Class<? extends JFrame> j = objectHandler.getjFrame().getClass();
 				loadingImage = tk.createImage(j.getResource(baseURL
 						+ "loading.png"));
 
@@ -39,11 +39,11 @@ public class LoadingScreen implements Paintable {
 			e.printStackTrace();
 			System.out.println("Load Images Failed");
 		}
-		classHandler.getMainClass().paint(this);
-		classHandler.setLoadingScreen(this);
-		Menu menu = new Menu(classHandler);
+		objectHandler.getMainClass().paint(this);
+		objectHandler.setLoadingScreen(this);
+		Menu menu = new Menu(objectHandler);
 		Thread menuThread = new Thread(menu);
-		classHandler.setMenuThread(menuThread);
+		objectHandler.setMenuThread(menuThread);
 		menuThread.start();
 	}
 

@@ -86,7 +86,7 @@ public class Character {
 	 * the character.
 	 */
 	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
-	private ObjectHandler classHandler;
+	private ObjectHandler objectHandler;
 
 	/**
 	 * This defines the Character.
@@ -96,11 +96,11 @@ public class Character {
 	 * @param bottomEdge
 	 *            This is the height of the screen
 	 */
-	public Character(ObjectHandler classHandler) {
-		classHandler.setCharacter(this);
-		this.classHandler = classHandler;
-		screenWidth = classHandler.getScreenWidth();
-		screenHeight = classHandler.getScreenHeight();
+	public Character(ObjectHandler objectHandler) {
+		objectHandler.setCharacter(this);
+		this.objectHandler = objectHandler;
+		screenWidth = objectHandler.getScreenWidth();
+		screenHeight = objectHandler.getScreenHeight();
 		centerY = screenHeight - lengthY;
 		centerX = 0;
 	}
@@ -163,11 +163,11 @@ public class Character {
 		// X
 		rotation += 0.1 * speedX;
 		if (centerX + speedX < leftScrollEdgeOffSet) {
-			classHandler.getBackgroundHandler().changeDifX(
+			objectHandler.getBackgroundHandler().changeDifX(
 					leftScrollEdgeOffSet - (centerX + speedX), 0);
 			centerX = leftScrollEdgeOffSet;
 		} else if (centerX + speedX > screenWidth - rightScrollEdgeOffSet) {
-			classHandler.getBackgroundHandler().changeDifX(
+			objectHandler.getBackgroundHandler().changeDifX(
 					(screenWidth - rightScrollEdgeOffSet) - (centerX + speedX),
 					0);
 			centerX = screenWidth - rightScrollEdgeOffSet;
@@ -188,7 +188,7 @@ public class Character {
 		} else if (shootWhenReady) {
 			Projectile p = new Projectile(centerX, centerY, shootWhenReadyX
 					* (projSpeed), shootWhenReadyY * (projSpeed), screenWidth,
-					screenHeight, classHandler);
+					screenHeight, objectHandler);
 			projectiles.add(p);
 			shootTimer = shootTimerReset;
 			shootWhenReady = false;
@@ -204,14 +204,14 @@ public class Character {
 	}
 
 	private void setBoundaries() {
-		double xDif = classHandler.getBackgroundHandler().getDifX();
+		double xDif = objectHandler.getBackgroundHandler().getDifX();
 		double checkX1 = centerX - lengthX;
 		double checkY1 = centerY - lengthY;
 		double checkX2 = centerX - lengthX + speedX;
 		double checkY2 = centerY - lengthY + speedY;
 		double checkLengthX = lengthX * 2;
 		double checkLengthY = lengthY * 2;
-		PlatformHandler platformHandler = classHandler.getPlatformHandler();
+		PlatformHandler platformHandler = objectHandler.getPlatformHandler();
 		double nearestBoundryLeft = 1000;
 		double nearestBoundryRight = 1000;
 		double nearestBoundryUp = 1000;

@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 
 public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 	private MainClass mainClass;
-	private ObjectHandler classHandler;
+	private ObjectHandler objectHandler;
 	private Image upperImage;
 	private Image upperImageOverlay;
 	private Image selectedButton;
@@ -21,19 +21,18 @@ public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 	private int optionSelected;
 	private boolean alive;
 	private int typeTimer;
-	private boolean errorMessagedGraphics = false;
 
-	public Menu(ObjectHandler classHandler) {
-		classHandler.setMenu(this);
+	public Menu(ObjectHandler objectHandler) {
+		objectHandler.setMenu(this);
 		typeTimer = 1;
 		optionSelected = 0;
 		alive = true;
-		this.classHandler = classHandler;
-		mainClass = classHandler.getMainClass();
+		this.objectHandler = objectHandler;
+		mainClass = objectHandler.getMainClass();
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		try {
-			if (classHandler.getjFrame() != null) {
-				Class<? extends JFrame> j = classHandler.getjFrame().getClass();
+			if (objectHandler.getjFrame() != null) {
+				Class<? extends JFrame> j = objectHandler.getjFrame().getClass();
 				String baseURL = "/daboross/gemagame/data/images/menu/";
 				upperImage = tk.createImage(j.getResource(baseURL
 						+ "upperImage.png"));
@@ -44,7 +43,7 @@ public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 				unSelectedButton = tk.createImage(j.getResource(baseURL
 						+ "unSelectedButton.png"));
 			} else {
-				AppletMainClass apm = ((AppletMainClass) classHandler
+				AppletMainClass apm = ((AppletMainClass) objectHandler
 						.getMainClass());
 				URL base = new URL(apm.getDocumentBase(),
 						"/daboross/gemagame/data/images/menu/");
@@ -64,25 +63,22 @@ public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 		try {
 			g.drawImage(
 					upperImage,
-					(classHandler.getScreenWidth() - upperImage.getWidth(null)) / 2,
+					(objectHandler.getScreenWidth() - upperImage.getWidth(null)) / 2,
 					10, null);
 			g.drawImage(upperImageOverlay, 0, 0, null);
 			for (int i = 0; i < 3; i++) {
 				if (i == optionSelected) {
 					g.drawImage(selectedButton,
-							(classHandler.getScreenWidth() - selectedButton
+							(objectHandler.getScreenWidth() - selectedButton
 									.getWidth(null)) / 2, 200 + i * 70, null);
 				} else {
 					g.drawImage(unSelectedButton,
-							(classHandler.getScreenWidth() - unSelectedButton
+							(objectHandler.getScreenWidth() - unSelectedButton
 									.getWidth(null)) / 2, 200 + i * 70, null);
 				}
 			}
 		} catch (Exception e) {
-			if (errorMessagedGraphics == false) {
-				System.out.println("Menu Graphics Failed");
-				errorMessagedGraphics = true;
-			}
+			System.out.println("Menu Graphics Failed");
 		}
 	}
 
@@ -137,21 +133,21 @@ public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 	public void end() {
 		alive = false;
 		if (optionSelected == 0) {
-			RunLevel runLevel = new RunLevel(classHandler);
-			new FileLoader(classHandler);
-			new LevelLoader(classHandler);
+			RunLevel runLevel = new RunLevel(objectHandler);
+			new FileLoader(objectHandler);
+			new LevelLoader(objectHandler);
 			Thread runLevelThread = new Thread(runLevel);
-			classHandler.setRunLevelThread(runLevelThread);
+			objectHandler.setRunLevelThread(runLevelThread);
 			runLevelThread.start();
 		} else if (optionSelected == 1) {
-			LevelCreator levelCreator = new LevelCreator(classHandler);
+			LevelCreator levelCreator = new LevelCreator(objectHandler);
 			Thread levelCreatorThread = new Thread(levelCreator);
-			classHandler.setLevelCreatorThread(levelCreatorThread);
+			objectHandler.setLevelCreatorThread(levelCreatorThread);
 			levelCreatorThread.start();
 		} else {
-			Menu menu = new Menu(classHandler);
+			Menu menu = new Menu(objectHandler);
 			Thread menuThread = new Thread(menu);
-			classHandler.setMenuThread(menuThread);
+			objectHandler.setMenuThread(menuThread);
 			menuThread.start();
 		}
 	}

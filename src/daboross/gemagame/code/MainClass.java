@@ -1,6 +1,9 @@
 package daboross.gemagame.code;
 
-import java.awt.event.*;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 public interface MainClass {
 	public void paint(Paintable objToPaint);
