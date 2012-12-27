@@ -151,13 +151,12 @@ public class ApplicationMainClass implements MainClass {
 	}
 
 	@Override
-	public int realX(double x) {
-		return (int) ((((x) / contractedImageX) * width) - imageTranslationX);
-
+	public int realX(int x) {
+		return (int) ((((double) (x - (double) imageTranslationX) / (double) contractedImageX) * (double) width));
 	}
 
 	@Override
-	public int realY(double y) {
-		return (int) ((((y) / contractedImageY) * height) - imageTranslationY);
+	public int realY(int y) {
+		return (int) ((((double) (y - (double) imageTranslationY) / (double) contractedImageY) * (double) height));
 	}
 }

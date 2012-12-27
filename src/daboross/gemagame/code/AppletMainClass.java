@@ -130,14 +130,13 @@ public class AppletMainClass extends JApplet implements MainClass {
 		g.drawImage(bImage1, 0, 0, this);
 	}
 
-	public int realX(double x) {
-		int returnX = (int) (imageTranslationX + (((x) / this.getWidth()) * contractedImageX));
-		return returnX;
+	@Override
+	public int realX(int x) {
+		return (int) ((((double) (x - (double) imageTranslationX) / (double) contractedImageX) * (double) width));
 	}
 
 	@Override
-	public int realY(double y) {
-		int returnY = (int) (imageTranslationY + (((y) / this.getHeight()) * contractedImageY));
-		return returnY;
+	public int realY(int y) {
+		return (int) ((((double) (y - (double) imageTranslationY) / (double) contractedImageY) * (double) height));
 	}
 }

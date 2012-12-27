@@ -24,7 +24,7 @@ public interface MainClass {
 
 	public void removeMouseMotionListener(MouseMotionListener l);
 
-	public int realX(double x);
+	public int realX(int x);
 
-	public int realY(double y);
+	public int realY(int y);
 }

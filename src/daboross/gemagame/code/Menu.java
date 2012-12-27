@@ -82,11 +82,11 @@ public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 				if (i == optionSelected) {
 					g.setFont(new Font("Arial", Font.BOLD, 30));
 					g.drawImage(selectedButton, x, y, null);
-					g.drawString(buttonNames[i], 30, y);
+					g.drawString(buttonNames[i], 20, y + 30);
 				} else {
 					g.setFont(new Font("Arial", Font.PLAIN, 30));
 					g.drawImage(unSelectedButton, x, y, null);
-					g.drawString(buttonNames[i], 30, y);
+					g.drawString(buttonNames[i], 25, y + 30);
 				}
 			}
 		} catch (Exception e) {

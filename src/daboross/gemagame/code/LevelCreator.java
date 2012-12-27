@@ -142,7 +142,7 @@ public class LevelCreator implements Runnable, Paintable, KeyListener,
 			}
 		}
 		g.setColor(Color.white);
-		g.fillRect(mouseX - 10, mouseY - 10, 20, 20);
+		g.fillRect(mouseX - 2, mouseY - 2, 4, 4);
 	}
 
 	@Override
