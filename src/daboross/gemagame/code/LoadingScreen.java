@@ -9,10 +9,10 @@ import javax.swing.JFrame;
 
 public class LoadingScreen implements Paintable {
 
-	private ClassHandler classHandler;
+	private ObjectHandler classHandler;
 	private Image loadingImage;
 
-	public LoadingScreen(ClassHandler classHandler) {
+	public LoadingScreen(ObjectHandler classHandler) {
 		classHandler.setLoadingScreen(this);
 		this.classHandler = classHandler;
 	}

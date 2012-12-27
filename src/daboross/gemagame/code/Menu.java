@@ -1,17 +1,19 @@
 package daboross.gemagame.code;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.net.URL;
 
 import javax.swing.JFrame;
 
 public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 	private MainClass mainClass;
-	private ClassHandler classHandler;
+	private ObjectHandler classHandler;
 	private Image upperImage;
 	private Image upperImageOverlay;
 	private Image selectedButton;
@@ -21,7 +23,7 @@ public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 	private int typeTimer;
 	private boolean errorMessagedGraphics = false;
 
-	public Menu(ClassHandler classHandler) {
+	public Menu(ObjectHandler classHandler) {
 		classHandler.setMenu(this);
 		typeTimer = 1;
 		optionSelected = 0;
@@ -60,21 +62,19 @@ public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 
 	public void paint(Graphics g) {
 		try {
-			g.setColor(Color.black);
-			g.fillRect(0, 0, classHandler.screenWidth,
-					classHandler.screenHeight);
-			g.drawImage(upperImage,
-					(classHandler.screenWidth - upperImage.getWidth(null)) / 2,
+			g.drawImage(
+					upperImage,
+					(classHandler.getScreenWidth() - upperImage.getWidth(null)) / 2,
 					10, null);
 			g.drawImage(upperImageOverlay, 0, 0, null);
 			for (int i = 0; i < 3; i++) {
 				if (i == optionSelected) {
 					g.drawImage(selectedButton,
-							(classHandler.screenWidth - selectedButton
+							(classHandler.getScreenWidth() - selectedButton
 									.getWidth(null)) / 2, 200 + i * 70, null);
 				} else {
 					g.drawImage(unSelectedButton,
-							(classHandler.screenWidth - unSelectedButton
+							(classHandler.getScreenWidth() - unSelectedButton
 									.getWidth(null)) / 2, 200 + i * 70, null);
 				}
 			}
@@ -89,8 +89,8 @@ public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 	@Override
 	public void run() {
 		System.out.println("Running Menu");
-		mainClass.keyListenerAdd(this);
-		mainClass.focusListenerAdd(this);
+		mainClass.addKeyListener(this);
+		mainClass.addFocusListener(this);
 		while (alive) {
 			if (typeTimer > 0) {
 				typeTimer -= 1;
@@ -102,8 +102,8 @@ public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 				e.printStackTrace();
 			}
 		}
-		mainClass.keyListenerRemove(this);
-		mainClass.focusListenerRemove(this);
+		mainClass.removeKeyListener(this);
+		mainClass.removeFocusListener(this);
 	}
 
 	@Override

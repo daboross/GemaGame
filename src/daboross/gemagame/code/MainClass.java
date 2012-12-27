@@ -5,15 +5,23 @@ import java.awt.event.*;
 public interface MainClass {
 	public void paint(Paintable objToPaint);
 
-	public void keyListenerAdd(KeyListener keyListener);
+	public void addKeyListener(KeyListener l);
 
-	public void keyListenerRemove(KeyListener keyListener);
+	public void removeKeyListener(KeyListener l);
 
-	public void mouseListenerAdd(MouseListener mouseListener);
+	public void addMouseListener(MouseListener l);
 
-	public void mouseListenerRemove(MouseListener mouseListener);
+	public void removeMouseListener(MouseListener l);
 
-	public void focusListenerAdd(FocusListener focusListener);
+	public void addFocusListener(FocusListener l);
 
-	public void focusListenerRemove(FocusListener focusListener);
+	public void removeFocusListener(FocusListener l);
+
+	public void addMouseMotionListener(MouseMotionListener l);
+
+	public void removeMouseMotionListener(MouseMotionListener l);
+
+	public int realX(double x);
+
+	public int realY(double y);
 }

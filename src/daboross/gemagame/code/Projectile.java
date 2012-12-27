@@ -40,7 +40,7 @@ public class Projectile {
 	 *            this is the height of the game
 	 */
 	public Projectile(double comX, double comY, double speedX, double speedY,
-			int rightEdge, int bottomEdge, ClassHandler classHandler) {
+			int rightEdge, int bottomEdge, ObjectHandler classHandler) {
 		bg = classHandler.getBackgroundHandler();
 		this.rightEdge = rightEdge;
 		this.bottomEdge = bottomEdge;

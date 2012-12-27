@@ -18,7 +18,7 @@ public class PlatformHandler {
 	 * 
 	 * @param classHandler
 	 */
-	public PlatformHandler(ClassHandler classHandler) {
+	public PlatformHandler(ObjectHandler classHandler) {
 		classHandler.setPlatformHandler(this);
 		xPosList = new ArrayList<Double>();
 		yPosList = new ArrayList<Double>();

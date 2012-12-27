@@ -3,9 +3,6 @@ package daboross.gemagame.code;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
 
 import javax.swing.JApplet;
 
@@ -21,7 +18,7 @@ public class AppletMainClass extends JApplet implements MainClass {
 			contractedImageY, rememberWidth, rememberHeight, height, width;
 	private int[][] drawRect;
 	private Paintable paintingObject;
-	private ClassHandler classHandler;
+	private ObjectHandler classHandler;
 
 	@Override
 	/**
@@ -39,10 +36,10 @@ public class AppletMainClass extends JApplet implements MainClass {
 	 */
 	public void start() {
 		System.out.println("MainClass init.");
-		classHandler = new ClassHandler();
+		classHandler = new ObjectHandler();
 		classHandler.setMainClass(this);
-		this.width = classHandler.screenWidth;
-		this.height = classHandler.screenHeight;
+		this.width = classHandler.getScreenWidth();
+		this.height = classHandler.getScreenHeight();
 		setBackground(Color.BLACK);
 		setFocusable(true);
 		setVisible(true);
@@ -175,8 +172,7 @@ public class AppletMainClass extends JApplet implements MainClass {
 		}
 		// clears the screen
 		bufferedGraphics.setColor(getBackground());
-		bufferedGraphics.fillRect(0, 0, this.getWidth() + 1,
-				this.getHeight() + 1);
+		bufferedGraphics.fillRect(0, 0, this.getWidth(), this.getHeight());
 		bufferedGraphics.setColor(getForeground());
 		// Runs the Paint method in order to get the images for all the objects
 		// on the screen.
@@ -220,40 +216,14 @@ public class AppletMainClass extends JApplet implements MainClass {
 		// [3][] is y length
 	}
 
-	@Override
-	public void keyListenerAdd(KeyListener keyListener) {
-		addKeyListener(keyListener);
-		System.out.println("Adding Key Listener"+keyListener);
+	public int realX(double x) {
+		int returnX = (int) (imageTranslationX + (((x) / this.getWidth()) * contractedImageX));
+		return returnX;
 	}
 
 	@Override
-	public void keyListenerRemove(KeyListener keyListener) {
-		removeKeyListener(keyListener);
-		System.out.println("Removing Key Listener"+keyListener);
-	}
-
-	@Override
-	public void mouseListenerAdd(MouseListener mouseListener) {
-		addMouseListener(mouseListener);
-		System.out.println("Adding Mouse Listener"+mouseListener);
-	}
-
-	@Override
-	public void mouseListenerRemove(MouseListener mouseListener) {
-		removeMouseListener(mouseListener);
-		System.out.println("Removing Mouse Listener"+mouseListener);
-
-	}
-
-	@Override
-	public void focusListenerAdd(FocusListener focusListener) {
-		addFocusListener(focusListener);
-		System.out.println("Adding Focus Listener"+focusListener);
-	}
-
-	@Override
-	public void focusListenerRemove(FocusListener focusListener) {
-		removeFocusListener(focusListener);
-		System.out.println("Removing Focus Listener"+focusListener);
+	public int realY(double y) {
+		int returnY = (int) (imageTranslationY + (((y) / this.getHeight()) * contractedImageY));
+		return returnY;
 	}
 }

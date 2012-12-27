@@ -15,9 +15,9 @@ import java.util.ArrayList;
  * 
  */
 public class FileLoader {
-	ClassHandler classHandler;
+	ObjectHandler classHandler;
 
-	public FileLoader(ClassHandler classHandler) {
+	public FileLoader(ObjectHandler classHandler) {
 		classHandler.setFileLoader(this);
 		this.classHandler = classHandler;
 	}

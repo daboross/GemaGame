@@ -13,7 +13,7 @@ public class Character {
 	 * the center of the character's x position and y position. These define the
 	 * center, not the upper left hand corner
 	 */
-	private double centerX, centerY = 100;
+	private double centerX, centerY;
 	/**
 	 * The amount of distance that the character travels each update. Each //
 	 * update these are multiplied by a Decimal
@@ -86,7 +86,7 @@ public class Character {
 	 * the character.
 	 */
 	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
-	private ClassHandler classHandler;
+	private ObjectHandler classHandler;
 
 	/**
 	 * This defines the Character.
@@ -96,11 +96,11 @@ public class Character {
 	 * @param bottomEdge
 	 *            This is the height of the screen
 	 */
-	public Character(ClassHandler classHandler) {
+	public Character(ObjectHandler classHandler) {
 		classHandler.setCharacter(this);
 		this.classHandler = classHandler;
-		screenWidth = classHandler.screenWidth;
-		screenHeight = classHandler.screenHeight;
+		screenWidth = classHandler.getScreenWidth();
+		screenHeight = classHandler.getScreenHeight();
 		centerY = screenHeight - lengthY;
 		centerX = 0;
 	}
@@ -288,6 +288,14 @@ public class Character {
 			}
 			if (platformLimitIDTop != platformLimitIDBottom
 					&& platformLimitIDRight == platformLimitIDTop) {
+				rightLimit = screenWidth;
+			}
+			if (platformLimitIDTop != platformLimitIDBottom
+					&& platformLimitIDLeft == platformLimitIDBottom) {
+				leftLimit = 0;
+			}
+			if (platformLimitIDTop != platformLimitIDBottom
+					&& platformLimitIDRight == platformLimitIDBottom) {
 				rightLimit = screenWidth;
 			}
 		}

@@ -17,7 +17,7 @@ import javax.swing.JFrame;
 
 public class RunLevel implements Runnable, KeyListener, FocusListener,
 		Paintable {
-	private boolean paused, alive;
+	private boolean paused, alive, escaped, pauseToEscape;
 	/** The Character in this game */
 	private Character character;
 	/** The Background Handler in this game */
@@ -28,7 +28,7 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 	 * Various image variables that are defined in initial function
 	 */
 	private Image proj0, proj1, proj2, proj3, characterImage, platform,
-			pauseOverlay;
+			pauseOverlay, pauseOverlay2;
 	/**
 	 * These are variables that keep track of whether or not keys are pressed.
 	 */
@@ -40,7 +40,7 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 	private Image[] backgroundImages;
 	/** This variable holds this games MainClass */
 	private MainClass mainClass;
-	private ClassHandler classHandler;
+	private ObjectHandler classHandler;
 
 	/**
 	 * This is the init for the RunLevel Function Sets certain things in the
@@ -50,7 +50,7 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 	 * @param mainClass
 	 *            This is this Game's mainClass
 	 */
-	public RunLevel(ClassHandler classHandler) {
+	public RunLevel(ObjectHandler classHandler) {
 		classHandler.setRunLevel(this);
 		System.out.println("Initializing RunLevel");
 		this.classHandler = classHandler;
@@ -77,6 +77,8 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 						+ "projectileDown.png"));
 				pauseOverlay = tk.createImage(j.getResource(baseURL
 						+ "paused.png"));
+				pauseOverlay2 = tk.createImage(j.getResource(baseURL
+						+ "pausedEscape.png"));
 			} else {
 				AppletMainClass apm = ((AppletMainClass) classHandler
 						.getMainClass());
@@ -90,6 +92,7 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 				proj2 = apm.getImage(base, "projectileRight.png");
 				proj3 = apm.getImage(base, "projectileDown.png");
 				pauseOverlay = apm.getImage(base, "paused.png");
+				pauseOverlay2 = apm.getImage(base, "pausedEscape.png");
 			}
 			System.out.println("Loaded Images");
 		} catch (Exception e) {
@@ -113,8 +116,8 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 	public void run() {
 		alive = true;
 		paused = false;
-		mainClass.focusListenerAdd(this);
-		mainClass.keyListenerAdd(this);
+		mainClass.addFocusListener(this);
+		mainClass.addKeyListener(this);
 		System.out.println("Starting RunLevel");
 		while (alive) {
 			while (alive && !paused) {
@@ -130,18 +133,18 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 				try {
 					Thread.sleep(17);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
 				}
 			}
 			while (alive && paused) {
 				mainClass.paint(this);
 				try {
-					Thread.sleep(50);
+					Thread.sleep(68);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
 				}
 			}
 		}
+		mainClass.removeKeyListener(this);
+		mainClass.removeFocusListener(this);
 		Menu menu = new Menu(classHandler);
 		Thread menuThread = new Thread(menu);
 		classHandler.setMenuThread(menuThread);
@@ -238,7 +241,11 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 			}
 		}
 		if (paused) {
-			g.drawImage(pauseOverlay, 0, 0, null);
+			if (escaped) {
+				g.drawImage(pauseOverlay2, 0, 0, null);
+			} else {
+				g.drawImage(pauseOverlay, 0, 0, null);
+			}
 			gtp.drawImage(pauseImage, 0, 0, null);
 		}
 	}
@@ -321,11 +328,10 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 
 	@Override
 	public void keyReleased(KeyEvent keyEvent) {
+		// When a key is released, resets the key variable
+		int eventChar = keyEvent.getKeyCode();
+		// This defines the integer to represent the key release
 		if (!paused) {
-			// When a key is released, resets the key variable
-			int eventChar = keyEvent.getKeyCode();
-			// This defines the integer to represent the key release
-
 			if (eventChar == KeyEvent.VK_W && wPressed) {
 				// If a is released, and the variable was true, set the variable
 				// to
@@ -349,6 +355,14 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 			}
 			if (eventChar == KeyEvent.VK_ESCAPE) {
 				paused = true;
+				escaped = true;
+				pauseToEscape = true;
+			}
+		} else if (escaped) {
+			if (eventChar == KeyEvent.VK_ESCAPE) {
+				paused = false;
+				escaped = false;
+				pauseToEscape = false;
 			}
 		}
 	}
@@ -359,12 +373,23 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 
 	@Override
 	public void focusGained(FocusEvent e) {
-		paused = false;
+		if (pauseToEscape) {
+			escaped = true;
+			paused = true;
+		} else {
+			paused = false;
+		}
 	}
 
 	@Override
 	public void focusLost(FocusEvent e) {
-		paused = true;
+		if (escaped) {
+			pauseToEscape = true;
+			escaped = false;
+			paused = true;
+		} else {
+			paused = true;
+		}
 		wPressed = false;
 		aPressed = false;
 		dPressed = false;

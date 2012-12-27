@@ -7,12 +7,13 @@ import java.awt.Image;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JFrame;
 
 public class ApplicationMainClass implements MainClass {
 	private JFrame jFrame;
-	private ClassHandler classHandler;
+	private ObjectHandler classHandler;
 	private int height = 480;
 	private int width = 640;
 	private Image image;
@@ -40,11 +41,24 @@ public class ApplicationMainClass implements MainClass {
 		jFrame.setLayout(new BorderLayout());
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setBackground(Color.BLACK);
-		classHandler = new ClassHandler();
+		image = jFrame.createImage(width, height);
+		bufferedGraphics = image.getGraphics();
+		rememberWidth = 0;
+		rememberHeight = 0;
+		contractedImageX = width;
+		contractedImageY = height;
+		imageTranslationX = 0;
+		imageTranslationY = 0;
+		drawRect = new int[4][4];
+		setDrawRect(0, 0, 0, 0, 0);
+		setDrawRect(1, 0, 0, 0, 0);
+		setDrawRect(2, 0, 0, 0, 0);
+		setDrawRect(3, 0, 0, 0, 0);
+		classHandler = new ObjectHandler();
 		classHandler.setMainClass(this);
 		classHandler.setjFrame(jFrame);
-		this.width = classHandler.screenWidth;
-		this.height = classHandler.screenHeight;
+		this.width = classHandler.getScreenWidth();
+		this.height = classHandler.getScreenHeight();
 		LoadingScreen loadingScreen = new LoadingScreen(classHandler);
 		loadingScreen.load();
 	}
@@ -52,65 +66,16 @@ public class ApplicationMainClass implements MainClass {
 	@Override
 	public void paint(Paintable pt) {
 		paintingObject = pt;
-		this.update(jFrame.getGraphics());
-	}
-
-	@Override
-	public void keyListenerAdd(KeyListener keyListener) {
-		jFrame.addKeyListener(keyListener);
-	}
-
-	@Override
-	public void keyListenerRemove(KeyListener keyListener) {
-		jFrame.removeKeyListener(keyListener);
+		update(jFrame.getGraphics());
 	}
 
 	public void update(Graphics g) {
-		// defines image if it does not exist.
-		if (image == null) {
-			image = jFrame.createImage(width, height);
-			bufferedGraphics = image.getGraphics();
-			rememberWidth = jFrame.getWidth();
-			rememberHeight = jFrame.getHeight();
-			// Remembers The current Height and width, so that it can check if
-			// the height has changed before running this again
-			contractedImageX = width;
-			contractedImageY = height;
-			// redefines contractedImage width and height so that they are not
-			// the ones we defined last time
-			contractedImageY = jFrame.getHeight();
-			// Resize graphics X so that it matches graphics Y
-			contractedImageX = (int) ((double) contractedImageY
-					/ (double) height * width);
-			if (contractedImageX > jFrame.getWidth()) {
-				// If the graphics Y is bigger then the screen Y after
-				// resizing(or not resizing) y, then resize it to be even
-				// smaller
-				contractedImageX = jFrame.getWidth();
-				// resize Y so they match
-				contractedImageY = (int) ((double) contractedImageX
-						/ (double) width * height);
-			}
-			// Calculate how far the image should be moved in order to be in the
-			// center of the screen
-			imageTranslationX = (jFrame.getWidth() - contractedImageX) / 2;
-			imageTranslationY = (jFrame.getHeight() - contractedImageY) / 2;
-			// Creates a new drawRect Variable. This v2D array remembers the
-			// Coordinates that the system should draw the outside rectangles
-			// The rectangles that make black edges around the center
-			drawRect = new int[4][4];
-			setDrawRect(0, 0, 0, imageTranslationX, jFrame.getHeight());
-			setDrawRect(1, 0, 0, jFrame.getWidth(), imageTranslationY);
-			setDrawRect(2, jFrame.getWidth() - imageTranslationX - 1, 0,
-					imageTranslationX + 2, jFrame.getHeight());
-			setDrawRect(3, 0, jFrame.getHeight() - imageTranslationY - 1,
-					jFrame.getWidth(), imageTranslationY + 2);
-		}
-
 		// If the screen is not the same size at remembered, then re-run the
 		// image transformations
 		if (!(rememberWidth == jFrame.getWidth() && rememberHeight == jFrame
 				.getHeight())) {
+			image = jFrame.createImage(width, height);
+			bufferedGraphics = image.getGraphics();
 			rememberWidth = jFrame.getWidth();
 			rememberHeight = jFrame.getHeight();
 			// Remembers The current Height and width, so that it can check if
@@ -152,19 +117,13 @@ public class ApplicationMainClass implements MainClass {
 		bufferedGraphics.setColor(jFrame.getBackground());
 		bufferedGraphics.fillRect(0, 0, jFrame.getWidth() + 1,
 				jFrame.getHeight() + 1);
-		bufferedGraphics.setColor(jFrame.getForeground());
-		// Runs the Paint method in order to get the images for all the objects
-		// on the screen.
 		paintingObject.paint(bufferedGraphics);
-		// draws the Image with the translations that were already defined, to
-		// make it in the center of the screen
-		g.drawImage(image, imageTranslationX, imageTranslationY,
-				contractedImageX, contractedImageY, jFrame);
-		// This draws rectangles of black around the image in order
 		for (int k = 0; k < 4; k++) {
 			g.fillRect(drawRect[0][k], drawRect[1][k], drawRect[2][k],
 					drawRect[3][k]);
 		}
+		g.setColor(Color.white);
+		g.fillRect(imageTranslationX, imageTranslationY, 20, 20);
 	}
 
 	/**
@@ -196,22 +155,53 @@ public class ApplicationMainClass implements MainClass {
 	}
 
 	@Override
-	public void mouseListenerAdd(MouseListener mouseListener) {
-		jFrame.addMouseListener(mouseListener);
+	public void addKeyListener(KeyListener l) {
+		jFrame.addKeyListener(l);
 	}
 
 	@Override
-	public void mouseListenerRemove(MouseListener mouseListener) {
-		jFrame.removeMouseListener(mouseListener);
+	public void removeKeyListener(KeyListener l) {
+		jFrame.removeKeyListener(l);
 	}
 
 	@Override
-	public void focusListenerAdd(FocusListener focusListener) {
-		jFrame.addFocusListener(focusListener);
+	public void addMouseListener(MouseListener l) {
+		jFrame.addMouseListener(l);
 	}
 
 	@Override
-	public void focusListenerRemove(FocusListener focusListener) {
-		jFrame.removeFocusListener(focusListener);
+	public void removeMouseListener(MouseListener l) {
+		jFrame.removeMouseListener(l);
+	}
+
+	@Override
+	public void addFocusListener(FocusListener l) {
+		jFrame.addFocusListener(l);
+	}
+
+	@Override
+	public void removeFocusListener(FocusListener l) {
+		jFrame.removeFocusListener(l);
+	}
+
+	@Override
+	public void addMouseMotionListener(MouseMotionListener l) {
+		jFrame.addMouseMotionListener(l);
+	}
+
+	@Override
+	public void removeMouseMotionListener(MouseMotionListener l) {
+		jFrame.removeMouseMotionListener(l);
+	}
+
+	@Override
+	public int realX(double x) {
+		return (int) ((((x) / contractedImageX) * width) - imageTranslationX);
+
+	}
+
+	@Override
+	public int realY(double y) {
+		return (int) ((((y) / contractedImageY) * height) - imageTranslationY);
 	}
 }

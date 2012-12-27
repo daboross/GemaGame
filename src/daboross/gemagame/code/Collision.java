@@ -167,4 +167,16 @@ public class Collision {
 		}
 		return false;
 	}
+
+	public static boolean pointOnPlane(double x1, double y1, double x2,
+			double y2, double xLength, double yLength) {
+		double xMin = x2;
+		double yMin = y2;
+		double xMax = x2 + xLength;
+		double yMax = y2 + yLength;
+		if ((x1 > xMin && x1 < xMax) && (y1 > yMin && y1 < yMax)) {
+			return true;
+		}
+		return false;
+	}
 }
