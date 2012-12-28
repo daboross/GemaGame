@@ -1,4 +1,4 @@
-package daboross.gemagame.code.engine;
+package daboross.code.engine;
 
 public interface ButtonReactor {
 	public void react(OverlayButton button);

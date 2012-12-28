@@ -99,7 +99,7 @@ public class BackgroundHandler {
 	 * @param layerNumber
 	 *            The layer number of the Background to get. Will return 0 if
 	 *            invalid number is specified
-	 * @return
+	 * @return the backgroudn x position on screen
 	 */
 	public double getBgX(int backgroundNumber, int layerNumber) {
 		if ((layerNumber == 0 || layerNumber == 1 || layerNumber == 2)

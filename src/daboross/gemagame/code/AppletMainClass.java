@@ -39,6 +39,7 @@ public class AppletMainClass extends JApplet implements MainClass {
 	 * This is an unused Function
 	 */
 	public void stop() {
+		System.out.println("Stopping Gema Game");
 	}
 
 	@Override
@@ -46,5 +47,6 @@ public class AppletMainClass extends JApplet implements MainClass {
 	 * This is an unused Function
 	 */
 	public void destroy() {
+		System.out.println("Destroying Gema Game");
 	}
 }

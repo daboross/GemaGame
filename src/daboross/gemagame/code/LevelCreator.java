@@ -12,8 +12,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
-import daboross.gemagame.code.engine.FileHandler;
-import daboross.gemagame.code.engine.ImageHandler;
+import daboross.code.engine.FileHandler;
+import daboross.code.engine.ImageHandler;
 
 public class LevelCreator implements Runnable, Paintable, KeyListener,
 		MouseListener, FocusListener, MouseMotionListener {

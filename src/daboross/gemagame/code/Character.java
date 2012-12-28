@@ -91,10 +91,8 @@ public class Character {
 	/**
 	 * This defines the Character.
 	 * 
-	 * @param rightEdge
-	 *            this is the width of the screen
-	 * @param bottomEdge
-	 *            This is the height of the screen
+	 * @param objectHandler
+	 *            this is the game's objectHandler
 	 */
 	public Character(ObjectHandler objectHandler) {
 		objectHandler.setCharacter(this);

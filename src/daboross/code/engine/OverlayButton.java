@@ -1,4 +1,4 @@
-package daboross.gemagame.code.engine;
+package daboross.code.engine;
 
 import java.awt.Graphics;
 import java.awt.Image;

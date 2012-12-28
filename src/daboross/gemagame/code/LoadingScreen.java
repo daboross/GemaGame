@@ -2,9 +2,9 @@ package daboross.gemagame.code;
 
 import java.io.File;
 
-import daboross.gemagame.code.engine.FileHandler;
-import daboross.gemagame.code.engine.ImageHandler;
-import daboross.gemagame.code.engine.OverlayHandler;
+import daboross.code.engine.FileHandler;
+import daboross.code.engine.ImageHandler;
+import daboross.code.engine.OverlayHandler;
 
 public class LoadingScreen {
 

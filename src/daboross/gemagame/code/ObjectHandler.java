@@ -1,12 +1,10 @@
 package daboross.gemagame.code;
 
-import java.awt.Graphics;
-
 import javax.swing.JApplet;
 import javax.swing.JFrame;
 
-import daboross.gemagame.code.engine.ImageHandler;
-import daboross.gemagame.code.engine.OverlayHandler;
+import daboross.code.engine.ImageHandler;
+import daboross.code.engine.OverlayHandler;
 
 /**
  * This class is basically a bundle that holds a bunch of other class variables.
@@ -16,9 +14,12 @@ import daboross.gemagame.code.engine.OverlayHandler;
  * @author daboross
  * 
  */
-public class ObjectHandler implements Paintable, Runnable {
+public class ObjectHandler {
+	private JApplet applet;
 	private BackgroundHandler backgroundHandler;
 	private Character character;
+	private final boolean debug = false;
+	private ImageHandler imageHandler;
 	private boolean isApplet, isFocused;
 	private JFrame jFrame;
 	private LevelCreator levelCreator;
@@ -31,12 +32,25 @@ public class ObjectHandler implements Paintable, Runnable {
 	private OverlayHandler overlayHandler;
 	private PlatformHandler platformHandler;
 	private RunLevel runLevel;
-	private ImageHandler imageHandler;
 	private final int screenHeight = 480;
 	private final int screenWidth = 640;
-	private JApplet applet;
 
 	public ObjectHandler() {
+	}
+
+	/**
+	 * @return the applet
+	 */
+	public JApplet getApplet() {
+		return applet;
+	}
+
+	/**
+	 * @param applet
+	 *            the applet to set
+	 */
+	public void setApplet(JApplet applet) {
+		this.applet = applet;
 	}
 
 	/**
@@ -67,6 +81,21 @@ public class ObjectHandler implements Paintable, Runnable {
 	 */
 	public void setCharacter(Character character) {
 		this.character = character;
+	}
+
+	/**
+	 * @return the imageHandler
+	 */
+	public ImageHandler getImageHandler() {
+		return imageHandler;
+	}
+
+	/**
+	 * @param imageHandler
+	 *            the imageHandler to set
+	 */
+	public void setImageHandler(ImageHandler imageHandler) {
+		this.imageHandler = imageHandler;
 	}
 
 	/**
@@ -325,6 +354,13 @@ public class ObjectHandler implements Paintable, Runnable {
 	}
 
 	/**
+	 * @return the debug
+	 */
+	public boolean isDebug() {
+		return debug;
+	}
+
+	/**
 	 * @return the screenHeight
 	 */
 	public int getScreenHeight() {
@@ -336,51 +372,5 @@ public class ObjectHandler implements Paintable, Runnable {
 	 */
 	public int getScreenWidth() {
 		return screenWidth;
-	}
-
-	@Override
-	public void run() {
-		while (true) {
-			try {
-				Thread.sleep(4000);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	@Override
-	public void paint(Graphics g) {
-
-	}
-
-	/**
-	 * @return the imageHandler
-	 */
-	public ImageHandler getImageHandler() {
-		return imageHandler;
-	}
-
-	/**
-	 * @param imageHandler
-	 *            the imageHandler to set
-	 */
-	public void setImageHandler(ImageHandler imageHandler) {
-		this.imageHandler = imageHandler;
-	}
-
-	/**
-	 * @return the applet
-	 */
-	public JApplet getApplet() {
-		return applet;
-	}
-
-	/**
-	 * @param applet
-	 *            the applet to set
-	 */
-	public void setApplet(JApplet applet) {
-		this.applet = applet;
 	}
 }

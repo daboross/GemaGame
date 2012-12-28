@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import daboross.gemagame.code.engine.ImageHandler;
+import daboross.code.engine.ImageHandler;
 
 public class Menu implements Runnable, MouseListener, MouseMotionListener,
 		Paintable {
@@ -43,26 +43,6 @@ public class Menu implements Runnable, MouseListener, MouseMotionListener,
 		upperImageOverlay = ih.getImage("menu/upperImage0.png");
 		selectedButton = ih.getImage("menu/selectedButton.png");
 		unSelectedButton = ih.getImage("menu/unSelectedButton.png");
-		System.out.println("up:" + (upperImage == null));
-		/*
-		 * try { if (objectHandler.getjFrame() != null) { Class<? extends
-		 * JFrame> j = objectHandler.getjFrame() .getClass(); String baseURL =
-		 * "/daboross/gemagame/data/images/menu/"; upperImage =
-		 * tk.createImage(j.getResource(baseURL + "upperImage.png"));
-		 * upperImageOverlay = tk.createImage(j.getResource(baseURL +
-		 * "upperImage0.png")); selectedButton =
-		 * tk.createImage(j.getResource(baseURL + "selectedButton.png"));
-		 * unSelectedButton = tk.createImage(j.getResource(baseURL +
-		 * "unSelectedButton.png")); } else { AppletMainClass apm =
-		 * ((AppletMainClass) objectHandler .getMainClass()); URL base = new
-		 * URL(apm.getDocumentBase(), "/daboross/gemagame/data/images/menu/");
-		 * upperImage = apm.getImage(base, "upperImage.png"); upperImageOverlay
-		 * = apm.getImage(base, "upperImage0.png"); selectedButton =
-		 * apm.getImage(base, "selectedButton.png"); unSelectedButton =
-		 * apm.getImage(base, "unSelectedButton.png"); }
-		 * System.out.println("Loaded Menu images"); } catch (Exception e) {
-		 * e.printStackTrace(); System.out.println("Menu Load Images Failed"); }
-		 */
 	}
 
 	@Override

@@ -11,8 +11,8 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import daboross.gemagame.code.engine.FileHandler;
-import daboross.gemagame.code.engine.ImageHandler;
+import daboross.code.engine.FileHandler;
+import daboross.code.engine.ImageHandler;
 
 public class RunLevel implements Runnable, KeyListener, FocusListener,
 		Paintable {
@@ -46,8 +46,8 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 	 * program. Gets the images for paint() to use and assigns them to already
 	 * created variables
 	 * 
-	 * @param mainClass
-	 *            This is this Game's mainClass
+	 * @param objectHandler
+	 *            this is the game's objectHandler
 	 */
 	public RunLevel(ObjectHandler objectHandler) {
 		objectHandler.setRunLevel(this);

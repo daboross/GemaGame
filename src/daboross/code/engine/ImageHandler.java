@@ -1,15 +1,15 @@
-package daboross.gemagame.code.engine;
+package daboross.code.engine;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.net.URL;
 
 import daboross.gemagame.code.ObjectHandler;
 import daboross.gemagame.code.Paintable;
 
 public class ImageHandler {
+	private final boolean debug = false;
 	private ObjectHandler objectHandler;
 	private int rememberWidth, rememberHeight, contractedImageX,
 			contractedImageY, imageTranslationX, imageTranslationY, realWidth,
@@ -34,7 +34,8 @@ public class ImageHandler {
 		 */
 		realWidth = getRealWidth();
 		realHeight = getRealHeight();
-		if (objectHandler.isFocused() == true) {
+		if (objectHandler.isFocused() == true
+				|| objectHandler.isApplet() == true) {
 			if (!(rememberWidth == realWidth && rememberHeight == realHeight)
 					|| resizeNext) {
 				resizeNext = false;
@@ -159,32 +160,29 @@ public class ImageHandler {
 	}
 
 	public Image getImage(String imgName) {
-		if (isApplet) {
-			if (objectHandler.getApplet() != null) {
-				try {
-					URL base = new URL(objectHandler.getApplet()
-							.getDocumentBase(),
-							"/daboross/gemagame/data/images/");
-					objectHandler.getApplet().getImage(base, imgName);
-				} catch (Exception e) {
-					System.out.println("Failed to load Image: "
-							+ "/daboross/gemagame/data/images/" + imgName
-							+ " From Applet");
-				}
-			}
-		} else {
-			try {
-				Toolkit tk = Toolkit.getDefaultToolkit();
-				return tk.createImage(getClass().getResource(
-						"/daboross/gemagame/data/images/" + imgName));
-			} catch (Exception e) {
-				System.out.println("Failed to load Image: "
-						+ "/daboross/gemagame/data/images/" + imgName
-						+ " From JFrame");
-			}
-
+		Image returnImg = null;
+		if (debug) {
+			System.out.println("Getting image: /daboross/gemagame/data/images/"
+					+ imgName);
 		}
-		return null;
+		try {
+			Toolkit tk = Toolkit.getDefaultToolkit();
+			returnImg = tk.createImage(getClass().getResource(
+					"/daboross/gemagame/data/images/" + imgName));
+			System.out.println("Loaded Image");
+		} catch (Exception e) {
+			if (debug) {
+				System.out.println("Failed to load Image");
+			}
+		}
+		if (debug) {
+			if (returnImg == null) {
+				System.out.println("Image null, returning null");
+			} else {
+				System.out.println("Image Found, not returning null");
+			}
+		}
+		return returnImg;
 	}
 
 	public int screenX(int x) {
