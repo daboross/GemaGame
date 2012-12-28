@@ -60,7 +60,7 @@ public class LevelCreator implements Runnable, Paintable, KeyListener,
 		mouseY = objectHandler.getScreenHeight() / 2;
 		try {
 			PlatformList pl = objectHandler.getLevelLoader().loadToList(
-					FileHandler.ReadFile("level.txt"));
+					FileHandler.ReadFile("GemaGameLevels/level.txt"));
 			xPos = pl.xPosList;
 			yPos = pl.yPosList;
 			xLengths = pl.xLengthList;
@@ -68,12 +68,24 @@ public class LevelCreator implements Runnable, Paintable, KeyListener,
 			numberOfPlatforms = pl.xPosList.size();
 			System.out.println("Loaded " + pl.xPosList.size() + " platforms.");
 		} catch (Exception e) {
-			e.printStackTrace();
 			xPos = new ArrayList<Integer>();
 			yPos = new ArrayList<Integer>();
 			xLengths = new ArrayList<Integer>();
 			yLengths = new ArrayList<Integer>();
-
+			PlatformList pl;
+			try {
+				pl = objectHandler.getLevelLoader().loadToList(
+						FileHandler.ReadInternalFile("levels/level.txt",
+								objectHandler.getMainClass()));
+				xPos = pl.xPosList;
+				yPos = pl.yPosList;
+				xLengths = pl.xLengthList;
+				yLengths = pl.yLengthList;
+				numberOfPlatforms = pl.xPosList.size();
+				System.out.println("Loaded " + pl.xPosList.size()
+						+ " platforms.");
+			} catch (Exception e1) {
+			}
 		}
 	}
 
@@ -112,7 +124,7 @@ public class LevelCreator implements Runnable, Paintable, KeyListener,
 					+ xLengths.get(i) + " " + yLengths.get(i));
 		}
 		try {
-			FileHandler.WriteFile("GemaGameLevels/level.txt", finalLines);
+			FileHandler.WriteFile("GemaGameLevels/", "level.txt", finalLines);
 			System.out.println("Wrote File");
 		} catch (Exception e) {
 			e.printStackTrace();

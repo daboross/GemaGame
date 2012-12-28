@@ -1,20 +1,29 @@
 package daboross.gemagame.code;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public final class FileHandler {
 
-	public static void WriteFile(String filePath, ArrayList<String> lines)
-			throws Exception {
-		System.out.println("Writing File: " + filePath);
-		BufferedWriter bf = new BufferedWriter(new FileWriter(filePath));
+	public static void WriteFile(String filePath, String fileName,
+			ArrayList<String> lines) throws Exception {
+		System.out.println("Making Directory:" + new File(filePath).mkdirs());
+		System.out.println("Making File:"
+				+ new File(filePath + fileName).createNewFile());
+		System.out.println("Writing File: " + filePath + fileName);
+		BufferedWriter bf = new BufferedWriter(new FileWriter(filePath
+				+ fileName));
 		for (int i = 0; i < lines.size(); i++) {
 			bf.write(lines.get(i));
 			bf.newLine();
 		}
 		bf.close();
-		System.out.println("Finished Writing File: " + filePath);
+		System.out.println("Finished Writing File: " + filePath + fileName);
 	}
 
 	public static ArrayList<String> ReadFile(String filePath) throws Exception {

@@ -16,7 +16,7 @@ public class AppletMainClass extends JApplet implements MainClass {
 	private Image bImage1, bImage2;
 	private int imageTranslationX, imageTranslationY, contractedImageX,
 			contractedImageY, rememberWidth, rememberHeight, height, width;
-	private Paintable paintingObject;
+	private Paintable paintingObject, overlayObject;
 	private ObjectHandler objectHandler;
 
 	@Override
@@ -39,6 +39,8 @@ public class AppletMainClass extends JApplet implements MainClass {
 		objectHandler.setMainClass(this);
 		this.width = objectHandler.getScreenWidth();
 		this.height = objectHandler.getScreenHeight();
+		objectHandler.setApplet(true);
+		objectHandler.setApplet(this);
 		setBackground(Color.BLACK);
 		setFocusable(true);
 		setVisible(true);
@@ -76,6 +78,7 @@ public class AppletMainClass extends JApplet implements MainClass {
 		update(this.getGraphics());
 	}
 
+	@Override
 	public void update(Graphics g) {
 		/*
 		 * If the screen is not the same size at remembered, then re-run the
@@ -123,6 +126,9 @@ public class AppletMainClass extends JApplet implements MainClass {
 		bufferedGraphics2.setColor(Color.black);
 		bufferedGraphics2.fillRect(0, 0, 640, 480);
 		paintingObject.paint(bufferedGraphics2);
+		if (overlayObject != null) {
+			overlayObject.paint(bufferedGraphics2);
+		}
 		bufferedGraphics1
 				.drawImage(bImage2, imageTranslationX, imageTranslationY,
 						contractedImageX + imageTranslationX, contractedImageY
@@ -132,11 +138,16 @@ public class AppletMainClass extends JApplet implements MainClass {
 
 	@Override
 	public int realX(int x) {
-		return (int) ((((double) (x - (double) imageTranslationX) / (double) contractedImageX) * (double) width));
+		return (int) ((((x - (double) imageTranslationX) / contractedImageX) * width));
 	}
 
 	@Override
 	public int realY(int y) {
-		return (int) ((((double) (y - (double) imageTranslationY) / (double) contractedImageY) * (double) height));
+		return (int) ((((y - (double) imageTranslationY) / contractedImageY) * height));
+	}
+
+	@Override
+	public void setPaintableOverlay(Paintable p) {
+		overlayObject = p;
 	}
 }

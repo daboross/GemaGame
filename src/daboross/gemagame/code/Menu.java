@@ -4,16 +4,16 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.net.URL;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
-import javax.swing.JFrame;
-
-public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
+public class Menu implements Runnable, MouseListener, MouseMotionListener,
+		Paintable {
+	private final int buttonWidth = 200;
+	private final int buttonHeight = 50;
+	private final int buttonNameOffSet = 15;
+	private final int buttonPressedNameOffSet = 20;
 	private MainClass mainClass;
 	private ObjectHandler objectHandler;
 	private Image upperImage;
@@ -22,51 +22,48 @@ public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 	private Image unSelectedButton;
 	private int optionSelected;
 	private boolean alive;
-	private int typeTimer;
 	private String[] buttonNames;
+	/* first box is which button, second box is which value */
+	private int[][] buttons;
 
 	public Menu(ObjectHandler objectHandler) {
 		objectHandler.setMenu(this);
-		typeTimer = 1;
-		optionSelected = 0;
+		optionSelected = -1;
 		alive = true;
 		this.objectHandler = objectHandler;
 		mainClass = objectHandler.getMainClass();
-		Toolkit tk = Toolkit.getDefaultToolkit();
 		buttonNames = new String[3];
 		buttonNames[0] = "Play";
 		buttonNames[1] = "Level Maker";
 		buttonNames[2] = "None Yet";
-		try {
-			if (objectHandler.getjFrame() != null) {
-				Class<? extends JFrame> j = objectHandler.getjFrame()
-						.getClass();
-				String baseURL = "/daboross/gemagame/data/images/menu/";
-				upperImage = tk.createImage(j.getResource(baseURL
-						+ "upperImage.png"));
-				upperImageOverlay = tk.createImage(j.getResource(baseURL
-						+ "upperImage0.png"));
-				selectedButton = tk.createImage(j.getResource(baseURL
-						+ "selectedButton.png"));
-				unSelectedButton = tk.createImage(j.getResource(baseURL
-						+ "unSelectedButton.png"));
-			} else {
-				AppletMainClass apm = ((AppletMainClass) objectHandler
-						.getMainClass());
-				URL base = new URL(apm.getDocumentBase(),
-						"/daboross/gemagame/data/images/menu/");
-				upperImage = apm.getImage(base, "upperImage.png");
-				upperImageOverlay = apm.getImage(base, "upperImage0.png");
-				selectedButton = apm.getImage(base, "selectedButton.png");
-				unSelectedButton = apm.getImage(base, "unSelectedButton.png");
-			}
-			System.out.println("Loaded Menu images");
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Menu Load Images Failed");
-		}
+		ImageHandler ih = objectHandler.getImageHandler();
+		upperImage = ih.getImage("menu/upperImage.png");
+		upperImageOverlay = ih.getImage("menu/upperImage0.png");
+		selectedButton = ih.getImage("menu/selectedButton.png");
+		unSelectedButton = ih.getImage("menu/unSelectedButton.png");
+		System.out.println("up:" + (upperImage == null));
+		/*
+		 * try { if (objectHandler.getjFrame() != null) { Class<? extends
+		 * JFrame> j = objectHandler.getjFrame() .getClass(); String baseURL =
+		 * "/daboross/gemagame/data/images/menu/"; upperImage =
+		 * tk.createImage(j.getResource(baseURL + "upperImage.png"));
+		 * upperImageOverlay = tk.createImage(j.getResource(baseURL +
+		 * "upperImage0.png")); selectedButton =
+		 * tk.createImage(j.getResource(baseURL + "selectedButton.png"));
+		 * unSelectedButton = tk.createImage(j.getResource(baseURL +
+		 * "unSelectedButton.png")); } else { AppletMainClass apm =
+		 * ((AppletMainClass) objectHandler .getMainClass()); URL base = new
+		 * URL(apm.getDocumentBase(), "/daboross/gemagame/data/images/menu/");
+		 * upperImage = apm.getImage(base, "upperImage.png"); upperImageOverlay
+		 * = apm.getImage(base, "upperImage0.png"); selectedButton =
+		 * apm.getImage(base, "selectedButton.png"); unSelectedButton =
+		 * apm.getImage(base, "unSelectedButton.png"); }
+		 * System.out.println("Loaded Menu images"); } catch (Exception e) {
+		 * e.printStackTrace(); System.out.println("Menu Load Images Failed"); }
+		 */
 	}
 
+	@Override
 	public void paint(Graphics g) {
 		try {
 			g.drawImage(
@@ -76,17 +73,21 @@ public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 			g.drawImage(upperImageOverlay, 0, 0, null);
 			g.setColor(Color.gray);
 			for (int i = 0; i < 3; i++) {
-				int x = (objectHandler.getScreenWidth() - selectedButton
-						.getWidth(null)) / 2;
-				int y = 200 + i * 70;
+				int x = (objectHandler.getScreenWidth() - buttonWidth) / 2;
+				int y = 200 + i * (buttonHeight + 20);
 				if (i == optionSelected) {
 					g.setFont(new Font("Arial", Font.BOLD, 30));
-					g.drawImage(selectedButton, x, y, null);
-					g.drawString(buttonNames[i], 20, y + 30);
+					if (selectedButton != null) {
+						g.drawImage(selectedButton, x, y, null);
+					}
+					g.drawString(buttonNames[i], buttonNameOffSet, y + 30);
 				} else {
 					g.setFont(new Font("Arial", Font.PLAIN, 30));
-					g.drawImage(unSelectedButton, x, y, null);
-					g.drawString(buttonNames[i], 25, y + 30);
+					if (unSelectedButton != null) {
+						g.drawImage(unSelectedButton, x, y, null);
+					}
+					g.drawString(buttonNames[i], buttonPressedNameOffSet,
+							y + 30);
 				}
 			}
 		} catch (Exception e) {
@@ -97,49 +98,29 @@ public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 	@Override
 	public void run() {
 		System.out.println("Running Menu");
-		mainClass.addKeyListener(this);
-		mainClass.addFocusListener(this);
+		buttons = new int[3][4];
+		for (int i = 0; i < 3; i++) {
+			/* x Pos */
+			buttons[i][0] = (objectHandler.getScreenWidth() - 200) / 2;
+			/* y Pos */
+			buttons[i][1] = 200 + i * (buttonHeight + 20);
+			/* x Length */
+			buttons[i][2] = buttonWidth;
+			/* y Length */
+			buttons[i][3] = buttonHeight;
+		}
+		mainClass.addMouseListener(this);
+		mainClass.addMouseMotionListener(this);
 		while (alive) {
-			if (typeTimer > 0) {
-				typeTimer -= 1;
-			}
-			mainClass.paint(this);
 			try {
-				Thread.sleep(30);
+				objectHandler.getImageHandler().paint(this);
+				Thread.sleep(600);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		mainClass.removeKeyListener(this);
-		mainClass.removeFocusListener(this);
-	}
-
-	@Override
-	public void keyPressed(KeyEvent keyEvent) {
-		if (typeTimer == 0) {
-			int eventChar = keyEvent.getKeyCode();
-			if (eventChar == 32) {
-				end();
-			} else if (eventChar == 38) {
-				if (optionSelected > 0) {
-					optionSelected -= 1;
-				}
-			} else if (eventChar == 40) {
-				if (optionSelected < 2) {
-					optionSelected += 1;
-				}
-			}
-			typeTimer = 1;
-		}
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		typeTimer = 0;
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {
+		mainClass.removeMouseListener(this);
+		mainClass.removeMouseMotionListener(this);
 	}
 
 	public void end() {
@@ -164,12 +145,45 @@ public class Menu implements Runnable, KeyListener, FocusListener, Paintable {
 	}
 
 	@Override
-	public void focusGained(FocusEvent arg0) {
-		System.out.println("Gained Focus");
+	public void mouseDragged(MouseEvent e) {
 	}
 
 	@Override
-	public void focusLost(FocusEvent arg0) {
-		System.out.println("Lost Focus");
+	public void mouseMoved(MouseEvent e) {
+		boolean notFound = true;
+		for (int i = 0; i < buttons.length && notFound; i++) {
+
+			if (Collision.pointOnPlane(e.getX(), e.getY(), buttons[i][0],
+					buttons[i][1], buttons[i][2], buttons[i][3])) {
+				optionSelected = i;
+				notFound = false;
+			}
+		}
+		if (notFound) {
+			optionSelected = -1;
+		}
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if (optionSelected >= 0) {
+			end();
+		}
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
 	}
 }

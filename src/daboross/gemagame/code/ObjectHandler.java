@@ -1,5 +1,8 @@
 package daboross.gemagame.code;
 
+import java.awt.Graphics;
+
+import javax.swing.JApplet;
 import javax.swing.JFrame;
 
 /**
@@ -10,24 +13,57 @@ import javax.swing.JFrame;
  * @author daboross
  * 
  */
-public class ObjectHandler {
-	private final int screenWidth = 640;
-	private final int screenHeight = 480;
-	private boolean isApplet;
-	private JFrame jFrame;
-	private Thread runLevelThread, levelFileWriterThread, menuThread,
-			loadingScreenThread, levelCreatorThread;
-	private MainClass mainClass;
-	private RunLevel runLevel;
-	private PlatformHandler platformHandler;
-	private Character character;
+public class ObjectHandler implements Paintable, Runnable {
 	private BackgroundHandler backgroundHandler;
-	private Menu menu;
+	private Character character;
+	private boolean isApplet, isFocused;
+	private JFrame jFrame;
+	private LevelCreator levelCreator;
 	private LevelLoader levelLoader;
 	private LoadingScreen loadingScreen;
-	private LevelCreator levelCreator;
+	private MainClass mainClass;
+	private Thread mainThread, runLevelThread, levelFileWriterThread,
+			menuThread, loadingScreenThread, levelCreatorThread;
+	private Menu menu;
+	private OverlayHandler overlayHandler;
+	private PlatformHandler platformHandler;
+	private RunLevel runLevel;
+	private ImageHandler imageHandler;
+	private final int screenHeight = 480;
+	private final int screenWidth = 640;
+	private JApplet applet;
 
 	public ObjectHandler() {
+	}
+
+	/**
+	 * @return the backgroundHandler
+	 */
+	public BackgroundHandler getBackgroundHandler() {
+		return backgroundHandler;
+	}
+
+	/**
+	 * @param backgroundHandler
+	 *            the backgroundHandler to set
+	 */
+	public void setBackgroundHandler(BackgroundHandler backgroundHandler) {
+		this.backgroundHandler = backgroundHandler;
+	}
+
+	/**
+	 * @return the character
+	 */
+	public Character getCharacter() {
+		return character;
+	}
+
+	/**
+	 * @param character
+	 *            the character to set
+	 */
+	public void setCharacter(Character character) {
+		this.character = character;
 	}
 
 	/**
@@ -46,6 +82,21 @@ public class ObjectHandler {
 	}
 
 	/**
+	 * @return the isFocused
+	 */
+	public boolean isFocused() {
+		return isFocused;
+	}
+
+	/**
+	 * @param isFocused
+	 *            the isFocused to set
+	 */
+	public void setFocused(boolean isFocused) {
+		this.isFocused = isFocused;
+	}
+
+	/**
 	 * @return the jFrame
 	 */
 	public JFrame getjFrame() {
@@ -58,6 +109,81 @@ public class ObjectHandler {
 	 */
 	public void setjFrame(JFrame jFrame) {
 		this.jFrame = jFrame;
+	}
+
+	/**
+	 * @return the levelCreator
+	 */
+	public LevelCreator getLevelCreator() {
+		return levelCreator;
+	}
+
+	/**
+	 * @param levelCreator
+	 *            the levelCreator to set
+	 */
+	public void setLevelCreator(LevelCreator levelCreator) {
+		this.levelCreator = levelCreator;
+	}
+
+	/**
+	 * @return the levelLoader
+	 */
+	public LevelLoader getLevelLoader() {
+		return levelLoader;
+	}
+
+	/**
+	 * @param levelLoader
+	 *            the levelLoader to set
+	 */
+	public void setLevelLoader(LevelLoader levelLoader) {
+		this.levelLoader = levelLoader;
+	}
+
+	/**
+	 * @return the loadingScreen
+	 */
+	public LoadingScreen getLoadingScreen() {
+		return loadingScreen;
+	}
+
+	/**
+	 * @param loadingScreen
+	 *            the loadingScreen to set
+	 */
+	public void setLoadingScreen(LoadingScreen loadingScreen) {
+		this.loadingScreen = loadingScreen;
+	}
+
+	/**
+	 * @return the mainClass
+	 */
+	public MainClass getMainClass() {
+		return mainClass;
+	}
+
+	/**
+	 * @param mainClass
+	 *            the mainClass to set
+	 */
+	public void setMainClass(MainClass mainClass) {
+		this.mainClass = mainClass;
+	}
+
+	/**
+	 * @return the mainThread
+	 */
+	public Thread getMainThread() {
+		return mainThread;
+	}
+
+	/**
+	 * @param mainThread
+	 *            the mainThread to set
+	 */
+	public void setMainThread(Thread mainThread) {
+		this.mainThread = mainThread;
 	}
 
 	/**
@@ -136,33 +262,33 @@ public class ObjectHandler {
 	}
 
 	/**
-	 * @return the mainClass
+	 * @return the menu
 	 */
-	public MainClass getMainClass() {
-		return mainClass;
+	public Menu getMenu() {
+		return menu;
 	}
 
 	/**
-	 * @param mainClass
-	 *            the mainClass to set
+	 * @param menu
+	 *            the menu to set
 	 */
-	public void setMainClass(MainClass mainClass) {
-		this.mainClass = mainClass;
+	public void setMenu(Menu menu) {
+		this.menu = menu;
 	}
 
 	/**
-	 * @return the runLevel
+	 * @return the overlayHandler
 	 */
-	public RunLevel getRunLevel() {
-		return runLevel;
+	public OverlayHandler getOverlayHandler() {
+		return overlayHandler;
 	}
 
 	/**
-	 * @param runLevel
-	 *            the runLevel to set
+	 * @param overlayHandler
+	 *            the overlayHandler to set
 	 */
-	public void setRunLevel(RunLevel runLevel) {
-		this.runLevel = runLevel;
+	public void setOverlayHandler(OverlayHandler overlayHandler) {
+		this.overlayHandler = overlayHandler;
 	}
 
 	/**
@@ -181,93 +307,25 @@ public class ObjectHandler {
 	}
 
 	/**
-	 * @return the character
+	 * @return the runLevel
 	 */
-	public Character getCharacter() {
-		return character;
+	public RunLevel getRunLevel() {
+		return runLevel;
 	}
 
 	/**
-	 * @param character
-	 *            the character to set
+	 * @param runLevel
+	 *            the runLevel to set
 	 */
-	public void setCharacter(Character character) {
-		this.character = character;
+	public void setRunLevel(RunLevel runLevel) {
+		this.runLevel = runLevel;
 	}
 
 	/**
-	 * @return the backgroundHandler
+	 * @return the screenHeight
 	 */
-	public BackgroundHandler getBackgroundHandler() {
-		return backgroundHandler;
-	}
-
-	/**
-	 * @param backgroundHandler
-	 *            the backgroundHandler to set
-	 */
-	public void setBackgroundHandler(BackgroundHandler backgroundHandler) {
-		this.backgroundHandler = backgroundHandler;
-	}
-
-	/**
-	 * @return the menu
-	 */
-	public Menu getMenu() {
-		return menu;
-	}
-
-	/**
-	 * @param menu
-	 *            the menu to set
-	 */
-	public void setMenu(Menu menu) {
-		this.menu = menu;
-	}
-
-	/**
-	 * @return the levelLoader
-	 */
-	public LevelLoader getLevelLoader() {
-		return levelLoader;
-	}
-
-	/**
-	 * @param levelLoader
-	 *            the levelLoader to set
-	 */
-	public void setLevelLoader(LevelLoader levelLoader) {
-		this.levelLoader = levelLoader;
-	}
-
-	/**
-	 * @return the loadingScreen
-	 */
-	public LoadingScreen getLoadingScreen() {
-		return loadingScreen;
-	}
-
-	/**
-	 * @param loadingScreen
-	 *            the loadingScreen to set
-	 */
-	public void setLoadingScreen(LoadingScreen loadingScreen) {
-		this.loadingScreen = loadingScreen;
-	}
-
-	/**
-	 * @return the levelCreator
-	 */
-	public LevelCreator getLevelCreator() {
-		return levelCreator;
-	}
-
-	/**
-	 * @param levelCreator
-	 *            the levelCreator to set
-	 */
-	public void setLevelCreator(LevelCreator levelCreator) {
-		this.levelCreator = levelCreator;
+	public int getScreenHeight() {
+		return screenHeight;
 	}
 
 	/**
@@ -277,10 +335,49 @@ public class ObjectHandler {
 		return screenWidth;
 	}
 
+	@Override
+	public void run() {
+		while (true) {
+			try {
+				Thread.sleep(4000);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public void paint(Graphics g) {
+
+	}
+
 	/**
-	 * @return the screenHeight
+	 * @return the imageHandler
 	 */
-	public int getScreenHeight() {
-		return screenHeight;
+	public ImageHandler getImageHandler() {
+		return imageHandler;
+	}
+
+	/**
+	 * @param imageHandler
+	 *            the imageHandler to set
+	 */
+	public void setImageHandler(ImageHandler imageHandler) {
+		this.imageHandler = imageHandler;
+	}
+
+	/**
+	 * @return the applet
+	 */
+	public JApplet getApplet() {
+		return applet;
+	}
+
+	/**
+	 * @param applet
+	 *            the applet to set
+	 */
+	public void setApplet(JApplet applet) {
+		this.applet = applet;
 	}
 }

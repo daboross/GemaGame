@@ -120,11 +120,19 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 				levelLoader.load(FileHandler
 						.ReadFile("GemaGameLevels/level.txt"));
 			} catch (Exception e) {
+				System.out.println("Level Created Not Found");
 				try {
 					levelLoader.load(FileHandler.ReadInternalFile(
 							"levels/level.txt", objectHandler.getMainClass()));
 				} catch (Exception e1) {
 					System.out.println("Loading Internal File Failed");
+				}
+				try {
+					FileHandler.WriteFile("GemaGameLevels/", "level.txt",
+							FileHandler.ReadInternalFile("levels/level.txt",
+									objectHandler.getMainClass()));
+				} catch (Exception e1) {
+					e1.printStackTrace();
 				}
 			}
 		}
@@ -176,6 +184,7 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 	 * @param g
 	 *            This is the graphics to paint all the objects onto
 	 */
+	@Override
 	public void paint(Graphics g) {
 		Graphics gtp = null;
 		BufferedImage pauseImage = null;

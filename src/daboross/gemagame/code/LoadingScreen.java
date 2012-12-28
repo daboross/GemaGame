@@ -1,17 +1,10 @@
 package daboross.gemagame.code;
 
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.io.File;
-import java.net.URL;
 
-import javax.swing.JFrame;
-
-public class LoadingScreen implements Paintable {
+public class LoadingScreen {
 
 	private ObjectHandler objectHandler;
-	private Image loadingImage;
 
 	public LoadingScreen(ObjectHandler objectHandler) {
 		objectHandler.setLoadingScreen(this);
@@ -20,41 +13,30 @@ public class LoadingScreen implements Paintable {
 
 	public void load() {
 		System.out.println("Loading...");
-		try {
-			if (objectHandler.getjFrame() == null) {
-				AppletMainClass apm = ((AppletMainClass) objectHandler
-						.getMainClass());
-				URL base = new URL(apm.getDocumentBase(),
-						"/daboross/gemagame/data/images/");
-				loadingImage = apm.getImage(base, "loading.png");
-			} else {
-				Toolkit tk = Toolkit.getDefaultToolkit();
-				String baseURL = "/daboross/gemagame/data/images/";
-				Class<? extends JFrame> j = objectHandler.getjFrame()
-						.getClass();
-				loadingImage = tk.createImage(j.getResource(baseURL
-						+ "loading.png"));
-
+		if (!objectHandler.isApplet()
+				&& !(new File("GemaGameLevels/level.txt")).exists()) {
+			try {
+				FileHandler.WriteFile("GemaGameLevels/", "level.txt",
+						FileHandler.ReadInternalFile("levels/level.txt",
+								objectHandler.getMainClass()));
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			System.out.println("Loaded Images");
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Load Images Failed");
 		}
-		try {
-			System.out.println("Making Directory:"
-					+ new File("GemaGameLevels/").mkdirs());
-		} catch (Exception e) {
-		}
-		objectHandler.getMainClass().paint(this);
-		new LevelLoader(objectHandler);
+		new ImageHandler(objectHandler);
 		Menu menu = new Menu(objectHandler);
+		new LevelLoader(objectHandler);
+		new OverlayHandler(objectHandler);
 		Thread menuThread = new Thread(menu);
 		objectHandler.setMenuThread(menuThread);
 		menuThread.start();
-	}
-
-	public void paint(Graphics g) {
-		g.drawImage(loadingImage, 0, 0, 640, 480, null);
+		if (objectHandler.getjFrame() != null) {
+			objectHandler.getjFrame().setFocusable(true);
+			objectHandler.getjFrame().setVisible(true);
+			objectHandler.getjFrame().setSize(objectHandler.getScreenWidth(),
+					objectHandler.getScreenHeight());
+			objectHandler.setFocused(true);
+		}
+		System.out.println("Done Loading");
 	}
 }

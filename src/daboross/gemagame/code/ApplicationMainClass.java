@@ -11,7 +11,7 @@ import java.awt.event.MouseMotionListener;
 
 import javax.swing.JFrame;
 
-public class ApplicationMainClass implements MainClass {
+public class ApplicationMainClass implements MainClass, Runnable {
 	private JFrame jFrame;
 	private ObjectHandler objectHandler;
 	private int height = 480;
@@ -20,20 +20,24 @@ public class ApplicationMainClass implements MainClass {
 	private Graphics bufferedGraphics1, bufferedGraphics2;
 	private int contractedImageX, contractedImageY, rememberWidth,
 			rememberHeight, imageTranslationX, imageTranslationY;
-	private Paintable paintingObject;
+	private Paintable paintingObject, overlayObject;
 
-	public ApplicationMainClass() {
+	public ApplicationMainClass(ObjectHandler objectHandler) {
+		this.objectHandler = objectHandler;
 	}
 
 	public static void main(String[] args) {
-		ApplicationMainClass mainClass = new ApplicationMainClass();
-		mainClass.runMe();
+		ObjectHandler objectHandler = new ObjectHandler();
+		ApplicationMainClass mainClass = new ApplicationMainClass(objectHandler);
+		Thread mainT = new Thread(mainClass);
+		objectHandler.setMainThread(mainT);
+		mainT.start();
+
 	}
 
-	public void runMe() {
+	@Override
+	public void run() {
 		jFrame = new JFrame();
-		jFrame.setVisible(true);
-		jFrame.setFocusable(true);
 		jFrame.setSize(640, 480);
 		jFrame.setTitle("Gema Game");
 		jFrame.setLayout(new BorderLayout());
@@ -41,11 +45,12 @@ public class ApplicationMainClass implements MainClass {
 		jFrame.setBackground(Color.BLACK);
 		rememberWidth = -2;
 		rememberHeight = -2;
-		objectHandler = new ObjectHandler();
-		objectHandler.setMainClass(this);
-		objectHandler.setjFrame(jFrame);
 		this.width = objectHandler.getScreenWidth();
 		this.height = objectHandler.getScreenHeight();
+		objectHandler.setFocused(false);
+		objectHandler.setApplet(false);
+		objectHandler.setMainClass(this);
+		objectHandler.setjFrame(jFrame);
 		LoadingScreen loadingScreen = new LoadingScreen(objectHandler);
 		loadingScreen.load();
 	}
@@ -61,53 +66,59 @@ public class ApplicationMainClass implements MainClass {
 		 * If the screen is not the same size at remembered, then re-run the
 		 * image transformations
 		 */
-		if (!(rememberWidth == jFrame.getWidth() && rememberHeight == jFrame
-				.getHeight())) {
-			System.out.println("Re-sizing");
-			/* Create New Images */
-			bImage1 = jFrame.createImage(jFrame.getWidth(), jFrame.getHeight());
-			bImage2 = jFrame.createImage(width, height);
-			bufferedGraphics2 = bImage2.getGraphics();
-			bufferedGraphics1 = bImage1.getGraphics();
-			/*
-			 * Remember The current Height and width, so that it can check if
-			 * the height has changed before running this again
-			 */
-			rememberWidth = jFrame.getWidth();
-			rememberHeight = jFrame.getHeight();
-			/*
-			 * Define contractedImageX and y depending on the height of the
-			 * screen
-			 */
-			contractedImageY = jFrame.getHeight();
-			contractedImageX = (int) ((double) contractedImageY
-					/ (double) height * width);
-			/*
-			 * If the graphics defined by using the height make it go off the
-			 * sides of the screen, redefine with the width
-			 */
-			if (contractedImageX > jFrame.getWidth()) {
-				contractedImageX = jFrame.getWidth();
-				contractedImageY = (int) ((double) contractedImageX
-						/ (double) width * height);
-			}
-			/*
-			 * Re Calculate Image Translations so that they position the image
-			 * correctly
-			 */
-			imageTranslationX = (jFrame.getWidth() - contractedImageX) / 2;
-			imageTranslationY = (jFrame.getHeight() - contractedImageY) / 2;
+		if (objectHandler.isFocused() == true) {
+			if ((!(rememberWidth == jFrame.getWidth() && rememberHeight == jFrame
+					.getHeight()))) {
+				System.out.println("Re-sizing");
+				/* Create New Images */
+				bImage1 = jFrame.createImage(jFrame.getWidth(),
+						jFrame.getHeight());
+				bImage2 = jFrame.createImage(width, height);
+				bufferedGraphics2 = bImage2.getGraphics();
+				bufferedGraphics1 = bImage1.getGraphics();
+				/*
+				 * Remember The current Height and width, so that it can check
+				 * if the height has changed before running this again
+				 */
+				rememberWidth = jFrame.getWidth();
+				rememberHeight = jFrame.getHeight();
+				/*
+				 * Define contractedImageX and y depending on the height of the
+				 * screen
+				 */
+				contractedImageY = jFrame.getHeight();
+				contractedImageX = (int) ((double) contractedImageY
+						/ (double) height * width);
+				/*
+				 * If the graphics defined by using the height make it go off
+				 * the sides of the screen, redefine with the width
+				 */
+				if (contractedImageX > jFrame.getWidth()) {
+					contractedImageX = jFrame.getWidth();
+					contractedImageY = (int) ((double) contractedImageX
+							/ (double) width * height);
+				}
+				/*
+				 * Re Calculate Image Translations so that they position the
+				 * image correctly
+				 */
+				imageTranslationX = (jFrame.getWidth() - contractedImageX) / 2;
+				imageTranslationY = (jFrame.getHeight() - contractedImageY) / 2;
 
+			}
+			// clears the screen
+			bufferedGraphics2.setColor(Color.black);
+			bufferedGraphics2.fillRect(0, 0, width, height);
+			paintingObject.paint(bufferedGraphics2);
+			if (overlayObject != null) {
+				overlayObject.paint(bufferedGraphics2);
+			}
+			bufferedGraphics1.drawImage(bImage2, imageTranslationX,
+					imageTranslationY, contractedImageX + imageTranslationX,
+					contractedImageY + imageTranslationY, 0, 0, width, height,
+					null);
+			g.drawImage(bImage1, 0, 0, jFrame);
 		}
-		// clears the screen
-		bufferedGraphics2.setColor(Color.black);
-		bufferedGraphics2.fillRect(0, 0, width, height);
-		paintingObject.paint(bufferedGraphics2);
-		bufferedGraphics1
-				.drawImage(bImage2, imageTranslationX, imageTranslationY,
-						contractedImageX + imageTranslationX, contractedImageY
-								+ imageTranslationY, 0, 0, width, height, null);
-		g.drawImage(bImage1, 0, 0, jFrame);
 	}
 
 	@Override
@@ -152,11 +163,16 @@ public class ApplicationMainClass implements MainClass {
 
 	@Override
 	public int realX(int x) {
-		return (int) ((((double) (x - (double) imageTranslationX) / (double) contractedImageX) * (double) width));
+		return (int) ((((x - (double) imageTranslationX) / contractedImageX) * width));
 	}
 
 	@Override
 	public int realY(int y) {
-		return (int) ((((double) (y - (double) imageTranslationY) / (double) contractedImageY) * (double) height));
+		return (int) ((((y - (double) imageTranslationY) / contractedImageY) * height));
+	}
+
+	@Override
+	public void setPaintableOverlay(Paintable p) {
+		overlayObject = p;
 	}
 }
