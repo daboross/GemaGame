@@ -54,8 +54,7 @@ public class LevelCreator implements Runnable, Paintable, KeyListener,
 			PlatformList pl;
 			try {
 				pl = objectHandler.getLevelLoader().loadToList(
-						FileHandler.ReadInternalFile("levels/level.txt",
-								objectHandler.getMainClass()));
+						FileHandler.ReadInternalFile("levels/level.txt"));
 				xPos = pl.xPosList;
 				yPos = pl.yPosList;
 				xLengths = pl.xLengthList;

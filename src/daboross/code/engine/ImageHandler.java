@@ -9,7 +9,7 @@ import daboross.gemagame.code.ObjectHandler;
 import daboross.gemagame.code.Paintable;
 
 public class ImageHandler {
-	private final boolean debug = false;
+	private boolean debug = false;
 	private ObjectHandler objectHandler;
 	private int rememberWidth, rememberHeight, contractedImageX,
 			contractedImageY, imageTranslationX, imageTranslationY, realWidth,
@@ -20,6 +20,7 @@ public class ImageHandler {
 	private boolean resizeNext, isApplet;
 
 	public ImageHandler(ObjectHandler objH) {
+		debug = objH.isDebug();
 		objH.setImageHandler(this);
 		objectHandler = objH;
 		isApplet = objectHandler.isApplet();
@@ -169,7 +170,9 @@ public class ImageHandler {
 			Toolkit tk = Toolkit.getDefaultToolkit();
 			returnImg = tk.createImage(getClass().getResource(
 					"/daboross/gemagame/data/images/" + imgName));
-			System.out.println("Loaded Image");
+			if (debug) {
+				System.out.println("Loaded Image");
+			}
 		} catch (Exception e) {
 			if (debug) {
 				System.out.println("Failed to load Image");

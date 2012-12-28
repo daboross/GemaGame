@@ -10,7 +10,10 @@ public class LevelLoader {
 		this.objectHandler = objectHandler;
 	}
 
-	public void load(ArrayList<String> lineList) {
+	public boolean load(ArrayList<String> lineList) {
+		if (lineList == null) {
+			return false;
+		}
 		ArrayList<Integer> platformsToAddXPos = new ArrayList<Integer>();
 		ArrayList<Integer> platformsToAddYPos = new ArrayList<Integer>();
 		ArrayList<Integer> platformsToAddXLength = new ArrayList<Integer>();
@@ -109,6 +112,7 @@ public class LevelLoader {
 					platformsToAddXLength.get(i), platformsToAddYLength.get(i));
 		}
 		System.out.println("Loaded " + numberOfPlatformsToAdd + ".");
+		return true;
 	}
 
 	public PlatformList loadToList(ArrayList<String> lineList) {

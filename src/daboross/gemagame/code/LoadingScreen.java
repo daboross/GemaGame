@@ -12,13 +12,9 @@ public class LoadingScreen {
 		System.out.println("Loading...");
 		if (!objectHandler.isApplet()
 				&& !(new File("GemaGameLevels/level.txt")).exists()) {
-			try {
-				FileHandler.WriteFile("GemaGameLevels/", "level.txt",
-						FileHandler.ReadInternalFile("levels/level.txt",
-								objectHandler.getMainClass()));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			FileHandler.WriteFile("GemaGameLevels/", "level.txt",
+					FileHandler.ReadInternalFile("/levels/level.txt"));
+
 		}
 		new ImageHandler(objectHandler);
 		Menu menu = new Menu(objectHandler);

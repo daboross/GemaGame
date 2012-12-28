@@ -16,7 +16,7 @@ import daboross.code.engine.ImageHandler;
 
 public class RunLevel implements Runnable, KeyListener, FocusListener,
 		Paintable {
-	private boolean paused, alive, escaped, pauseToEscape;
+	private boolean debug, paused, alive, escaped, pauseToEscape;
 	/** The Character in this game */
 	private Character character;
 	/** The Background Handler in this game */
@@ -51,7 +51,10 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 	 */
 	public RunLevel(ObjectHandler objectHandler) {
 		objectHandler.setRunLevel(this);
-		System.out.println("Initializing RunLevel");
+		debug = objectHandler.isDebug();
+		if (debug) {
+			System.out.println("Initializing RunLevel");
+		}
 		this.objectHandler = objectHandler;
 		this.mainClass = objectHandler.getMainClass();
 		backgroundImages = new Image[1];
@@ -73,34 +76,21 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 		character = new Character(objectHandler);
 		platformHandler = new PlatformHandler(objectHandler);
 		LevelLoader levelLoader = new LevelLoader(objectHandler);
-		if (objectHandler.getjFrame() == null) {
-			try {
-				levelLoader.load(FileHandler.ReadInternalFile(
-						"levels/level.txt", objectHandler.getMainClass()));
-			} catch (Exception e) {
-				System.out.println("Loading Internal File Failed");
+		if (objectHandler.isApplet()) {
+			if (!levelLoader.load(FileHandler
+					.ReadInternalFile("/levels/level.txt"))) {
+				if (debug) {
+					System.out.println("Loading Internal File Failed");
+				}
 			}
 		} else {
-			try {
+			if (!levelLoader.load(FileHandler
+					.ReadFile("GemaGameLevels/level.txt"))) {
+				if (debug) {
+					System.out.println("Level Created Not Found");
+				}
 				levelLoader.load(FileHandler
-						.ReadFile("GemaGameLevels/level.txt"));
-			} catch (Exception e) {
-				System.out.println("Level Created Not Found");
-				try {
-					levelLoader.load(FileHandler.ReadInternalFile(
-							"levels/level.txt", objectHandler.getMainClass()));
-				} catch (Exception ex) {
-					System.out.println("Loading Internal File Failed");
-					ex.printStackTrace();
-				}
-				try {
-					FileHandler.WriteFile("GemaGameLevels/", "level.txt",
-							FileHandler.ReadInternalFile("levels/level.txt",
-									objectHandler.getMainClass()));
-				} catch (Exception ex) {
-					System.out.println("Loading Internal File Failed");
-					ex.printStackTrace();
-				}
+						.ReadInternalFile("/levels/level.txt"));
 			}
 		}
 	}
@@ -112,7 +102,9 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 		paused = false;
 		mainClass.addFocusListener(this);
 		mainClass.addKeyListener(this);
-		System.out.println("Starting RunLevel");
+		if (debug) {
+			System.out.println("Starting RunLevel");
+		}
 		while (alive) {
 			while (alive && !paused) {
 				/* Calls Character update Function for Movement Updates */

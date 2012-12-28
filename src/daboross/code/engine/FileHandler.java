@@ -5,63 +5,84 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import daboross.gemagame.code.MainClass;
-
 public final class FileHandler {
 
-	public static void WriteFile(String filePath, String fileName,
-			ArrayList<String> lines) throws Exception {
-		System.out.println("Making Directory:" + new File(filePath).mkdirs());
-		System.out.println("Making File:"
-				+ new File(filePath + fileName).createNewFile());
-		System.out.println("Writing File: " + filePath + fileName);
-		BufferedWriter bf = new BufferedWriter(new FileWriter(filePath
-				+ fileName));
-		for (int i = 0; i < lines.size(); i++) {
-			bf.write(lines.get(i));
-			bf.newLine();
+	public static boolean WriteFile(String filePath, String fileName,
+			ArrayList<String> lines) {
+		if (lines == null || fileName == null || filePath == null) {
+			return false;
 		}
-		bf.close();
+		try {
+			System.out.println("Making Directory:"
+					+ new File(filePath).mkdirs());
+			System.out.println("Making File:"
+					+ new File(filePath + fileName).createNewFile());
+			System.out.println("Writing File: " + filePath + fileName);
+			BufferedWriter bf = new BufferedWriter(new FileWriter(filePath
+					+ fileName));
+			for (int i = 0; i < lines.size(); i++) {
+				bf.write(lines.get(i));
+				bf.newLine();
+			}
+			bf.close();
+		} catch (Exception e) {
+			return false;
+		}
 		System.out.println("Finished Writing File: " + filePath + fileName);
+		return true;
 	}
 
-	public static ArrayList<String> ReadFile(String filePath) throws Exception {
+	public static ArrayList<String> ReadFile(String filePath) {
 		System.out.println("Reading File: " + filePath);
-		ArrayList<String> lines = new ArrayList<String>();
-
-		BufferedReader bf = new BufferedReader(new FileReader(filePath));
-		while (true) {
-			String line = bf.readLine();
-			if (line == null) {
-				break;
+		ArrayList<String> lines = null;
+		try {
+			FileReader fr = new FileReader(filePath);
+			BufferedReader bf = new BufferedReader(fr);
+			lines = new ArrayList<String>();
+			while (true) {
+				String line = bf.readLine();
+				if (line == null) {
+					break;
+				}
+				lines.add(line);
 			}
-			lines.add(line);
+			bf.close();
+		} catch (Exception e) {
+			System.out.println("Failed to read file: " + filePath);
 		}
-
-		bf.close();
 		System.out.println("Finished Reading File: " + filePath);
 
 		return lines;
 	}
 
-	public static ArrayList<String> ReadInternalFile(String filePath,
-			MainClass mainClass) throws Exception {
+	public static ArrayList<String> ReadInternalFile(String filePath){
 		System.out.println("Reading File: " + filePath);
-		ArrayList<String> lines = new ArrayList<String>();
-		InputStreamReader isr = new InputStreamReader(mainClass.getClass()
-				.getResourceAsStream(filePath));
-		BufferedReader bf = new BufferedReader(isr);
-		while (true) {
-			String line = bf.readLine();
-			if (line == null) {
-				break;
+		ArrayList<String> lines = null;
+		InputStream is = Class.class.getResourceAsStream(filePath);
+		if (is != null) {
+			try {
+				InputStreamReader isr = new InputStreamReader(is);
+				BufferedReader bf = new BufferedReader(isr);
+				lines = new ArrayList<String>();
+				while (true) {
+					String line = bf.readLine();
+					if (line == null) {
+						break;
+					}
+					lines.add(line);
+				}
+				bf.close();
+			} catch (Exception e) {
+				System.out.println("Failed to read file: " + filePath);
 			}
-			lines.add(line);
+		} else {
+			System.out.println("Input Stream Reader Get Failed for File: "
+					+ filePath);
 		}
-		bf.close();
 		System.out.println("Finished Reading File: " + filePath);
 		return lines;
 	}
