@@ -4,6 +4,7 @@ import java.io.File;
 
 import daboross.gemagame.code.engine.FileHandler;
 import daboross.gemagame.code.engine.ImageHandler;
+import daboross.gemagame.code.engine.OverlayHandler;
 
 public class LoadingScreen {
 

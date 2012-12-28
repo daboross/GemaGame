@@ -6,6 +6,7 @@ import javax.swing.JApplet;
 import javax.swing.JFrame;
 
 import daboross.gemagame.code.engine.ImageHandler;
+import daboross.gemagame.code.engine.OverlayHandler;
 
 /**
  * This class is basically a bundle that holds a bunch of other class variables.

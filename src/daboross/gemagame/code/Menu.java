@@ -126,23 +126,19 @@ public class Menu implements Runnable, MouseListener, MouseMotionListener,
 	}
 
 	public void end() {
-		alive = false;
 		if (optionSelected == 0) {
+			alive = false;
 			RunLevel runLevel = new RunLevel(objectHandler);
 			new LevelLoader(objectHandler);
 			Thread runLevelThread = new Thread(runLevel);
 			objectHandler.setRunLevelThread(runLevelThread);
 			runLevelThread.start();
 		} else if (optionSelected == 1) {
+			alive = false;
 			LevelCreator levelCreator = new LevelCreator(objectHandler);
 			Thread levelCreatorThread = new Thread(levelCreator);
 			objectHandler.setLevelCreatorThread(levelCreatorThread);
 			levelCreatorThread.start();
-		} else {
-			Menu menu = new Menu(objectHandler);
-			Thread menuThread = new Thread(menu);
-			objectHandler.setMenuThread(menuThread);
-			menuThread.start();
 		}
 	}
 
