@@ -6,10 +6,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 public interface MainClass {
-	public void paint(Paintable p);
-
-	public void setPaintableOverlay(Paintable p);
-
 	public void addKeyListener(KeyListener l);
 
 	public void removeKeyListener(KeyListener l);
@@ -26,7 +22,4 @@ public interface MainClass {
 
 	public void removeMouseMotionListener(MouseMotionListener l);
 
-	public int realX(int x);
-
-	public int realY(int y);
 }

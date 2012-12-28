@@ -5,6 +5,8 @@ import java.awt.Graphics;
 import javax.swing.JApplet;
 import javax.swing.JFrame;
 
+import daboross.gemagame.code.engine.ImageHandler;
+
 /**
  * This class is basically a bundle that holds a bunch of other class variables.
  * So that any class that has access to this class will have access to all of

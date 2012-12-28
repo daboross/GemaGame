@@ -2,16 +2,12 @@ package daboross.gemagame.code;
 
 import java.io.File;
 
+import daboross.gemagame.code.engine.FileHandler;
+import daboross.gemagame.code.engine.ImageHandler;
+
 public class LoadingScreen {
 
-	private ObjectHandler objectHandler;
-
 	public LoadingScreen(ObjectHandler objectHandler) {
-		objectHandler.setLoadingScreen(this);
-		this.objectHandler = objectHandler;
-	}
-
-	public void load() {
 		System.out.println("Loading...");
 		if (!objectHandler.isApplet()
 				&& !(new File("GemaGameLevels/level.txt")).exists()) {

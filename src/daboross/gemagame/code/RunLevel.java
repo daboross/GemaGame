@@ -4,16 +4,15 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.net.URL;
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
+import daboross.gemagame.code.engine.FileHandler;
+import daboross.gemagame.code.engine.ImageHandler;
 
 public class RunLevel implements Runnable, KeyListener, FocusListener,
 		Paintable {
@@ -56,50 +55,16 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 		this.objectHandler = objectHandler;
 		this.mainClass = objectHandler.getMainClass();
 		backgroundImages = new Image[1];
-		try {
-			Toolkit tk = Toolkit.getDefaultToolkit();
-			if (objectHandler.getjFrame() != null) {
-				String baseURL = "/daboross/gemagame/data/images/";
-				Class<? extends JFrame> j = objectHandler.getjFrame()
-						.getClass();
-				backgroundImages[0] = tk.createImage(j.getResource(baseURL
-						+ "Background.png"));
-				platform = tk.createImage(j.getResource(baseURL
-						+ "platform.png"));
-				characterImage = tk.createImage(j.getResource(baseURL
-						+ "Character.png"));
-				proj0 = tk.createImage(j.getResource(baseURL
-						+ "projectileLeft.png"));
-				proj1 = tk.createImage(j.getResource(baseURL
-						+ "projectileUp.png"));
-				proj2 = tk.createImage(j.getResource(baseURL
-						+ "projectileRight.png"));
-				proj3 = tk.createImage(j.getResource(baseURL
-						+ "projectileDown.png"));
-				pauseOverlay = tk.createImage(j.getResource(baseURL
-						+ "paused.png"));
-				pauseOverlay2 = tk.createImage(j.getResource(baseURL
-						+ "pausedEscape.png"));
-			} else {
-				AppletMainClass apm = ((AppletMainClass) objectHandler
-						.getMainClass());
-				URL base = new URL(apm.getDocumentBase(),
-						"/daboross/gemagame/data/images/");
-				backgroundImages[0] = apm.getImage(base, "Background.png");
-				platform = apm.getImage(base, "platform.png");
-				characterImage = apm.getImage(base, "Character.png");
-				proj0 = apm.getImage(base, "projectileLeft.png");
-				proj1 = apm.getImage(base, "projectileUp.png");
-				proj2 = apm.getImage(base, "projectileRight.png");
-				proj3 = apm.getImage(base, "projectileDown.png");
-				pauseOverlay = apm.getImage(base, "paused.png");
-				pauseOverlay2 = apm.getImage(base, "pausedEscape.png");
-			}
-			System.out.println("Loaded Images");
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Load Images Failed");
-		}
+		ImageHandler ih = objectHandler.getImageHandler();
+		backgroundImages[0] = ih.getImage("Background.png");
+		platform = ih.getImage("platform.png");
+		characterImage = ih.getImage("Character.png");
+		proj0 = ih.getImage("projectileLeft.png");
+		proj1 = ih.getImage("projectileUp.png");
+		proj2 = ih.getImage("projectileRight.png");
+		proj3 = ih.getImage("projectileDown.png");
+		pauseOverlay = ih.getImage("paused.png");
+		pauseOverlay2 = ih.getImage("pausedEscape.png");
 		/**
 		 * Creates the Background Handler, Character, and Platform Handler
 		 * classes
@@ -124,15 +89,17 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 				try {
 					levelLoader.load(FileHandler.ReadInternalFile(
 							"levels/level.txt", objectHandler.getMainClass()));
-				} catch (Exception e1) {
+				} catch (Exception ex) {
 					System.out.println("Loading Internal File Failed");
+					ex.printStackTrace();
 				}
 				try {
 					FileHandler.WriteFile("GemaGameLevels/", "level.txt",
 							FileHandler.ReadInternalFile("levels/level.txt",
 									objectHandler.getMainClass()));
-				} catch (Exception e1) {
-					e1.printStackTrace();
+				} catch (Exception ex) {
+					System.out.println("Loading Internal File Failed");
+					ex.printStackTrace();
 				}
 			}
 		}
@@ -155,7 +122,7 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 				 */
 				backgroundH.update();
 				/* Repaints the screen */
-				mainClass.paint(this);
+				objectHandler.getImageHandler().paint(this);
 				/* Tries to sleep the thread for 17 milliseconds */
 				try {
 					Thread.sleep(17);
@@ -163,7 +130,7 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 				}
 			}
 			while (alive && paused) {
-				mainClass.paint(this);
+				objectHandler.getImageHandler().paint(this);
 				try {
 					Thread.sleep(68);
 				} catch (InterruptedException e) {

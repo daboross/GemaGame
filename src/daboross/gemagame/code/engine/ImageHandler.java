@@ -1,10 +1,13 @@
-package daboross.gemagame.code;
+package daboross.gemagame.code.engine;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.net.URL;
+
+import daboross.gemagame.code.ObjectHandler;
+import daboross.gemagame.code.Paintable;
 
 public class ImageHandler {
 	private ObjectHandler objectHandler;
@@ -182,5 +185,17 @@ public class ImageHandler {
 
 		}
 		return null;
+	}
+
+	public int screenX(int x) {
+		return (int) ((((x - (double) imageTranslationX) / contractedImageX) * fixedWidth));
+	}
+
+	public int screenY(int y) {
+		return (int) ((((y - (double) imageTranslationY) / contractedImageY) * fixedHeight));
+	}
+
+	public void setPaintableOverlay(Paintable p) {
+		overlay = p;
 	}
 }

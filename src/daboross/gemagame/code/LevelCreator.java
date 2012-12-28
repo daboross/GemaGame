@@ -3,7 +3,6 @@ package daboross.gemagame.code;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -11,10 +10,10 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.net.URL;
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
+import daboross.gemagame.code.engine.FileHandler;
+import daboross.gemagame.code.engine.ImageHandler;
 
 public class LevelCreator implements Runnable, Paintable, KeyListener,
 		MouseListener, FocusListener, MouseMotionListener {
@@ -27,29 +26,9 @@ public class LevelCreator implements Runnable, Paintable, KeyListener,
 	private Image platform, backgroundImage;
 
 	public LevelCreator(ObjectHandler objectHandler) {
-		try {
-			Toolkit tk = Toolkit.getDefaultToolkit();
-			if (objectHandler.getjFrame() != null) {
-				String baseURL = "/daboross/gemagame/data/images/";
-				Class<? extends JFrame> j = objectHandler.getjFrame()
-						.getClass();
-				backgroundImage = tk.createImage(j.getResource(baseURL
-						+ "Background.png"));
-				platform = tk.createImage(j.getResource(baseURL
-						+ "platform.png"));
-			} else {
-				AppletMainClass apm = ((AppletMainClass) objectHandler
-						.getMainClass());
-				URL base = new URL(apm.getDocumentBase(),
-						"/daboross/gemagame/data/images/");
-				backgroundImage = apm.getImage(base, "Background.png");
-				platform = apm.getImage(base, "platform.png");
-			}
-			System.out.println("Loaded Images");
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Load Images Failed");
-		}
+		ImageHandler ih = objectHandler.getImageHandler();
+		backgroundImage = ih.getImage("Background.png");
+		platform = ih.getImage("platform.png");
 		backgroundH = new BackgroundHandler(objectHandler);
 		this.objectHandler = objectHandler;
 		objectHandler.setLevelCreator(this);
@@ -97,7 +76,7 @@ public class LevelCreator implements Runnable, Paintable, KeyListener,
 		objectHandler.getMainClass().addMouseMotionListener(this);
 		alive = true;
 		while (alive) {
-			objectHandler.getMainClass().paint(this);
+			objectHandler.getImageHandler().paint(this);
 			if (mouseIn) {
 				if (mouseX > objectHandler.getScreenWidth() - 30) {
 					scroll -= 5;
@@ -194,8 +173,8 @@ public class LevelCreator implements Runnable, Paintable, KeyListener,
 	@Override
 	public void mousePressed(MouseEvent e) {
 		mouseButton = e.getButton();
-		int mX = objectHandler.getMainClass().realX(e.getX());
-		int mY = objectHandler.getMainClass().realY(e.getY());
+		int mX = objectHandler.getImageHandler().screenX(e.getX());
+		int mY = objectHandler.getImageHandler().screenY(e.getY());
 		boolean isFound = false;
 		if (numberOfPlatforms != 0) {
 			for (int i = 0; i < numberOfPlatforms && !isFound; i++) {
@@ -227,8 +206,8 @@ public class LevelCreator implements Runnable, Paintable, KeyListener,
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		int mX = objectHandler.getMainClass().realX(e.getX());
-		int mY = objectHandler.getMainClass().realY(e.getY());
+		int mX = objectHandler.getImageHandler().screenX(e.getX());
+		int mY = objectHandler.getImageHandler().screenY(e.getY());
 		if (isMouseOnPlatform) {
 			if (mouseButton == MouseEvent.BUTTON3) {
 				xLengths.set(mousePlatformID,
@@ -245,7 +224,7 @@ public class LevelCreator implements Runnable, Paintable, KeyListener,
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		mouseX = objectHandler.getMainClass().realX(e.getX());
-		mouseY = objectHandler.getMainClass().realY(e.getY());
+		mouseX = objectHandler.getImageHandler().screenX(e.getX());
+		mouseY = objectHandler.getImageHandler().screenY(e.getY());
 	}
 }

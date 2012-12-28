@@ -1,4 +1,4 @@
-package daboross.gemagame.code;
+package daboross.gemagame.code.engine;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -7,6 +7,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+
+import daboross.gemagame.code.MainClass;
 
 public final class FileHandler {
 

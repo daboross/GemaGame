@@ -8,6 +8,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import daboross.gemagame.code.engine.ImageHandler;
+
 public class Menu implements Runnable, MouseListener, MouseMotionListener,
 		Paintable {
 	private final int buttonWidth = 200;
@@ -114,7 +116,7 @@ public class Menu implements Runnable, MouseListener, MouseMotionListener,
 		while (alive) {
 			try {
 				objectHandler.getImageHandler().paint(this);
-				Thread.sleep(600);
+				Thread.sleep(30);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
