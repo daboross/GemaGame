@@ -24,9 +24,10 @@ public class AppletMainClass extends JApplet implements MainClass {
 	 */
 	public void start() {
 		ObjectHandler objectHandler = new ObjectHandler();
+		objectHandler.setDebug(false);
 		objectHandler.setMainClass(this);
 		objectHandler.setApplet(true);
-		objectHandler.setApplet(this);
+		objectHandler.setjApplet(this);
 		setBackground(Color.BLACK);
 		setFocusable(true);
 		setVisible(true);

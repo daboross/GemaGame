@@ -8,7 +8,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import daboross.code.engine.FileHandler;
@@ -17,6 +16,7 @@ import daboross.code.engine.ImageHandler;
 public class RunLevel implements Runnable, KeyListener, FocusListener,
 		Paintable {
 	private boolean debug, paused, alive, escaped, pauseToEscape;
+	private final boolean ultraDebug = false;
 	/** The Character in this game */
 	private Character character;
 	/** The Background Handler in this game */
@@ -33,10 +33,6 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 	 */
 	private boolean wPressed, aPressed, dPressed = false;
 
-	/**
-	 * This is an array that holds all the different background images
-	 */
-	private Image[] backgroundImages;
 	/** This variable holds this games MainClass */
 	private MainClass mainClass;
 	private ObjectHandler objectHandler;
@@ -57,9 +53,7 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 		}
 		this.objectHandler = objectHandler;
 		this.mainClass = objectHandler.getMainClass();
-		backgroundImages = new Image[1];
 		ImageHandler ih = objectHandler.getImageHandler();
-		backgroundImages[0] = ih.getImage("Background.png");
 		platform = ih.getImage("platform.png");
 		characterImage = ih.getImage("Character.png");
 		proj0 = ih.getImage("projectileLeft.png");
@@ -76,22 +70,13 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 		character = new Character(objectHandler);
 		platformHandler = new PlatformHandler(objectHandler);
 		LevelLoader levelLoader = new LevelLoader(objectHandler);
-		if (objectHandler.isApplet()) {
-			if (!levelLoader.load(FileHandler
-					.ReadInternalFile("/levels/level.txt"))) {
-				if (debug) {
-					System.out.println("Loading Internal File Failed");
-				}
+		if (!levelLoader.load(FileHandler.ReadFile("GemaGameLevels/level.txt"))) {
+			if (debug) {
+				System.out.println("Level Created Not Found");
 			}
-		} else {
-			if (!levelLoader.load(FileHandler
-					.ReadFile("GemaGameLevels/level.txt"))) {
-				if (debug) {
-					System.out.println("Level Created Not Found");
-				}
-				levelLoader.load(FileHandler
-						.ReadInternalFile("/levels/level.txt"));
-			}
+			levelLoader
+					.load(FileHandler
+							.ReadInternalFile("/daboross/gemagame/data/levels/level.txt"));
 		}
 	}
 
@@ -105,28 +90,63 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 		if (debug) {
 			System.out.println("Starting RunLevel");
 		}
+		long timeK = System.nanoTime();
 		while (alive) {
+			if (debug) {
+				System.out.println("UnPausing");
+			}
+
+			/* Tells the Image Handler that this is the object to paint */
+			objectHandler.getImageHandler().setPaintable(this);
 			while (alive && !paused) {
+				if (ultraDebug) {
+					System.out.println((System.nanoTime() - timeK)
+							+ "   :After looping");
+					timeK = System.nanoTime();
+				}
 				/* Calls Character update Function for Movement Updates */
 				character.update(wPressed, aPressed, dPressed);
+				if (ultraDebug) {
+					System.out.println((System.nanoTime() - timeK)
+							+ "   :After Character updates");
+					timeK = System.nanoTime();
+				}
 				/*
 				 * Calls Background Handler Update Function for Movement Updates
 				 */
 				backgroundH.update();
-				/* Repaints the screen */
-				objectHandler.getImageHandler().paint(this);
+				if (ultraDebug) {
+					System.out.println((System.nanoTime() - timeK)
+							+ "   :After background Updates");
+					timeK = System.nanoTime();
+				}
+				if (ultraDebug) {
+					System.out.println((System.nanoTime() - timeK)
+							+ "   :After Painting");
+					timeK = System.nanoTime();
+				}
 				/* Tries to sleep the thread for 17 milliseconds */
 				try {
-					Thread.sleep(17);
-				} catch (InterruptedException e) {
+					Thread.sleep(20);
+				} catch (Exception e) {
+					if (debug) {
+						System.out.println("Exception Caught in RunLevel");
+						e.printStackTrace();
+					}
+				}
+				if (ultraDebug) {
+					System.out.println((System.nanoTime() - timeK)
+							+ "   :After Pausing");
+					timeK = System.nanoTime();
 				}
 			}
-			while (alive && paused) {
-				objectHandler.getImageHandler().paint(this);
-				try {
-					Thread.sleep(68);
-				} catch (InterruptedException e) {
-				}
+			if (debug) {
+				System.out.println("Pausing");
+			}
+			try {
+				Thread.sleep(40);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		mainClass.removeKeyListener(this);
@@ -145,22 +165,13 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 	 */
 	@Override
 	public void paint(Graphics g) {
-		Graphics gtp = null;
-		BufferedImage pauseImage = null;
-		if (paused) {
-			gtp = g;
-			pauseImage = new BufferedImage(640, 480,
-					BufferedImage.TYPE_INT_ARGB);
-			g = pauseImage.getGraphics();
-			g.drawImage(pauseOverlay, 0, 0, null);
-		}
+		long timeK = System.nanoTime();
 		/* This loop goes through and draws each layer of background */
-		for (int i = 0; i < backgroundH.getNumberLayers(); i++) {
-			for (int k = 0; k < 2; k++) {
-				int xPos = (int) backgroundH.getBgX(k, i);
-				int yPos = (int) backgroundH.getBgY(k, i);
-				g.drawImage(backgroundImages[0], xPos, yPos, null);
-			}
+		backgroundH.paint(g);
+		if (ultraDebug) {
+			System.out.println((System.nanoTime() - timeK)
+					+ "   :After Background Paint");
+			timeK = System.nanoTime();
 		}
 		/* This loop goes through and draws each platform in PlatformHandler */
 		for (int i = 0; i < platformHandler.listLength(); i++) {
@@ -171,30 +182,46 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 					(int) (platformHandler.xLengthList(i) + 0),
 					(int) (platformHandler.yLengthList(i) + 0), null);
 		}
-		g.setColor(Color.CYAN);
+		if (ultraDebug) {
+			System.out.println((System.nanoTime() - timeK)
+					+ "   :After Platform");
+			timeK = System.nanoTime();
+		}
 
-		/*
-		 * g.drawRect((int) character.getLeftLimit(), (int)
-		 * character.getTopLimit(), (int) (character.getRightLimit() -
-		 * character.getLeftLimit()), (int) (character.getBottomLimit() -
-		 * character.getTopLimit()));
-		 */
-		/* Get a graphics2d for better manipulation */
-		Graphics2D g2d = (Graphics2D) g;
+		if (debug) {
+			g.setColor(Color.CYAN);
+			g.drawRect(
+					(int) character.getLeftLimit(),
+					(int) character.getTopLimit(),
+					(int) (character.getRightLimit() - character.getLeftLimit()),
+					(int) (character.getBottomLimit() - character.getTopLimit()));
+		}
+		if (ultraDebug) {
+			System.out.println((System.nanoTime() - timeK) + "   :After Cyan");
+			timeK = System.nanoTime();
+		}
+		Graphics2D g2 = (Graphics2D) g;
 		/* Move the graphics to the characters location */
-		g2d.translate(character.getCenterX(), character.getCenterY());
+		int transX = character.getCenterX();
+		int transY = character.getCenterY();
+		g2.translate(transX, transY);
 		/* Rotates the graphics, which will make the drawn image rotated */
 		double rotate = character.rotation();
-		g2d.rotate(rotate);
+		g2.rotate(rotate);
 		/* Draws the image with the characterImage, lengthX, and lengthY */
-		g2d.drawImage(characterImage, -character.lengthX, -character.lengthY,
+		g2.drawImage(characterImage, -character.lengthX, -character.lengthY,
 				null);
 		/* UnRotates the graphics so that the other objects aren't rotated. */
-		g2d.rotate(-rotate);
+		g2.rotate(-rotate);
 		/*
 		 * UnTranslates the graphics so that the other objects aren't Translated
 		 */
-		g2d.translate(-character.getCenterX(), -character.getCenterY());
+		g2.translate(-transX, -transY);
+		if (ultraDebug) {
+			System.out.println((System.nanoTime() - timeK)
+					+ "   :After Character");
+			timeK = System.nanoTime();
+		}
 		// Goes through and draws every Character projectile on the screen
 		ArrayList<Projectile> projectiles = character.getProjectiles();
 		for (int i = 0; i < projectiles.size(); i++) {
@@ -226,13 +253,11 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 
 			}
 		}
-		if (paused) {
-			if (escaped) {
-				g.drawImage(pauseOverlay2, 0, 0, null);
-			} else {
-				g.drawImage(pauseOverlay, 0, 0, null);
-			}
-			gtp.drawImage(pauseImage, 0, 0, null);
+
+		if (ultraDebug) {
+			System.out.println((System.nanoTime() - timeK)
+					+ "   :After Projectiles");
+			timeK = System.nanoTime();
 		}
 	}
 
@@ -346,12 +371,15 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 				paused = true;
 				escaped = true;
 				pauseToEscape = true;
+				objectHandler.getOverlayHandler()
+						.setPauseOverlay(pauseOverlay2);
 			}
 		} else if (escaped) {
 			if (eventChar == KeyEvent.VK_ESCAPE) {
 				paused = false;
 				escaped = false;
 				pauseToEscape = false;
+				objectHandler.getOverlayHandler().removePauseOverlay();
 			}
 		}
 	}
@@ -365,8 +393,10 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 		if (pauseToEscape) {
 			escaped = true;
 			paused = true;
+			objectHandler.getOverlayHandler().setPauseOverlay(pauseOverlay2);
 		} else {
 			paused = false;
+			objectHandler.getOverlayHandler().removePauseOverlay();
 		}
 	}
 
@@ -376,8 +406,10 @@ public class RunLevel implements Runnable, KeyListener, FocusListener,
 			pauseToEscape = true;
 			escaped = false;
 			paused = true;
+			objectHandler.getOverlayHandler().setPauseOverlay(pauseOverlay);
 		} else {
 			paused = true;
+			objectHandler.getOverlayHandler().setPauseOverlay(pauseOverlay);
 		}
 		wPressed = false;
 		aPressed = false;

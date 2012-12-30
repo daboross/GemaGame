@@ -7,16 +7,19 @@ import daboross.gemagame.code.Collision;
 
 public class OverlayButton {
 	private Image img, hImage;
+	private String ID;
 	private int xPos;
 	private int yPos;
 	private int xLength;
 	private int yLength;
+	private int type;
 	private ButtonReactor buttonReactor;
 
-	public OverlayButton(Image img, int xPos, int yPos, int xLength,
-			int yLength, ButtonReactor buttonReactor) {
-		this.img = img;
-		this.hImage = img;
+	public OverlayButton(String ID, Image platform, int xPos, int yPos,
+			int xLength, int yLength, ButtonReactor buttonReactor, int type) {
+		this.ID = ID;
+		this.img = platform;
+		this.hImage = platform;
 		this.xPos = xPos;
 		this.yPos = yPos;
 		this.xLength = xLength;
@@ -24,8 +27,9 @@ public class OverlayButton {
 		this.buttonReactor = buttonReactor;
 	}
 
-	public OverlayButton(Image img, int xPos, int yPos,
-			ButtonReactor buttonReactor) {
+	public OverlayButton(String ID, Image img, int xPos, int yPos,
+			ButtonReactor buttonReactor, int type) {
+		this.ID = ID;
 		this.img = img;
 		this.hImage = img;
 		this.xPos = xPos;
@@ -35,10 +39,16 @@ public class OverlayButton {
 		this.buttonReactor = buttonReactor;
 	}
 
-	public OverlayButton(Image img, Image hoveredImage, int xPos, int yPos,
-			int xLength, int yLength, ButtonReactor buttonReactor) {
+	public OverlayButton(String ID, Image img, Image hoveredImage, int xPos,
+			int yPos, int xLength, int yLength, ButtonReactor buttonReactor,
+			int type) {
+		this.ID = ID;
 		this.img = img;
-		this.hImage = hoveredImage;
+		if (img != null && hoveredImage == null) {
+			this.hImage = img;
+		} else {
+			this.hImage = hoveredImage;
+		}
 		this.xPos = xPos;
 		this.yPos = yPos;
 		this.xLength = xLength;
@@ -56,9 +66,19 @@ public class OverlayButton {
 		}
 	}
 
-	public void clickUpdate(int mX, int mY) {
+	public boolean clickUpdate(int mX, int mY) {
 		if (Collision.pointOnPlane(mX, mY, xPos, yPos, xLength, yLength)) {
-			buttonReactor.react(this);
+			buttonReactor.buttonReact(this);
+			return true;
 		}
+		return false;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public String getID() {
+		return ID;
 	}
 }

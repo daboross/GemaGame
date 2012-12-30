@@ -2,22 +2,29 @@ package daboross.code.engine;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Toolkit;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+
+import javax.imageio.ImageIO;
 
 import daboross.gemagame.code.ObjectHandler;
 import daboross.gemagame.code.Paintable;
 
-public class ImageHandler {
-	private boolean debug = false;
+public class ImageHandler implements Runnable {
+	private final boolean ultraDebug = false;
+	private boolean debug;
 	private ObjectHandler objectHandler;
 	private int rememberWidth, rememberHeight, contractedImageX,
 			contractedImageY, imageTranslationX, imageTranslationY, realWidth,
 			realHeight, fixedWidth, fixedHeight;
-	private Image bImage1, bImage2;
-	private Graphics bufferedGraphics1, bufferedGraphics2;
-	private Paintable overlay;
-	private boolean resizeNext, isApplet;
+	private BufferedImage bImage;
+	private Graphics bufferedGraphics, finalGraphics;
+	private boolean isApplet;
+	private Paintable p;
 
 	public ImageHandler(ObjectHandler objH) {
 		debug = objH.isDebug();
@@ -28,41 +35,58 @@ public class ImageHandler {
 		fixedHeight = objectHandler.getScreenHeight();
 	}
 
-	public void paint(Paintable p) {
+	public void setPaintable(Paintable p) {
+		this.p = p;
+	}
+
+	public void run() {
+		while (true) {
+			try {
+				Thread.sleep(20);
+			} catch (Exception e) {
+				System.out.println("Exception Caught in ImageHandler");
+				e.printStackTrace();
+			}
+			paint();
+		}
+	}
+
+	private void paint() {
 		/*
 		 * If the screen is not the same size at remembered, then re-run the
 		 * image transformations
 		 */
 		realWidth = getRealWidth();
 		realHeight = getRealHeight();
+		long timeK;
 		if (objectHandler.isFocused() == true
 				|| objectHandler.isApplet() == true) {
-			if (!(rememberWidth == realWidth && rememberHeight == realHeight)
-					|| resizeNext) {
-				resizeNext = false;
-				System.out.println("Re-sizing");
-				/* Create New Images */
+			if (finalGraphics == null
+					|| isResizeCheck()
+					|| !(rememberWidth == realWidth && rememberHeight == realHeight)) {
+				if (debug)
+					System.out.println("Re-sizing");
 				if (isApplet) {
-					if (objectHandler.getApplet() != null) {
-						bImage1 = objectHandler.getApplet().createImage(
-								realWidth, realHeight);
-						bImage2 = objectHandler.getApplet().createImage(
-								fixedWidth, fixedHeight);
+					if (objectHandler.getjApplet() != null) {
+						finalGraphics = (Graphics2D) objectHandler.getjApplet()
+								.getGraphics();
 					}
 				} else {
-					if (objectHandler.getjFrame() != null) {
-						bImage1 = objectHandler.getjFrame().createImage(
-								realWidth, realHeight);
-						bImage2 = objectHandler.getjFrame().createImage(
-								fixedWidth, fixedHeight);
+					if (objectHandler.getjPanel() != null) {
+						finalGraphics = (Graphics2D) objectHandler.getjPanel()
+								.getGraphics();
 					}
 				}
-				if (bImage1 != null) {
-					bufferedGraphics1 = bImage1.getGraphics();
+				if (finalGraphics != null) {
+					finalGraphics.setColor(Color.black);
+					finalGraphics.fillRect(0, 0, realWidth, realHeight);
 				}
-				if (bImage2 != null) {
-					bufferedGraphics2 = bImage2.getGraphics();
-				}
+				/* Create New Images */
+				bImage = new BufferedImage(fixedWidth, fixedHeight,
+						BufferedImage.TYPE_INT_ARGB);
+				bufferedGraphics = (Graphics2D) bImage.getGraphics();
+				finalGraphics.setColor(Color.black);
+				finalGraphics.fillRect(0, 0, realWidth, realHeight);
 				/*
 				 * Remember The current Height and width, so that it can check
 				 * if the height has changed before running this again
@@ -80,10 +104,22 @@ public class ImageHandler {
 				 * If the graphics defined by using the height make it go off
 				 * the sides of the screen, redefine with the width
 				 */
+				if (debug) {
+					System.out.println("1Real Height:" + realHeight + " Width:"
+							+ realWidth + " contractedHeight:"
+							+ contractedImageY + " contractedWidth:"
+							+ contractedImageX);
+				}
 				if (contractedImageX > realWidth) {
-					contractedImageX = realHeight;
+					contractedImageX = realWidth;
 					contractedImageY = (int) ((double) contractedImageX
 							/ (double) fixedWidth * fixedHeight);
+				}
+				if (debug) {
+					System.out.println("2Real Height:" + realHeight + " Width:"
+							+ realWidth + " contractedHeight:"
+							+ contractedImageY + " contractedWidth:"
+							+ contractedImageX);
 				}
 				/*
 				 * Re Calculate Image Translations so that they position the
@@ -91,48 +127,71 @@ public class ImageHandler {
 				 */
 				imageTranslationX = (realWidth - contractedImageX) / 2;
 				imageTranslationY = (realHeight - contractedImageY) / 2;
-
+				if (debug) {
+					System.out.println("X: " + imageTranslationX + " Y: "
+							+ imageTranslationY);
+				}
 			}
-			// clears the screen
-			bufferedGraphics2.setColor(Color.black);
-			bufferedGraphics2.fillRect(0, 0, fixedWidth, fixedHeight);
-			p.paint(bufferedGraphics2);
-			if (overlay != null) {
-				overlay.paint(bufferedGraphics2);
+			if (p != null) {
+				if (ultraDebug) {
+					timeK = System.nanoTime();
+				}
+				// clears the screen
+				bufferedGraphics.setColor(Color.black);
+				bufferedGraphics.fillRect(0, 0, fixedWidth, fixedHeight);
+				if (ultraDebug) {
+					System.out.println((System.nanoTime() - timeK)
+							+ "   :After Filling In");
+					timeK = System.nanoTime();
+				}
+				p.paint(bufferedGraphics);
+				if (ultraDebug) {
+					System.out.println((System.nanoTime() - timeK)
+							+ "   :After Painting Paintable:");
+					timeK = System.nanoTime();
+				}
+				if (objectHandler.getOverlayHandler() != null) {
+					objectHandler.getOverlayHandler().paint(bufferedGraphics);
+				}
+				if (ultraDebug) {
+					System.out.println((System.nanoTime() - timeK)
+							+ "   :After Overlay Handler:");
+					timeK = System.nanoTime();
+				}
+				finalGraphics.drawImage(bImage, imageTranslationX,
+						imageTranslationY,
+						contractedImageX + imageTranslationX, contractedImageY
+								+ imageTranslationY, 0, 0, fixedWidth,
+						fixedHeight, null);
+				if (ultraDebug) {
+					System.out.println((System.nanoTime() - timeK)
+							+ "   :After Final Drawing");
+				}
 			}
-			bufferedGraphics1.drawImage(bImage2, imageTranslationX,
-					imageTranslationY, contractedImageX + imageTranslationX,
-					contractedImageY + imageTranslationY, 0, 0, fixedWidth,
-					fixedHeight, null);
-			drawFinalImage(bImage1);
 		}
 	}
 
-	private void drawFinalImage(Image img) {
-		if (isApplet) {
-			if (objectHandler.getApplet() != null) {
-				objectHandler.getApplet().getGraphics()
-						.drawImage(img, 0, 0, objectHandler.getApplet());
-			}
-		} else {
-			if (objectHandler.getjFrame() != null) {
-				objectHandler.getjFrame().getGraphics()
-						.drawImage(img, 0, 0, objectHandler.getjFrame());
-			}
+	private boolean isResizeCheck() {
+
+		Rectangle bounds = ((Graphics2D) finalGraphics)
+				.getDeviceConfiguration().getBounds();
+		if (bounds.height < realHeight || bounds.width < realWidth) {
+			return true;
 		}
+		return false;
 	}
 
 	private int getRealWidth() {
 		if (objectHandler.isApplet()) {
-			if (objectHandler.getApplet() != null) {
-				Integer w = objectHandler.getApplet().getWidth();
+			if (objectHandler.getjApplet() != null) {
+				Integer w = objectHandler.getjApplet().getWidth();
 				if (w != null && w > 0) {
 					return w;
 				}
 			}
 		} else {
-			if (objectHandler.getjFrame() != null) {
-				Integer w = objectHandler.getjFrame().getWidth();
+			if (objectHandler.getjPanel() != null) {
+				Integer w = objectHandler.getjPanel().getWidth();
 				if (w != null && w > 0) {
 					return w;
 				}
@@ -143,15 +202,15 @@ public class ImageHandler {
 
 	private int getRealHeight() {
 		if (objectHandler.isApplet()) {
-			if (objectHandler.getApplet() != null) {
-				Integer h = objectHandler.getApplet().getHeight();
+			if (objectHandler.getjApplet() != null) {
+				Integer h = objectHandler.getjApplet().getHeight();
 				if (h != null && h > 0) {
 					return h;
 				}
 			}
 		} else {
-			if (objectHandler.getjFrame() != null) {
-				Integer h = objectHandler.getjFrame().getHeight();
+			if (objectHandler.getjPanel() != null) {
+				Integer h = objectHandler.getjPanel().getHeight();
 				if (h != null && h > 0) {
 					return h;
 				}
@@ -161,31 +220,35 @@ public class ImageHandler {
 	}
 
 	public Image getImage(String imgName) {
-		Image returnImg = null;
 		if (debug) {
 			System.out.println("Getting image: /daboross/gemagame/data/images/"
 					+ imgName);
 		}
-		try {
-			Toolkit tk = Toolkit.getDefaultToolkit();
-			returnImg = tk.createImage(getClass().getResource(
-					"/daboross/gemagame/data/images/" + imgName));
-			if (debug) {
-				System.out.println("Loaded Image");
+		BufferedImage img = null;
+		URL fl = ImageHandler.class
+				.getResource("/daboross/gemagame/data/images/" + imgName);
+		if (fl != null) {
+			try {
+				img = ImageIO.read(fl);
+			} catch (IOException e) {
+				if (debug) {
+					System.out.println("Failed to load Image");
+				}
 			}
-		} catch (Exception e) {
+		} else {
 			if (debug) {
-				System.out.println("Failed to load Image");
+				System.out
+						.println("Failed to load Image. Resource Stream Not Found");
 			}
 		}
 		if (debug) {
-			if (returnImg == null) {
-				System.out.println("Image null, returning null");
+			if (img == null) {
+				System.out.println("Failed, returning null");
 			} else {
-				System.out.println("Image Found, not returning null");
+				System.out.println("Got Image, returning image");
 			}
 		}
-		return returnImg;
+		return img;
 	}
 
 	public int screenX(int x) {
@@ -194,9 +257,5 @@ public class ImageHandler {
 
 	public int screenY(int y) {
 		return (int) ((((y - (double) imageTranslationY) / contractedImageY) * fixedHeight));
-	}
-
-	public void setPaintableOverlay(Paintable p) {
-		overlay = p;
 	}
 }

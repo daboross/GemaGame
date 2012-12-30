@@ -2,6 +2,7 @@ package daboross.gemagame.code;
 
 import javax.swing.JApplet;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import daboross.code.engine.ImageHandler;
 import daboross.code.engine.OverlayHandler;
@@ -15,13 +16,14 @@ import daboross.code.engine.OverlayHandler;
  * 
  */
 public class ObjectHandler {
-	private JApplet applet;
 	private BackgroundHandler backgroundHandler;
 	private Character character;
-	private final boolean debug = false;
+	private boolean debug = false;
 	private ImageHandler imageHandler;
 	private boolean isApplet, isFocused;
+	private JApplet jApplet;
 	private JFrame jFrame;
+	private JPanel jPanel;
 	private LevelCreator levelCreator;
 	private LevelLoader levelLoader;
 	private LoadingScreen loadingScreen;
@@ -36,21 +38,6 @@ public class ObjectHandler {
 	private final int screenWidth = 640;
 
 	public ObjectHandler() {
-	}
-
-	/**
-	 * @return the applet
-	 */
-	public JApplet getApplet() {
-		return applet;
-	}
-
-	/**
-	 * @param applet
-	 *            the applet to set
-	 */
-	public void setApplet(JApplet applet) {
-		this.applet = applet;
 	}
 
 	/**
@@ -81,6 +68,21 @@ public class ObjectHandler {
 	 */
 	public void setCharacter(Character character) {
 		this.character = character;
+	}
+
+	/**
+	 * @return the debug
+	 */
+	public boolean isDebug() {
+		return debug;
+	}
+
+	/**
+	 * @param debug
+	 *            the debug to set
+	 */
+	public void setDebug(boolean debug) {
+		this.debug = debug;
 	}
 
 	/**
@@ -126,6 +128,21 @@ public class ObjectHandler {
 	 */
 	public void setFocused(boolean isFocused) {
 		this.isFocused = isFocused;
+	}
+
+	/**
+	 * @return the jApplet
+	 */
+	public JApplet getjApplet() {
+		return jApplet;
+	}
+
+	/**
+	 * @param jApplet
+	 *            the jApplet to set
+	 */
+	public void setjApplet(JApplet jApplet) {
+		this.jApplet = jApplet;
 	}
 
 	/**
@@ -354,13 +371,6 @@ public class ObjectHandler {
 	}
 
 	/**
-	 * @return the debug
-	 */
-	public boolean isDebug() {
-		return debug;
-	}
-
-	/**
 	 * @return the screenHeight
 	 */
 	public int getScreenHeight() {
@@ -372,5 +382,20 @@ public class ObjectHandler {
 	 */
 	public int getScreenWidth() {
 		return screenWidth;
+	}
+
+	/**
+	 * @return the jPanel
+	 */
+	public JPanel getjPanel() {
+		return jPanel;
+	}
+
+	/**
+	 * @param jPanel
+	 *            the jPanel to set
+	 */
+	public void setjPanel(JPanel jPanel) {
+		this.jPanel = jPanel;
 	}
 }

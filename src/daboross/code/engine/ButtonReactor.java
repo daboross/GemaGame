@@ -1,5 +1,5 @@
 package daboross.code.engine;
 
 public interface ButtonReactor {
-	public void react(OverlayButton button);
+	public void buttonReact(OverlayButton button);
 }

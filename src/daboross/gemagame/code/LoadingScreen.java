@@ -1,6 +1,7 @@
 package daboross.gemagame.code;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import daboross.code.engine.FileHandler;
 import daboross.code.engine.ImageHandler;
@@ -9,20 +10,31 @@ import daboross.code.engine.OverlayHandler;
 public class LoadingScreen {
 
 	public LoadingScreen(ObjectHandler objectHandler) {
-		System.out.println("Loading...");
-		if (!objectHandler.isApplet()
-				&& !(new File("GemaGameLevels/level.txt")).exists()) {
-			FileHandler.WriteFile("GemaGameLevels/", "level.txt",
-					FileHandler.ReadInternalFile("/levels/level.txt"));
+		boolean debug = objectHandler.isDebug();
+		if (debug) {
+			System.out.println("Loading...");
+		}
+		if (!(new File("GemaGameLevels/level.txt")).exists()) {
+			ArrayList<String> lines = FileHandler
+					.ReadInternalFile("/daboross/gemagame/data/levels/level.txt");
+			if (lines != null) {
+				FileHandler.WriteFile("GemaGameLevels/", "level.txt", lines);
+			}
 
 		}
-		new ImageHandler(objectHandler);
+		if (debug) {
+			System.out.println("FilePath: "
+					+ (new File("GemaGameLevels/level.txt")).getAbsolutePath());
+		}
+		ImageHandler ih = new ImageHandler(objectHandler);
 		Menu menu = new Menu(objectHandler);
 		new LevelLoader(objectHandler);
 		new OverlayHandler(objectHandler);
 		Thread menuThread = new Thread(menu);
 		objectHandler.setMenuThread(menuThread);
 		menuThread.start();
+		Thread iHThread = new Thread(ih);
+		iHThread.start();
 		if (objectHandler.getjFrame() != null) {
 			objectHandler.getjFrame().setFocusable(true);
 			objectHandler.getjFrame().setVisible(true);
@@ -30,6 +42,8 @@ public class LoadingScreen {
 					objectHandler.getScreenHeight());
 			objectHandler.setFocused(true);
 		}
-		System.out.println("Done Loading");
+		if (debug) {
+			System.out.println("Done Loading");
+		}
 	}
 }

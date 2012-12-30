@@ -1,14 +1,17 @@
 package daboross.gemagame.code;
 
+import java.awt.Graphics;
+import java.awt.Image;
+
 /**
  * @author daboross
  * 
  */
-public class BackgroundHandler {
+public class BackgroundHandler implements Paintable {
 	/**
 	 * The length that one background is graphically represented x-wise
 	 */
-	final int lengthX = 2000;
+	final int lengthX = 640;
 	/**
 	 * totalDifX holds the total amount that the backgrounds have scrolled with
 	 * Respect to the front most background, and the objects on the screen difX
@@ -35,9 +38,13 @@ public class BackgroundHandler {
 	 * background scrolls
 	 */
 	private double[] increaseRates;
+	private Image img;
+	private int height;
 
 	/** The initial function for creating a BackgroundHandler */
 	public BackgroundHandler(ObjectHandler objectHandler) {
+		height = objectHandler.getScreenHeight();
+		img = objectHandler.getImageHandler().getImage("pBackground.png");
 		objectHandler.setBackgroundHandler(this);
 		numberOfLayers = 3;
 		xPositions = new double[2][numberOfLayers];
@@ -90,16 +97,16 @@ public class BackgroundHandler {
 	}
 
 	/**
-	 * Returns the visual position for the background number and layer //
-	 * specified, if they are not correct then you get an error in the //
-	 * console, and they value 0 is returned.
+	 * Returns the visual position for the background number and layer
+	 * specified, if they are not correct then you get an error in the console,
+	 * and they value 0 is returned.
 	 * 
 	 * @param backgroundNumber
 	 *            The number of the Background to get. Only use 0 or 1.
 	 * @param layerNumber
 	 *            The layer number of the Background to get. Will return 0 if
 	 *            invalid number is specified
-	 * @return the backgroudn x position on screen
+	 * @return the background x position on screen
 	 */
 	public double getBgX(int backgroundNumber, int layerNumber) {
 		if ((layerNumber == 0 || layerNumber == 1 || layerNumber == 2)
@@ -113,18 +120,18 @@ public class BackgroundHandler {
 	}
 
 	/**
-	 * Gets the total scrolling difference, useful for getting the visual //
-	 * positions of objects that scroll with the background when the //
-	 * character scrolls the screen.
+	 * Gets the total scrolling difference, useful for getting the visual
+	 * positions of objects that scroll with the background when the character
+	 * scrolls the screen.
 	 */
 	public double getDifX() {
 		return totalDifX;
 	}
 
 	/**
-	 * Returns the visual position for the background number and layer //
-	 * specified, if they are not correct then you get an error in the //
-	 * console, and they value 0 is returned.
+	 * Returns the visual position for the background number and layer
+	 * specified, if they are not correct then you get an error in the console,
+	 * and they value 0 is returned.
 	 */
 	public double getBgY(int backgroundNumber, int layerNumber) {
 		if ((layerNumber == 0 || layerNumber == 1 || layerNumber == 2)
@@ -149,5 +156,16 @@ public class BackgroundHandler {
 	/** @return The number of background layers there are. */
 	public int getNumberLayers() {
 		return numberOfLayers;
+	}
+
+	@Override
+	public void paint(Graphics g) {
+		for (int i = 0; i < numberOfLayers; i++) {
+			for (int k = 0; k < 2; k++) {
+				int xPos = (int) xPositions[k][i];
+				int yPos = (int) yPositions[k][i];
+				g.drawImage(img, xPos, yPos, lengthX, height, null);
+			}
+		}
 	}
 }

@@ -9,8 +9,20 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+/** This class contains various helpful functions */
 public final class FileHandler {
 
+	/**
+	 * Writes a file with text lines to filePath/fileName
+	 * 
+	 * @param fileName
+	 *            this is the name of the file to write
+	 * @param filePath
+	 *            this is where to put the file
+	 * @param lines
+	 *            this is the text to put in the file
+	 * @return True if successful, false otherwise
+	 */
 	public static boolean WriteFile(String filePath, String fileName,
 			ArrayList<String> lines) {
 		if (lines == null || fileName == null || filePath == null) {
@@ -36,6 +48,13 @@ public final class FileHandler {
 		return true;
 	}
 
+	/**
+	 * Reads a file into an array list of strings
+	 * 
+	 * @param filePath
+	 *            this is the path and the name of the file
+	 * @return The text in the file, or null if it doesn't exist
+	 */
 	public static ArrayList<String> ReadFile(String filePath) {
 		System.out.println("Reading File: " + filePath);
 		ArrayList<String> lines = null;
@@ -59,10 +78,18 @@ public final class FileHandler {
 		return lines;
 	}
 
-	public static ArrayList<String> ReadInternalFile(String filePath){
+	/**
+	 * This reads a file from within the .jar to an ArrayList of strings
+	 * 
+	 * @param filePath
+	 *            this is the location of the file within the jar archive.
+	 *            starts with a /
+	 * @return an ArrayList of strings that is the text of the file
+	 */
+	public static ArrayList<String> ReadInternalFile(String filePath) {
 		System.out.println("Reading File: " + filePath);
 		ArrayList<String> lines = null;
-		InputStream is = Class.class.getResourceAsStream(filePath);
+		InputStream is = FileHandler.class.getResourceAsStream(filePath);
 		if (is != null) {
 			try {
 				InputStreamReader isr = new InputStreamReader(is);
